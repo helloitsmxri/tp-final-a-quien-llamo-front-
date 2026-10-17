@@ -1,1 +1,53 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: "Creato Display";
+  src: url("fonts/CreatoDisplay-ExtraBold.otf") format("opentype");
+  font-weight: 800;
+  font-display: swap;
+}
+
+@font-face {
+    font-family: "Creato Display";
+    src: url(fonts/CreatoDisplay-Medium.otf) format("opentype");
+    font-weight: 500;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Creato Display";
+    src: url(fonts/CreatoDisplay-Regular.otf) format("opentype");
+    font-weight: 400;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Creato Display";
+    src: url(fonts/CreatoDisplay-RegularItalic.otf) format("opentype");
+    font-weight: 400;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "TT Chocolate";
+    src: url(fonts/TT\ Chocolates\ Trial\ Bold.otf) format("opentype");
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "TT Chocolate";
+    src: url(fonts/TT\ Chocolates\ Trial\ Regular.otf) format("opentype");
+    font-weight: 400;
+    font-display: swap;
+}
+
+:root{
+    --color-acento: #4c1b7a;
+    --color-letras-pequenias: #fffbd2;
+    --fondo: #f6f6f6;
+}
+
+body{
+    background: var(--fondo);
+    margin: 0;
+}

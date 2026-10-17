@@ -1,28 +1,92 @@
-.promo-bar { 
-    overflow: hidden; 
-    background: var(--violet-700); 
-    color: #fff; 
-    padding: .5rem 0; 
+.footer__main {
+  display: flex;
+  justify-content: space-between;   /* uno a cada punta */
+  gap: 3rem;
+  max-width: 1100px;                /* que no se estire infinito */
+  margin: 0 auto;                   /* centrado */
+  padding: 2rem 1.5rem;
 }
-.promo-bar__track { 
-    display: flex; 
-    width: max-content; 
-    animation: scroll 25s linear infinite; 
+#newsletter-title{
+    font-family: "Creato Display";
+    font-weight: 400;
+    font-size: medium;
 }
-
-.promo-bar__track span { 
-    padding-right: 4rem; 
-    white-space: nowrap; 
-}
-
-/*esto es para q se pause*/
-.promo-bar:hover 
-.promo-bar__track { 
-    animation-play-state: paused; 
+.links{
+    display: flex;
+    gap: 4rem;
 }
 
-@keyframes scroll { 
-    to { 
-        transform: translateX(-50%); 
-    } 
+.links__title{
+    font-family: "Creato Display";
+    font-weight: 800;
+    font-size: medium;
+}
+
+.links ul{
+    font-family: "Creato Display";
+    font-weight: 700;
+    font-size: smaller;
+    list-style: none;
+    margin: 0; 
+    padding: 0; /*esto hace q toda la listita quede justo abajito de los titulos*/
+}
+
+.links a{
+    text-decoration: none;
+    color: var(--color-acento)
+}
+
+.link li{
+    margin-bottom: 0.65rem;
+}
+
+.promo-barra{
+    display: block; /*esto es porq es un <A> entonces tiene q quedar como bloquecito*/
+    overflow: hidden; /*los msjs q salen de la barra se cortan y no se ven*/
+    background: var(--color-acento);
+    color: var(--color-letras-pequenias);
+    text-decoration: none;
+    cursor: pointer; /*muestra l amnito para q se sepa q puede tocarse*/
+    padding: 0;
+    margin: 0;
+}
+
+.promo-barra:focus-visible{
+    outline: 2px solid var(--color-letras-pequenias);
+    outline-offset: -4px;
+}
+
+.promo-va-moviendo{
+    display: flex; /*pone los mensajes en fila*/
+    width: max-content; /*esto hace que los msjitos ocupen todo el ancho q necesitan esos mensajes, aunq sea más q el q tiene la pantalla y queda recortado POR OVERFLOW HIDDEN*/
+}
+
+.promo-va-moviendo span{
+    flex: none; /*los msjs no se achican para entrar en la barra*/
+    padding: 0.85rem 1.4rem; /*el espacio entre msjes, 1ero arriba & abajo, 2d0 a los costados*/
+    white-space: nowrap; /*el texto de cada msj no se parte en líneas*/
+    font-family: "Creato Display", system-ui, sans-serif;
+}
+
+/*los mensajitos se repiten DOS VECES TODA LA LISTA, eso hace q quede en el mismo lugar q ocupaba la anterior y así*/
+.promo-va-moviendo{
+    animation: promo-scroll 20s linear infinite; /*esta es la animación*/
+}
+
+/*acá lo q defino es como se va an a mover esos frames en este tipo de animacion*/
+@keyframes promo-scroll{
+from {transform: translateX(0);} /*arranco desde la pista en 0*/
+to{transform: translateX(-50%);} /*termino corrido a la izquierda a la mitad*/
+}
+
+/*pausa al pasar el mouse*/
+.promo-va-moviendo:hover{
+animation-play-state: paused;
+}
+
+.derechos-bar{
+    text-align: center;
+    font-family: "Creato Display";
+    font-weight: 400;
+    font-size: smaller;
 }

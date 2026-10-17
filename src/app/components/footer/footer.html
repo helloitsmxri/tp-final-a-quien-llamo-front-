@@ -1,13 +1,54 @@
-<div class="derechos-bar">
-<p>¿A Quién Llamo? Todos los Derechos Reservados ©</p>
-</div>
-<div class="promo-bar">
-  <div class="promo-bar__track">
-    <span>20% off pagando con Mercado Pago</span>
-    <span>3 cuotas sin interés con tarjeta</span>
-    <span><a [routerLink]="['/promociones']">Hacé clic acá para más información sobre las promociones vigentes.</a></span>
-    <span>20% off pagando con Mercado Pago</span>
-    <span>3 cuotas sin interés con tarjeta</span>
-    <span><a [routerLink]="['/promociones']">Hacé clic acá para más información sobre las promociones vigentes.</a></span>
+<div class="footer">
+
+  <div class="footer__main">
+
+    <section class="newsletter" aria-labelledby="newsletter-title">
+      <p id="newsletter-title" class="newsletter__title">Suscribite a nuestro newsletter</p>
+
+      <!--acá va a ir un form de newsletter!!-->
+
+    </section>
+
+    <nav class="links" aria-label="Pie de página">
+      <div class="links__col">
+        <h3 class="links__title">Ayuda e información</h3>
+        <ul>
+          <li><a [routerLink]="['/preguntas-frecuentes']">Preguntas frecuentes</a></li>
+          <li><a [routerLink]="['/boton-de-arrepentimiento']">Botón de arrepentimiento</a></li>
+          <li><a [routerLink]="['/defensa-del-consumidor']">Defensa de las y los consumidores</a></li>
+          <li><a [routerLink]="['/libro-de-quejas']">Libro de quejas web</a></li>
+          <li><a [routerLink]="['/contacto']">Contacto</a></li>
+        </ul>
+      </div>
+
+      <div class="links__col">
+        <h3 class="links__title">Sobre ¿A Quién Llamo?</h3>
+        <ul>
+          <li><a [routerLink]="['/terminos']">Términos y Condiciones</a></li>
+          <li><a [routerLink]="['/politicas-de-privacidad']">Políticas de Privacidad</a></li>
+        </ul>
+      </div>
+    </nav>
+
   </div>
+
+  <div class="derechos-bar">
+    <p>¿A Quién Llamo? Todos los Derechos Reservados ©</p>
+  </div>
+
+  <!--repito los mensajes más veces así pasa más rápido el texto-->
+
+  <a class="promo-barra" [routerLink]="['/promociones']">
+    <div class="promo-va-moviendo">
+      <span>20% off pagando con Mercado Pago</span>
+      <span>3 cuotas sin interés con tarjeta</span>
+      <span>Hacé clic acá para más información sobre las promociones vigentes</span>
+      <span aria-hidden="true">20% off pagando con Mercado Pago</span>
+      <span aria-hidden="true">3 cuotas sin interés con tarjeta</span>
+      <span aria-hidden="true">Hacé clic acá para más información sobre las promociones vigentes</span>
+    </div>
+  </a>
+
+  <!--aria hidden : true es para accesibilidad muxaxes-->
+
 </div>
