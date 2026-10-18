@@ -18,7 +18,9 @@ export class Header {
   // signal = una variablecita q Angular vigila: cuando cambia, actualiza la pantalla sola.
   // false = panel cerrado, true = abierto
   abierto = signal(false);
- 
+  // true cuando la URL empieza con /categorias (o sea, estoy en alguna categoría)
+  enCategorias = signal(false);
+
   // acá me guardo con qué tocó por última vez la persona: 'mouse', 'touch' (dedo) o 'pen'.
   // sirve xq con mouse el panel se abre al pasar, pero con el dedo se abre tocando
   private ultimoPuntero = 'mouse';
@@ -37,12 +39,18 @@ export class Header {
   ];
  
   constructor() {
+    // por si entran directo a una URL de categoría (ej. recargando la página)
+    this.enCategorias.set(this.router.url.startsWith('/categorias'));
+
     // esto escucha los cambios de página. Cuando termina de navegar (NavigationEnd) cierra el panel,
     // así no hace falta ponerle un cerrar() a cada tarjeta.
     // takeUntilDestroyed hace q deje de escuchar cuando el componente se destruye (para no dejar cosas colgadas)
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd), takeUntilDestroyed())
       .subscribe(() => this.cerrar());
+
+      // cada vez q cambia la página, vuelvo a chequear si estoy en categorías
+      this.enCategorias.set(this.router.url.startsWith('/categorias'));
   }
  
   // abren y cierran el panel cambiando el signal

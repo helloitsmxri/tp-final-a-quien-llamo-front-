@@ -6,6 +6,8 @@
   margin: 0 auto;                   /* centrado */
   padding: 2rem 1.5rem;
 }
+
+
 #newsletter-title{
     font-family: "Creato Display";
     font-weight: 400;
@@ -18,7 +20,7 @@
 
 .links__title{
     font-family: "Creato Display";
-    font-weight: 800;
+    font-weight: 400;
     font-size: medium;
 }
 

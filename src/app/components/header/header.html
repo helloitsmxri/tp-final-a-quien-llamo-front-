@@ -25,12 +25,10 @@
       <li class="menu-desplegable" (pointerenter)="entrar($event)">
         <!-- es un <button> y no un link xq no lleva a ningún lado, solo abre y cierra el panel.
              aria-expanded le avisa al lector si está abierto o cerrado, aria-controls dice a qué panel se refiere -->
-        <button
-          type="button"
-          class="dropdown-toggle"
-          [attr.aria-expanded]="abierto()"
-          aria-controls="menu-categorias"
-          (click)="clic()">
+        <button type="button"
+        class="dropdown-toggle"
+        [class.activo]="abierto() || enCategorias()" [attr.aria-expanded]="abierto()"
+        aria-controls="menu-categorias" (click)="clic()">
           Categorías
         </button>
       </li>

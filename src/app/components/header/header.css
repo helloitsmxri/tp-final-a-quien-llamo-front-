@@ -2,6 +2,24 @@
   position: relative;                /* el panel se posiciona tomando la barra como referencia */
   padding: 1.4rem 6rem 40px;         /* arriba | costados | abajo */
 }
+
+.barra::after {
+  content: "";                      /* sin esto el pseudo-elemento no aparece */
+  position: absolute;
+  left: 60px;
+  right: 60px;                         /* ocupa todo el ancho de la barra */
+  bottom: 0;                        /* pegada abajo. Si la querés arriba: top: 0 y sacá el bottom */
+  height: 1px;                      /* la línea fina */
+  background: linear-gradient(
+    to right,
+    transparent,
+    #a58cf5 20%,
+    #6c4fe0 50%,
+    #a58cf5 80%,
+    transparent
+  );                                /* se desvanece en las puntas y es más fuerte en el medio */
+  pointer-events: none;             /* no bloquea los clics */
+}
  
 .menu {
   display: grid;                     /* grilla de 3 zonas: logo | opciones | botones */
@@ -15,12 +33,16 @@
 .logo-link {
   display: flex;                     /* logo y nombre uno al lado del otro */
   align-items: center;
-  gap: 1.4rem;                       /* espacio entre el logo y el nombre */
+  gap: 8px;                       /* espacio entre el logo y el nombre */
   justify-self: start;               /* se queda pegado a la izquierda de su zona */
   text-decoration: none;             /* saca el subrayado del link */
   color: inherit;                    /* usa el color del texto y no el azul de los links */
 }
-.logo { height: 36px; max-width: 100%; }
+
+.logo { 
+  height: 36px; 
+  max-width: 100%; 
+}
 
 .logo-nombre {
   font-family: "Porkys";
@@ -47,9 +69,12 @@
   text-decoration: underline;
   text-underline-offset: 4px;        /* separa un poco el subrayado del texto */
 }
-.activo { /* la página en la q estoy queda en negrita (la clase la pone routerLinkActive) */
-  font-weight: 600; 
-}        
+    
+/*la pag donde estoy queda en negritasss y violeta*/
+.opciones a.activo, .opciones .dropdown-toggle.activo {
+  font-weight: 600;
+  color: #6c4fe0;
+}
  
 .dropdown-toggle {
   padding: 0;
