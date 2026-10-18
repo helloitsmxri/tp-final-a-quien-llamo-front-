@@ -1,0 +1,239 @@
+.barra {
+  position: relative;                /* el panel se posiciona tomando la barra como referencia */
+  padding: 1.4rem 6rem 40px;         /* arriba | costados | abajo */
+}
+ 
+.menu {
+  display: grid;                     /* grilla de 3 zonas: logo | opciones | botones */
+  grid-template-columns: 1fr auto 1fr;   /* las de los costados miden lo mismo (1fr), así la del medio queda en el CENTRO justo */
+  align-items: center;               /* las alinea al medio en vertical */
+  gap: 1.5rem;                       /* espacio mínimo entre zonas */
+  font-family: "Creato Display";
+  font-weight: 400;
+}
+ 
+.logo-link {
+  display: flex;                     /* logo y nombre uno al lado del otro */
+  align-items: center;
+  gap: 1.4rem;                       /* espacio entre el logo y el nombre */
+  justify-self: start;               /* se queda pegado a la izquierda de su zona */
+  text-decoration: none;             /* saca el subrayado del link */
+  color: inherit;                    /* usa el color del texto y no el azul de los links */
+}
+.logo { height: 36px; max-width: 100%; }
+
+.logo-nombre {
+  font-family: "Porkys";
+  font-weight: 400;
+  white-space: nowrap;               /* q el nombre no se parta en dos renglones */
+  color: #7262e4;
+}
+ 
+.opciones {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 0;                         /* saco los márgenes y el relleno q trae la lista por defecto */
+  padding: 0;
+  list-style: none;                  /* saco los puntitos */
+}
+.opciones a {
+  color: inherit;
+  text-decoration: none;
+}
+/* al pasar el mouse por encima se subraya, así se nota q se puede tocar */
+.opciones a:hover,
+.dropdown-toggle:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;        /* separa un poco el subrayado del texto */
+}
+.activo { /* la página en la q estoy queda en negrita (la clase la pone routerLinkActive) */
+  font-weight: 600; 
+}        
+ 
+.dropdown-toggle {
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;                     /* q use la misma letra q el resto */
+  color: inherit;
+  cursor: pointer;                   /* la manito */
+}
+/* cuando el panel está abierto, "Categorías" queda en negrita */
+.dropdown-toggle[aria-expanded="true"] { font-weight: 600; }
+ 
+.mega-panel {
+  position: absolute;                /* flota encima del contenido sin empujarlo */
+  top: calc(100% - 20px);            /* justo debajo de la barra. El -20px es para q se pegue y no quede un hueco por donde el mouse se escape */
+  left: 6rem;                        /* left y right = mismo margen q el padding de la barra, así quedan alineados */
+  right: 6rem;
+  z-index: 20;                       /* número alto = se ve por encima de lo demás */
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14);   /* sombrita para q se despegue de la página */
+}
+
+.mega-grid {
+  display: grid;
+  /* 4 columnas: la segunda es un poquito más ancha (1.3fr) q las otras (1fr) */
+  grid-template-columns: 1fr 1.3fr 1fr 1fr;
+  /* 3 filas, cada una de mínimo 7rem y q se reparten el resto por igual */
+  grid-template-rows: repeat(3, minmax(7rem, 1fr));
+  /* este es el "plano" c/ palabra es una celda. Si una palabra se repite, esa tarjeta ocupa varias celdas.
+     tecnologia ocupa 2 columnas; diseno, mascotas y eventos ocupan 2 filas */
+  grid-template-areas:
+    "hogar  construccion tecnologia tecnologia"
+    "diseno transporte   mascotas   eventos"
+    "diseno educacion    mascotas   eventos";
+  gap: 0.9rem;                       /* espacio entre tarjetas */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* cada <li> es flex para q la tarjeta de adentro se estire y llene todo el espacio de su celda */
+.mega-grid > li { 
+  display: flex; 
+}
+ 
+
+.tarjeta {
+  position: relative;                /* así el nombre, el dibujo y la flechita se acomodan respecto a la tarjeta */
+  flex: 1;                           /* llena toda la celda */
+  overflow: hidden;                  /* lo q se sale de la tarjeta se corta (el dibujo no pisa los bordes redondeados) */
+  border-radius: 20px;
+  background: linear-gradient(160deg, #8b86f9, #6c63f0);   /* degradé violeta, de arriba-izquierda a abajo-derecha */
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;   /* q el movimiento al pasar el mouse sea suave y no de golpe */
+}
+/* al pasar el mouse, la tarjeta sube 3px y le sale sombra*/
+.tarjeta:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(108, 99, 240, 0.35);
+}
+/* contorno para quien navega con Tab, así se ve en cuál tarjeta está parado */
+.tarjeta:focus-visible {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 3px;
+}
+ 
+.tarjeta__nombre {
+  position: absolute;                /* lo pongo arriba a la izquierda, sin importar lo demás */
+  top: 0.9rem;
+  left: 1rem;
+  z-index: 2;                        /* por encima del dibujo */
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+ 
+/* el dibujo ocupa toda la tarjeta */
+.tarjeta__img {
+  position: absolute;
+  inset: 0;                          /* atajo de top:0, right:0, bottom:0, left:0 */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;               /* el dibujo se ve ENTERO sin deformarse (cover lo recortaría) */
+  object-position: center bottom;    /* lo apoya abajo en el medio */
+  padding: 2.2rem 0.8rem 0.6rem;     /* arriba deja lugar para el nombre */
+  box-sizing: border-box;            /* q el padding no agrande la imagen */
+}
+ 
+
+.tarjeta__flecha {
+  position: absolute;
+  right: 0.8rem;
+  bottom: 0.8rem;
+  z-index: 2;
+  display: grid;
+  place-items: center;               /* centra la flecha dentro del círculo */
+  width: 1.7rem;
+  height: 1.7rem;
+  border: 1.5px solid #fff;
+  border-radius: 50%;                /* 50% = círculo perfecto */
+  font-size: 0.9rem;
+  line-height: 1;
+}
+ 
+
+.acciones {
+  display: flex;                     /* los dos botones uno al lado del otro */
+  gap: 0.75rem;
+  justify-self: end;                 /* se quedan pegados a la derecha de su zona */
+}
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1.4rem;        /* alto y espacio a los costados */
+  border: 0;
+  border-radius: 999px;           /* número gigante = extremos totalmente redondos (píldora) */
+  color: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+
+.iniciar-sesion {
+  background: linear-gradient(to right, #6c4fe0, #a58cf5);
+}
+
+.registro {
+  background: linear-gradient(to right, #7d5ff0, #c9a8fb);
+}
+
+.boton:hover {
+  transform: translateY(-2px);                    /* sube un poquito */
+  box-shadow: 0 6px 16px rgba(108, 79, 224, 0.35);
+}
+
+.boton:focus-visible {
+  outline: 2px solid #6c4fe0;
+  outline-offset: 3px;
+}
+ 
+
+/* todo lo de adentro solo se aplica en pantallas de 768px de ancho o menos */
+@media (max-width: 768px) {
+  .barra { padding: 1rem 1rem 24px; }   /* menos espacio a los costados */
+ 
+  /* en el celu no entran 3 zonas en una fila: vuelvo a flex y q se acomoden en varios renglones si hace falta */
+  .menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+ 
+  .mega-panel {
+    left: 0.75rem;
+    right: 0.75rem;
+    max-height: 75dvh;               /* nunca más alto q el 75% de la pantalla */
+    overflow-y: auto;                /* si no entra todo, se scrollea ADENTRO del panel */
+  }
+ 
+  .mega-grid {
+    grid-template-columns: 1fr 1fr;  /* 2 columnas en vez de 4 */
+    grid-template-rows: none;        /* saco las 3 filas fijas de arriba */
+    grid-auto-rows: 8rem;            /* ahora cada fila crece sola, de 8rem */
+    /* plano nuevo para el celu: tecnologia y eventos ocupan el ancho completo */
+    grid-template-areas:
+      "hogar      construccion"
+      "tecnologia tecnologia"
+      "diseno     transporte"
+      "educacion  mascotas"
+      "eventos    eventos";
+  }
+}
+ 
+/* si la persona tiene activada la opción de "reducir movimiento" en su compu o celu, no animo nada */
+@media (prefers-reduced-motion: reduce) {
+  .tarjeta { transition: none; }
+  .tarjeta:hover { transform: none; }
+}

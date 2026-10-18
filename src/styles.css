@@ -41,13 +41,35 @@
     font-display: swap;
 }
 
+@font-face {
+  font-family: "Porkys";
+  src: url("./fonts/PORKYS_.TTF") format("truetype");
+  font-weight: 400;          /* la versión normal */
+  font-style: normal;
+  font-display: swap;        /* muestra texto enseguida y cambia cuando carga la fuente */
+}
+
+@font-face {
+  font-family: "Porkys";     /* mismo nombre a propósito */
+  src: url("./fonts/PORKH___.TTF") format("truetype");
+  font-weight: 800;          /* la versión pesada (heavy) */
+  font-style: normal;
+  font-display: swap;
+}
+
 :root{
-    --color-acento: #4c1b7a;
+    --color-acento: #7d5ff0;
     --color-letras-pequenias: #fffbd2;
     --fondo: #f6f6f6;
+    --esquina: #d49fff;
+    --degrade-texto: linear-gradient(to left #d49fff, #cb9cf1, #764b99);
 }
 
 body{
-    background: var(--fondo);
     margin: 0;
+    background: radial-gradient(circle 
+    at top left,
+    var(--esquina), 
+    transparent 30%);
+    background-repeat: no-repeat;
 }
