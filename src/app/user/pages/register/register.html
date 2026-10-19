@@ -1,0 +1,159 @@
+<div class="register-container">
+    <div class="register-card">
+        <h2>Crear cuenta</h2>
+        <p>Completá tus datos para registrarte</p>
+
+        <form class="formulario" [formGroup]="formulario" (ngSubmit)="registrar()">
+
+
+            <!-- Nombre -->
+            <fieldset class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" formControlName="nombre"
+                    placeholder="Ingresá tu nombre">
+
+                @if (nombre.invalid && nombre.touched) {
+                    <div class="error">
+                        @if (nombre.hasError('required')) {
+                            <span>El nombre es obligatorio.</span>
+                        }
+                        @if (nombre.hasError('minlength')) {
+                            <span>El nombre debe tener al menos 2 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Apellido -->
+            <fieldset class="form-group">
+                <label for="apellido">Apellido:</label>
+                <input type="text" id="apellido" formControlName="apellido"
+                    placeholder="Ingresá tu apellido">
+
+                @if (apellido.invalid && apellido.touched) {
+                    <div class="error">
+                        @if (apellido.hasError('required')) {
+                            <span>El apellido es obligatorio.</span>
+                        }
+                        @if (apellido.hasError('minlength')) {
+                            <span>El apellido debe tener al menos 2 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- DNI -->
+            <fieldset class="form-group">
+                <label for="dni">DNI:</label>
+                <input type="text" id="dni" formControlName="dni"
+                    placeholder="Ingresá tu DNI">
+
+                @if (dni.invalid && dni.touched) {
+                    <div class="error">
+                        @if (dni.hasError('required')) {
+                            <span>El DNI es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+
+            <!-- Email -->
+            <fieldset class="form-group">
+                <label for="email">Correo electrónico:</label>
+                <input type="email" id="email" formControlName="email"
+                    placeholder="ejemplo@correo.com">
+
+                @if (email.invalid && email.touched) {
+                    <div class="error">
+                        @if (email.hasError('required')) {
+                            <span>El email es obligatorio.</span>
+                        }
+                        @if (email.hasError('email')) {
+                            <span>Ingresá un email válido.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Clave -->
+            <fieldset class="form-group">
+                <label for="clave">Contraseña:</label>
+                <input type="password" id="clave" formControlName="clave"
+                    placeholder="Ingresá tu contraseña">
+
+                @if (clave.invalid && clave.touched) {
+                    <div class="error">
+                        @if (clave.hasError('required')) {
+                            <span>La contraseña es obligatoria.</span>
+                        }
+                        @if (clave.hasError('minlength')) {
+                            <span>La contraseña debe tener al menos 8 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Teléfono -->
+            <fieldset class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" id="telefono" formControlName="telefono"
+                    placeholder="Ej: 1123456789">
+
+                @if (telefono.invalid && telefono.touched) {
+                    <div class="error">
+                        @if (telefono.hasError('required')) {
+                            <span>El teléfono es obligatorio.</span>
+                        }
+                        @if (telefono.hasError('maxLength')) {
+                            <span>El maximo de digitos es 10.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Fecha de nacimiento -->
+            <fieldset class="form-group">
+                <label for="fechaNacimiento">Fecha de nacimiento:</label>
+                <input type="date" id="fechaNacimiento"
+                    formControlName="fechaNacimiento">
+
+                @if (fechaNacimiento.invalid && fechaNacimiento.touched) {
+                    <div class="error">
+                        @if (fechaNacimiento.hasError('required')) {
+                            <span>La fecha de nacimiento es obligatoria.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Sobre mí -->
+            <fieldset class="form-group">
+                <label for="sobreMi">Sobre mí:</label>
+                <textarea id="sobreMi" formControlName="sobreMi"
+                    placeholder="Contanos un poco sobre vos..."
+                    rows="4"></textarea>
+
+                @if (sobreMi.invalid && sobreMi.touched) {
+                    <div class="error">
+                        @if (sobreMi.hasError('maxlength')) {
+                            <span>La descripción no debe superar los 500 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Foto -->
+            <fieldset class="form-group">
+                <label for="foto">Foto de perfil:</label>
+                <input type="file" id="foto" accept="image/*"
+                    (change)="seleccionarFoto($event)">
+            </fieldset>
+
+            <button type="submit" [disabled]="formulario.invalid">
+                Registrarse
+            </button>
+
+        </form>
+    </div>
+</div>
