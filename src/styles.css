@@ -1,27 +1,27 @@
 @font-face {
   font-family: "Creato Display";
-  src: url("fonts/CreatoDisplay-ExtraBold.otf") format("opentype");
+  src: url("/fonts/CreatoDisplay-ExtraBold.otf") format("opentype");
   font-weight: 800;
   font-display: swap;
 }
 
 @font-face {
     font-family: "Creato Display";
-    src: url(fonts/CreatoDisplay-Medium.otf) format("opentype");
+    src: url("/fonts/CreatoDisplay-Medium.otf") format("opentype");
     font-weight: 500;
     font-display: swap;
 }
 
 @font-face {
     font-family: "Creato Display";
-    src: url(fonts/CreatoDisplay-Regular.otf) format("opentype");
+    src: url("/fonts/CreatoDisplay-Regular.otf") format("opentype");
     font-weight: 400;
     font-display: swap;
 }
 
 @font-face {
     font-family: "Creato Display";
-    src: url(fonts/CreatoDisplay-RegularItalic.otf) format("opentype");
+    src: url("/fonts/CreatoDisplay-RegularItalic.otf") format("opentype");
     font-weight: 400;
     font-style: italic;
     font-display: swap;
@@ -29,21 +29,21 @@
 
 @font-face {
     font-family: "TT Chocolate";
-    src: url(fonts/TT\ Chocolates\ Trial\ Bold.otf) format("opentype");
+    src: url("/fonts/TT-CHOCOLATES-TRIAL-BOLD.otf") format("opentype");
     font-weight: 700;
     font-display: swap;
 }
 
 @font-face {
     font-family: "TT Chocolate";
-    src: url(fonts/TT\ Chocolates\ Trial\ Regular.otf) format("opentype");
+    src: url("/fonts/TT-CHOCOLATES-TRIAL-REGULAR.otf") format("opentype");
     font-weight: 400;
     font-display: swap;
 }
 
 @font-face {
   font-family: "Porkys";
-  src: url("./fonts/PORKYS_.TTF") format("truetype");
+  src: url("/fonts/PORKYS_.TTF") format("truetype");
   font-weight: 400;          /* la versión normal */
   font-style: normal;
   font-display: swap;        /* muestra texto enseguida y cambia cuando carga la fuente */
@@ -51,7 +51,7 @@
 
 @font-face {
   font-family: "Porkys";     /* mismo nombre a propósito */
-  src: url("./fonts/PORKH___.TTF") format("truetype");
+  src: url("/fonts/PORKH___.TTF") format("truetype");
   font-weight: 800;          /* la versión pesada (heavy) */
   font-style: normal;
   font-display: swap;
@@ -60,16 +60,16 @@
 :root{
     --color-acento: #7d5ff0;
     --color-letras-pequenias: #fffbd2;
-    --fondo: #f6f6f6;
+    --fondo: #ededed;
     --esquina: #d49fff;
     --degrade-texto: linear-gradient(to left #d49fff, #cb9cf1, #764b99);
 }
 
 body{
     margin: 0;
-    background: radial-gradient(circle 
-    at top left,
-    var(--esquina), 
-    transparent 30%);
+    background: radial-gradient(circle at top left, var(--esquina), transparent 30%),
+                radial-gradient(circle at top right, var(--esquina), transparent 30%),
+                var(--fondo);    
     background-repeat: no-repeat;
+    background-attachment: fixed;
 }
