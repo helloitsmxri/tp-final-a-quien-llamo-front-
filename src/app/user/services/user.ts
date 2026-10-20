@@ -3,15 +3,18 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UsuarioModel } from '../models/user-model';
+import { UsuarioModelRegister } from '../models/user-model-register';
 
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
 
     private readonly API_URL = 'http://localhost:8080/api/usuarios';
+    private readonly API_URL_REGISTER = 'http://localhost:8080/auth/register'
 
     usuarios: UsuarioModel[] = [];
     usuario!: UsuarioModel;
+    usuarioRegister!: UsuarioModelRegister;
 
     constructor(private http: HttpClient) {}
 
@@ -28,9 +31,9 @@ export class UsuarioService {
     }
 
   // CREATE: registrar un usuario
-    store(usuario: Partial<UsuarioModel>): Observable<UsuarioModel> {
-        return this.http.post<UsuarioModel>(
-        this.API_URL,
+    store(usuario: FormData): Observable<UsuarioModelRegister> {
+        return this.http.post<UsuarioModelRegister>(
+        this.API_URL_REGISTER,
         usuario
         );
     }

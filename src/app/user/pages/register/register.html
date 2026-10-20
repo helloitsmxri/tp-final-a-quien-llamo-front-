@@ -1,0 +1,122 @@
+<div class="register-container">
+    <div class="register-card">
+        <h2>Crear cuenta</h2>
+        <p>Completá tus datos para registrarte</p>
+ 
+        <form class="formulario" [formGroup]="formulario" (ngSubmit)="registrar()">
+ 
+            <p class="paso">Paso {{ paso }} de 2</p>
+ 
+            @if (paso === 1) {
+ 
+                <!-- Email -->
+                <fieldset class="form-group">
+                    <label for="email">Correo electrónico:</label>
+                    <input type="email" id="email" formControlName="email"
+                        placeholder="ejemplo@correo.com">
+                    @if (errorMensaje('email')) {
+                        <p class="error">{{ errorMensaje('email') }}</p>
+                    }
+                </fieldset>
+ 
+                <!-- Clave -->
+                <fieldset class="form-group">
+                    <label for="clave">Contraseña:</label>
+                    <input type="password" id="clave" formControlName="clave"
+                        placeholder="Ingresá tu contraseña">
+                    @if (errorMensaje('clave')) {
+                        <p class="error">{{ errorMensaje('clave') }}</p>
+                    }
+                </fieldset>
+ 
+                <!-- Repetir clave -->
+                <fieldset class="form-group">
+                    <label for="repetirClave">Repetir contraseña:</label>
+                    <input type="password" id="repetirClave" formControlName="repetirClave"
+                        placeholder="Repetí tu contraseña">
+                    @if (errorMensaje('repetirClave')) {
+                        <p class="error">{{ errorMensaje('repetirClave') }}</p>
+                    }
+                </fieldset>
+ 
+                <!-- Nombre -->
+                <fieldset class="form-group">
+                    <label for="nombre">Nombre:</label>
+                    <input type="text" id="nombre" formControlName="nombre"
+                        placeholder="Ingresá tu nombre">
+                    @if (errorMensaje('nombre')) {
+                        <p class="error">{{ errorMensaje('nombre') }}</p>
+                    }
+                </fieldset>
+ 
+                <!-- Apellido -->
+                <fieldset class="form-group">
+                    <label for="apellido">Apellido:</label>
+                    <input type="text" id="apellido" formControlName="apellido"
+                        placeholder="Ingresá tu apellido">
+                    @if (errorMensaje('apellido')) {
+                        <p class="error">{{ errorMensaje('apellido') }}</p>
+                    }
+                </fieldset>
+ 
+                <button type="button" (click)="siguiente()">Siguiente</button>
+ 
+            } @else {
+ 
+                <!-- DNI -->
+                <fieldset class="form-group">
+                    <label for="dni">DNI:</label>
+                    <input type="text" id="dni" formControlName="dni"
+                        placeholder="Ingresá tu DNI">
+                    @if (errorMensaje('dni')) {
+                        <p class="error">{{ errorMensaje('dni') }}</p>
+                    }
+                </fieldset>
+ 
+                <!-- Fecha de nacimiento -->
+                <fieldset class="form-group">
+                    <label for="fechaNacimiento">Fecha de nacimiento:</label>
+                    <input type="date" id="fechaNacimiento" formControlName="fechaNacimiento">
+                    @if (errorMensaje('fechaNacimiento')) {
+                        <p class="error">{{ errorMensaje('fechaNacimiento') }}</p>
+                    }
+                </fieldset>
+ 
+                <!-- Teléfono -->
+                <fieldset class="form-group">
+                    <label for="telefono">Teléfono:</label>
+                    <input type="tel" id="telefono" formControlName="telefono"
+                        placeholder="Ej: 1123456789">
+                    @if (errorMensaje('telefono')) {
+                        <p class="error">{{ errorMensaje('telefono') }}</p>
+                    }
+                </fieldset>
+ 
+                <!-- Sobre mí -->
+                <fieldset class="form-group">
+                    <label for="sobreMi">Sobre mí:</label>
+                    <textarea id="sobreMi" formControlName="sobreMi"
+                        placeholder="Contanos un poco sobre vos..."
+                        rows="4"></textarea>
+                    @if (errorMensaje('sobreMi')) {
+                        <p class="error">{{ errorMensaje('sobreMi') }}</p>
+                    }
+                </fieldset>
+ 
+                <!-- Foto -->
+                <fieldset class="form-group">
+                    <label for="foto">Foto de perfil:</label>
+                    <input type="file" id="foto" accept="image/*"
+                        (change)="seleccionarFoto($event)">
+                </fieldset>
+ 
+                <div class="botones">
+                    <button type="button" class="secundario" (click)="volver()">Volver</button>
+                    <button type="submit" [disabled]="formulario.invalid">Registrarse</button>
+                </div>
+ 
+            }
+ 
+        </form>
+    </div>
+</div>
