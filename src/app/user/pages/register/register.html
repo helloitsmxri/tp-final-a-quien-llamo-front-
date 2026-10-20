@@ -75,8 +75,8 @@
  
                 <!-- Fecha de nacimiento -->
                 <fieldset class="form-group">
-                    <label for="fechaNacimiento">Fecha de nacimiento:</label>
-                    <input type="date" id="fechaNacimiento" formControlName="fechaNacimiento">
+                    <label>Fecha de nacimiento:</label>
+                    <app-calendario formControlName="fechaNacimiento"></app-calendario>
                     @if (errorMensaje('fechaNacimiento')) {
                         <p class="error">{{ errorMensaje('fechaNacimiento') }}</p>
                     }
