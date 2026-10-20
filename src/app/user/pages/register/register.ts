@@ -6,9 +6,10 @@ import {
   FormGroup,
   ReactiveFormsModule,
   ValidationErrors,
-  Validators
+  Validators,
 } from '@angular/forms';
 import { UsuarioService } from '../../services/user';
+import { Calendario } from '../../../components/calendario/calendario';
 
 // Validador del grupo: compara "clave" con "repetirClave"
 function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
@@ -20,7 +21,7 @@ function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Calendario],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
