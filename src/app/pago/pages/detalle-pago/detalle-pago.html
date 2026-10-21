@@ -1,1 +1,20 @@
-<p>detalle-pago works!</p>
+<div class="container">
+    <ul>
+        @if(pago){
+                <li>
+                    @if(pago.idPago){
+                        <p>presupuesto : {{pago.idPago}}</p>
+                    }
+                    <p>uuid : {{pago.uuid}}</p>
+                    <p>estado pago : {{pago.estadoPago}}</p>
+                    <p>fecha de pago : {{pago.fechaPago}}</p>
+                    <p>metodo de pago : {{pago.metodoDePago}}</p>
+                    <p>trabajo : {{pago.trabajo}}</p>
+                </li>    
+        }@else{
+            <li>
+                no se encontro el pago!
+            </li>
+        }
+    </ul>
+</div>

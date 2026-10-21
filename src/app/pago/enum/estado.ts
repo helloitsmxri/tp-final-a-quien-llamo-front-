@@ -1,1 +1,6 @@
-export enum Estado {}
+export enum Estado {
+    Pendiente,
+    EnProceso,
+    Completado,
+    Cancelado
+}

@@ -1,0 +1,20 @@
+<div class="container">
+    <ul>
+        @if(pagos){
+            @for (pago of pagos; track pago.uuid) {
+                <li>
+                    <p>presupuesto : {{pago.uuid}}</p>
+                    <p>descripcionpago : {{pago.estadoPago}}</p>
+                    <p>fechaEstimadaInicio : {{pago.fechaPago}}</p>
+                    <p>fechaEstimadaFin : {{pago.metodoDePago}}</p>
+                    <p>estadopago : {{pago.trabajo}}</p>
+                </li>    
+            }
+        }@else{
+            <li>
+                no se encontraron pagos!
+            </li>
+        }
+    </ul>
+</div>
+
