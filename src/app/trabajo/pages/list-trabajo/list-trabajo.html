@@ -1,0 +1,19 @@
+<div class="container">
+    <ul>
+        @if(trabajos){
+            @for (trabajo of trabajos; track trabajo.uuid) {
+                <li>
+                    <p>presupuesto : {{trabajo.presupuesto}}</p>
+                    <p>descripcionTrabajo : {{trabajo.descripcionTrabajo}}</p>
+                    <p>fechaEstimadaInicio : {{trabajo.fechaEstimadaInicio}}</p>
+                    <p>fechaEstimadaFin : {{trabajo.fechaEstimadaFin}}</p>
+                    <p>estadoTrabajo : {{trabajo.estadoTrabajo}}</p>
+                </li>    
+            }
+        }@else{
+            <li>
+                no se encontraron trabajos!
+            </li>
+        }
+    </ul>
+</div>
