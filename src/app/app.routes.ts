@@ -2,9 +2,11 @@ import { Routes } from '@angular/router';
 import { Home } from './home/home';
 import { Register } from './user/pages/register/register';
 import { Login } from './user/pages/login/login';
+import { DetalleMensaje } from './mensaje/pages/detalle-mensaje/detalle-mensaje';
 
 export const routes: Routes = [
     {path: '', component: Home},
     {path: 'register', component: Register},
-    {path: 'iniciar-sesion', component: Login}
+    {path: 'iniciar-sesion', component: Login},
+    {path:'detalle-mensaje', component:DetalleMensaje}
 ];

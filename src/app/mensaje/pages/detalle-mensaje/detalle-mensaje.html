@@ -1,1 +1,63 @@
-<p>detalle-mensaje works!</p>
+<div class="chat-container">
+  <!-- Encabezado del Chat -->
+  <div class="chat-header">
+    <h3>Conversación</h3>
+  </div>
+
+  <!-- Contenedor de la lista de mensajes -->
+  <div class="lista-mensajes">
+    @for (msg of mensajes; track msg.uuidMensaje) {
+      <div 
+        class="burbuja"
+        [class.sent]="msg.uuidSender === currentUuidSender"
+        [class.received]="msg.uuidSender !== currentUuidSender"
+      >
+        <!-- Texto del mensaje -->
+        @if (msg.mensaje) {
+          <p class="texto-msg">{{ msg.mensaje }}</p>
+        }
+
+        <!-- Archivo adjunto: Imagen -->
+        @if (msg.archivoUrl && msg.tipoArchivo === 'imagen') {
+          <div class="archivo-msg">
+            <img [src]="msg.archivoUrl" alt="Imagen adjunta" class="img-preview" />
+          </div>
+        }
+
+        <!-- Archivo adjunto: PDF -->
+        @if (msg.archivoUrl && msg.tipoArchivo === 'pdf') {
+          <div class="archivo-msg">
+            <a [href]="msg.archivoUrl" target="_blank" rel="noopener noreferrer" class="pdf-link">
+              📄 Ver documento PDF
+            </a>
+          </div>
+        }
+      </div>
+    } @empty {
+      <p class="sin-mensajes">No hay mensajes en esta conversación aún.</p>
+    }
+  </div>
+
+  <!-- Zona de ingreso de texto y adjuntos -->
+  <div class="chat-input-area">
+    <input 
+      type="text" 
+      [(ngModel)]="nuevoMensajeTexto" 
+      placeholder="Escribe un mensaje..." 
+      (keyup.enter)="enviarMensaje()"
+    />
+    
+    <!-- Botón para adjuntar archivo -->
+    <label for="file-upload" class="file-label" title="Adjuntar archivo">📎</label>
+    <input 
+      id="file-upload" 
+      type="file" 
+      (change)="onFileSelected($event)" 
+      accept="image/*,.pdf" 
+      style="display: none;"
+    />
+
+    <!-- Botón para enviar -->
+    <button (click)="enviarMensaje()">Enviar</button>
+  </div>
+</div>
