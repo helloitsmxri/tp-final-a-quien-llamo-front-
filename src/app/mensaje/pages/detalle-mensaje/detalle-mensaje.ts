@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MensajeModel } from '../../models/mensaje-model';
 import { MensajeService } from '../../services/mensaje';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   imports: [FormsModule],
@@ -10,17 +11,34 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './detalle-mensaje.html',
 })
 export class DetalleMensaje implements OnInit{
+
   mensajes: MensajeModel[] = [];
   nuevoMensajeTexto: string = '';
   archivoSeleccionado: File | null = null;
 
   currentUuidChat: string = '';
-  currentUuidSender: string = '';
+  currentUuidSender: string = 'uuid-del-usuario-logueado';
 
-  constructor(private mensajeService: MensajeService) {}
+  constructor(private mensajeService: MensajeService, private route:ActivatedRoute) {
+    
+  }
 
   ngOnInit(): void {
-    // Aquí puedes asignar los UUIDs dinámicamente o por parámetros de ruta
+    this.currentUuidChat = this.route.snapshot.paramMap.get('uuidChat') || '';
+    
+    if (this.currentUuidChat) {
+      this.cargarMensajes();
+    }
+  }
+
+  cargarMensajes(): void {
+    this.mensajeService.getAll().subscribe({
+      next: (data) => {
+        // Filtrar los mensajes correspondientes únicamente a este Chat
+        this.mensajes = data.filter(m => m.uuidChat === this.currentUuidChat);
+      },
+      error: (err) => console.error('Error al cargar mensajes', err)
+    });
   }
 
   enviarArchivo(event: Event): void {

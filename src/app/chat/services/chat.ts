@@ -14,38 +14,22 @@ export class ChatService {
 
     constructor(private http: HttpClient) {}
 
-  // READ: obtener todos los chats
-    getAll(): Observable<ChatModel[]> {
-        return this.http.get<ChatModel[]>(this.API_URL);
-    }
+iniciarChat(idUsuario: number, idTecnico: number): Observable<ChatModel> {
+    return this.http.post<ChatModel>(`${this.API_URL}/iniciar`, { idUsuario, idTecnico });
+  }
 
-  // READ: obtener un chat por UUID
-    getByUuid(uuid: string): Observable<ChatModel> {
-        return this.http.get<ChatModel>(
-        `${this.API_URL}/${uuid}`
-        );
-    }
+  // GET: Traer los chats de un usuario según su UUID
+  getByUsuario(uuidUsuario: string): Observable<ChatModel[]> {
+    return this.http.get<ChatModel[]>(`${this.API_URL}/usuario/${uuidUsuario}`);
+  }
 
-  // CREATE: crear un chat
-    store(chat: Partial<ChatModel>): Observable<ChatModel> {
-        return this.http.post<ChatModel>(
-        this.API_URL,
-        chat
-        );
-    }
+  // GET: Traer los chats de un técnico según su UUID
+  getByTecnico(uuidTecnico: string): Observable<ChatModel[]> {
+    return this.http.get<ChatModel[]>(`${this.API_URL}/tecnico/${uuidTecnico}`);
+  }
 
-  // UPDATE: actualizar un chat
-    update(uuid: string,chat: Partial<ChatModel>): Observable<ChatModel> {
-    return this.http.put<ChatModel>(
-        `${this.API_URL}/${uuid}`,
-        chat
-        );
-    }
-
-  // DELETE: eliminar un chat
-    delete(uuid: string): Observable<void> {
-        return this.http.delete<void>(
-        `${this.API_URL}/${uuid}`
-        );
-    }
+  // GET: Buscar un chat específico por su UUID
+  getByUuid(uuidChat: string): Observable<ChatModel> {
+    return this.http.get<ChatModel>(`${this.API_URL}/${uuidChat}`);
+  }
 }
