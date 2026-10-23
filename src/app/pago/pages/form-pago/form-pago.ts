@@ -1,8 +1,15 @@
 
 import { Component } from '@angular/core';
-import {FormControl,FormGroup,ReactiveFormsModule,Validators} from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+
 import { PagoModel } from '../../models/pago-model';
 import { PagoService } from '../../services/pago';
+import { MetodoDePago } from '../../enum/metodo-de-pago';
 
 @Component({
   selector: 'app-form-pago',
@@ -11,99 +18,164 @@ import { PagoService } from '../../services/pago';
   templateUrl: './form-pago.html',
   styleUrl: './form-pago.css',
 })
-  export class FormPago {
+export class FormPago {
 
-    monto: FormControl;
-    metodoDePago: FormControl;
-    fecha: FormControl;
+  uuidTrabajo: FormControl;
+  metodoDePago: FormControl;
+  buyerFullName: FormControl;
+  buyerEmail: FormControl;
+  buyerDNI: FormControl;
+  buyerPhone: FormControl;
+  monto: FormControl;
+  currency: FormControl;
+  numeroTarjeta: FormControl;
+  cvv: FormControl;
+  vencimientoTarjeta: FormControl;
+  franquicia: FormControl;
 
-    formulario: FormGroup;
+  formulario: FormGroup;
 
-    uuid: string | null = null;
-    editando = false;
+  uuid: string | null = null;
+  editando = false;
 
-    constructor(public pService: PagoService) {
+  constructor(public pService: PagoService) {
 
-      this.monto = new FormControl('', [
-        Validators.required,
-        Validators.min(0.01)
-      ]);
+    this.uuidTrabajo = new FormControl('', [
+      Validators.required
+    ]);
 
-      this.metodoDePago = new FormControl('', [
-        Validators.required
-      ]);
+    this.metodoDePago = new FormControl('', [
+      Validators.required
+    ]);
 
-      this.fecha = new FormControl('', [
-        Validators.required
-      ]);
+    this.buyerFullName = new FormControl('', [
+      Validators.required,
+      Validators.minLength(2)
+    ]);
 
-      this.formulario = new FormGroup({
-        monto: this.monto,
-        metodoDePago: this.metodoDePago,
-        fecha: this.fecha
-      });
-    }
+    this.buyerEmail = new FormControl('', [
+      Validators.required,
+      Validators.email
+    ]);
 
-    cargarPago(uuid: string): void {
-      this.pService.getByUuid(uuid).subscribe({
-        next: (respuesta: PagoModel) => {
-          this.uuid = uuid;
-          this.editando = true;
-          this.formulario.patchValue(respuesta);
-        },
-        error: (e) => {
-          console.error('Error al cargar el pago', e);
-        }
-      });
-    }
+    this.buyerDNI = new FormControl('', [
+      Validators.required
+    ]);
 
-    registrar(): void {
-      if (this.formulario.invalid) {
-        this.formulario.markAllAsTouched();
-        return;
-      }
+    this.buyerPhone = new FormControl('', [
+      Validators.required,
+      Validators.maxLength(10)
+    ]);
 
-      const pago: Partial<PagoModel> = this.formulario.value;
+    this.monto = new FormControl('', [
+      Validators.required,
+      Validators.min(0.01)
+    ]);
 
-      this.pService.store(pago).subscribe({
-        next: (respuesta) => {
-          console.log('Pago registrado correctamente', respuesta);
-          this.formulario.reset();
-        },
-        error: (e) => {
-          console.error('Error al registrar el pago', e);
-        }
-      });
-    }
+    this.currency = new FormControl('ARS', [
+      Validators.required
+    ]);
 
-    actualizar(): void {
-      if (this.formulario.invalid) {
-        this.formulario.markAllAsTouched();
-        return;
-      }
+    this.numeroTarjeta = new FormControl('', [
+      Validators.required,
+      Validators.minLength(13),
+      Validators.maxLength(19)
+    ]);
 
-      if (!this.uuid) {
-        console.error('No se encontró el UUID del pago');
-        return;
-      }
+    this.cvv = new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(4)
+    ]);
 
-      const pago: Partial<PagoModel> = this.formulario.value;
+    this.vencimientoTarjeta = new FormControl('', [
+      Validators.required
+    ]);
 
-      this.pService.update(this.uuid, pago).subscribe({
-        next: (respuesta) => {
-          console.log('Pago actualizado correctamente', respuesta);
-          this.formulario.reset();
-          this.uuid = null;
-          this.editando = false;
-        },
-        error: (e) => {
-          console.error('Error al actualizar el pago', e);
-        }
-      });
-    }
+    this.franquicia = new FormControl('', [
+      Validators.required
+    ]);
 
-    verSubmit(): void {
-      console.log(this.formulario.value);
-    }
-
+    this.formulario = new FormGroup({
+      uuidTrabajo: this.uuidTrabajo,
+      metodoDePago: this.metodoDePago,
+      buyerFullName: this.buyerFullName,
+      buyerEmail: this.buyerEmail,
+      buyerDNI: this.buyerDNI,
+      buyerPhone: this.buyerPhone,
+      monto: this.monto,
+      currency: this.currency,
+      numeroTarjeta: this.numeroTarjeta,
+      cvv: this.cvv,
+      vencimientoTarjeta: this.vencimientoTarjeta,
+      franquicia: this.franquicia
+    });
   }
+
+  cargarPago(uuid: string): void {
+    this.pService.getByUuid(uuid).subscribe({
+      next: (respuesta: PagoModel) => {
+        this.uuid = uuid;
+        this.editando = true;
+        this.formulario.patchValue(respuesta);
+      },
+      error: (e) => {
+        console.error('Error al cargar el pago', e);
+      }
+    });
+  }
+
+  registrar(): void {
+    if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
+      return;
+    }
+
+    const pago: Partial<PagoModel> = this.formulario.value;
+
+    this.pService.store(pago).subscribe({
+      next: (respuesta) => {
+        console.log('Pago registrado correctamente', respuesta);
+        this.formulario.reset({
+          currency: 'ARS'
+        });
+      },
+      error: (e) => {
+        console.error('Error al registrar el pago', e);
+      }
+    });
+  }
+
+  actualizar(): void {
+    if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
+      return;
+    }
+
+    if (!this.uuid) {
+      console.error('No se encontró el UUID del pago');
+      return;
+    }
+
+    const pago: Partial<PagoModel> = this.formulario.value;
+
+    this.pService.update(this.uuid, pago).subscribe({
+      next: (respuesta) => {
+        console.log('Pago actualizado correctamente', respuesta);
+        this.formulario.reset({
+          currency: 'ARS'
+        });
+        this.uuid = null;
+        this.editando = false;
+      },
+      error: (e) => {
+        console.error('Error al actualizar el pago', e);
+      }
+    });
+  }
+
+  verSubmit(): void {
+    console.log(this.formulario.value);
+  }
+}
+
