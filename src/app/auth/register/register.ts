@@ -8,8 +8,9 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { UsuarioService } from '../../services/user';
-import { Calendario } from '../../../components/calendario/calendario';
+import { UsuarioService } from '../../user/services/user';
+import { Calendario } from '../../components/calendario/calendario';
+import { RegisterService } from '../services/register-service';
 
 // Validador del grupo: compara "clave" con "repetirClave"
 function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
@@ -28,7 +29,7 @@ function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
 export class Register {
 
   private fb = inject(FormBuilder);
-  private uService = inject(UsuarioService);
+  private uService = inject(RegisterService);
  
   // Paso actual del formulario (1 o 2)
   paso = 1;

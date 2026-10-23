@@ -10,7 +10,6 @@ import { UsuarioModelRegister } from '../models/user-model-register';
 export class UsuarioService {
 
     private readonly API_URL = 'http://localhost:8080/api/usuarios';
-    private readonly API_URL_REGISTER = 'http://localhost:8080/auth/register'
 
     usuarios: UsuarioModel[] = [];
     usuario!: UsuarioModel;
@@ -27,14 +26,6 @@ export class UsuarioService {
     getByUuid(uuid: string): Observable<UsuarioModel> {
         return this.http.get<UsuarioModel>(
         `${this.API_URL}/${uuid}`
-        );
-    }
-
-  // CREATE: registrar un usuario
-    store(usuario: FormData): Observable<UsuarioModelRegister> {
-        return this.http.post<UsuarioModelRegister>(
-        this.API_URL_REGISTER,
-        usuario
         );
     }
 
