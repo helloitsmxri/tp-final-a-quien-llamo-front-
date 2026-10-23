@@ -135,6 +135,12 @@ h1 {
   border-radius: 12px;
 }
 
+.tarjeta:hover{
+  transform: translateY(-4px); /*es para q suba*/
+  box-shadow: 0 6px 16px rgba(56, 40, 116, 0.35);
+}
+
+
 .tarjeta h2 {
   margin: 0;
   font-size: 0.9rem;
