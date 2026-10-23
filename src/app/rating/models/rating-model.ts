@@ -3,7 +3,7 @@ import { UsuarioModel } from "../../user/models/user-model";
 
 
 export interface RatingModel {
-    idRating: number;
+    idRating?: number;
     uuid: string;
     usuarioRemitente: UsuarioModel;
     usuarioDestinatario: UsuarioModel;

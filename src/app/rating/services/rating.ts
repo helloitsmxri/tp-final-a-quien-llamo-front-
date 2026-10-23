@@ -20,7 +20,7 @@ export class RatingService {
     }
 
     // READ: obtener una calificación por UUID
-    getByUuid(uuid: string): Observable<RatingModel> {
+    getByUuid(uuid: string|null): Observable<RatingModel> {
         return this.http.get<RatingModel>(
         `${this.API_URL}/${uuid}`
         );
