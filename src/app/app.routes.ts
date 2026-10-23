@@ -4,6 +4,7 @@ import { Register } from './user/pages/register/register';
 import { Login } from './user/pages/login/login';
 import { DetalleMensaje } from './mensaje/pages/detalle-mensaje/detalle-mensaje';
 import { ListaChat } from './chat/pages/lista-chat/lista-chat';
+import { Planes } from './planes/planes';
 
 export const routes: Routes = [
     {path: '', component: Home},
@@ -12,5 +13,6 @@ export const routes: Routes = [
     /* Nota: estos path los hice para probar el funcionamiento, luego se borran */
     {path:'detalle-mensaje', component:DetalleMensaje},
     {path:'chats', component:ListaChat},
-    {path:'mensajes/:uuidChat', component:DetalleMensaje}
+    {path:'mensajes/:uuidChat', component:DetalleMensaje},
+    {path: 'planes', component: Planes},
 ];
