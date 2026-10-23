@@ -20,7 +20,7 @@ export class PagoService {
     }
 
   // READ: obtener un pago por UUID
-    getByUuid(uuid: string): Observable<PagoModel> {
+    getByUuid(uuid: string|null): Observable<PagoModel> {
     return this.http.get<PagoModel>(
         `${this.API_URL}/${uuid}`
         );

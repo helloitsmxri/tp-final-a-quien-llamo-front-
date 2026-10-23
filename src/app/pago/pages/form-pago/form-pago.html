@@ -1,0 +1,242 @@
+
+<div class="register-container">
+    <div class="register-card">
+        <h2>Registrar pago</h2>
+        <p>Completá los datos para realizar el pago</p>
+
+        <form class="formulario" [formGroup]="formulario"
+            (ngSubmit)="editando ? actualizar() : registrar()">
+
+            <!-- UUID del trabajo -->
+            <fieldset class="form-group">
+                <label for="uuidTrabajo">UUID del trabajo:</label>
+                <input type="text" id="uuidTrabajo"
+                    formControlName="uuidTrabajo"
+                    placeholder="Ingresá el UUID del trabajo">
+
+                @if (uuidTrabajo.invalid && uuidTrabajo.touched) {
+                    <div class="error">
+                        @if (uuidTrabajo.hasError('required')) {
+                            <span>El UUID del trabajo es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Método de pago -->
+            <fieldset class="form-group">
+                <label for="metodoDePago">Método de pago:</label>
+                <select id="metodoDePago" formControlName="metodoDePago">
+                    <option value="">Seleccioná un método de pago</option>
+                    <option value="EFECTIVO">Efectivo</option>
+                    <option value="TARJETA_CREDITO">Tarjeta de crédito</option>
+                    <option value="TARJETA_DEBITO">Tarjeta de débito</option>
+                    <option value="TRANSFERENCIA">Transferencia bancaria</option>
+                </select>
+
+                @if (metodoDePago.invalid && metodoDePago.touched) {
+                    <div class="error">
+                        @if (metodoDePago.hasError('required')) {
+                            <span>El método de pago es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Nombre completo -->
+            <fieldset class="form-group">
+                <label for="buyerFullName">Nombre completo:</label>
+                <input type="text" id="buyerFullName"
+                    formControlName="buyerFullName"
+                    placeholder="Ingresá tu nombre completo">
+
+                @if (buyerFullName.invalid && buyerFullName.touched) {
+                    <div class="error">
+                        @if (buyerFullName.hasError('required')) {
+                            <span>El nombre completo es obligatorio.</span>
+                        }
+                        @if (buyerFullName.hasError('minlength')) {
+                            <span>Debe tener al menos 2 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Email -->
+            <fieldset class="form-group">
+                <label for="buyerEmail">Correo electrónico:</label>
+                <input type="email" id="buyerEmail"
+                    formControlName="buyerEmail"
+                    placeholder="ejemplo@correo.com">
+
+                @if (buyerEmail.invalid && buyerEmail.touched) {
+                    <div class="error">
+                        @if (buyerEmail.hasError('required')) {
+                            <span>El correo electrónico es obligatorio.</span>
+                        }
+                        @if (buyerEmail.hasError('email')) {
+                            <span>Ingresá un correo electrónico válido.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- DNI -->
+            <fieldset class="form-group">
+                <label for="buyerDNI">DNI:</label>
+                <input type="text" id="buyerDNI"
+                    formControlName="buyerDNI"
+                    placeholder="Ingresá tu DNI">
+
+                @if (buyerDNI.invalid && buyerDNI.touched) {
+                    <div class="error">
+                        @if (buyerDNI.hasError('required')) {
+                            <span>El DNI es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Teléfono -->
+            <fieldset class="form-group">
+                <label for="buyerPhone">Teléfono:</label>
+                <input type="tel" id="buyerPhone"
+                    formControlName="buyerPhone"
+                    placeholder="Ingresá tu teléfono">
+
+                @if (buyerPhone.invalid && buyerPhone.touched) {
+                    <div class="error">
+                        @if (buyerPhone.hasError('required')) {
+                            <span>El teléfono es obligatorio.</span>
+                        }
+                        @if (buyerPhone.hasError('maxlength')) {
+                            <span>El teléfono no debe superar los 10 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Monto -->
+            <fieldset class="form-group">
+                <label for="monto">Monto:</label>
+                <input type="number" id="monto"
+                    formControlName="monto"
+                    placeholder="Ingresá el monto"
+                    min="0.01" step="0.01">
+
+                @if (monto.invalid && monto.touched) {
+                    <div class="error">
+                        @if (monto.hasError('required')) {
+                            <span>El monto es obligatorio.</span>
+                        }
+                        @if (monto.hasError('min')) {
+                            <span>El monto debe ser mayor que cero.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Moneda -->
+            <fieldset class="form-group">
+                <label for="currency">Moneda:</label>
+                <select id="currency" formControlName="currency">
+                    <option value="ARS">Peso argentino (ARS)</option>
+                    <option value="USD">Dólar estadounidense (USD)</option>
+                </select>
+
+                @if (currency.invalid && currency.touched) {
+                    <div class="error">
+                        @if (currency.hasError('required')) {
+                            <span>La moneda es obligatoria.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Número de tarjeta -->
+            <fieldset class="form-group">
+                <label for="numeroTarjeta">Número de tarjeta:</label>
+                <input type="text" id="numeroTarjeta"
+                    formControlName="numeroTarjeta"
+                    placeholder="Ingresá el número de tarjeta"
+                    inputmode="numeric"
+                    autocomplete="cc-number">
+
+                @if (numeroTarjeta.invalid && numeroTarjeta.touched) {
+                    <div class="error">
+                        @if (numeroTarjeta.hasError('required')) {
+                            <span>El número de tarjeta es obligatorio.</span>
+                        }
+                        @if (numeroTarjeta.hasError('minlength') || numeroTarjeta.hasError('maxlength')) {
+                            <span>El número debe tener entre 13 y 19 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- CVV -->
+            <fieldset class="form-group">
+                <label for="cvv">Código de seguridad (CVV):</label>
+                <input type="password" id="cvv"
+                    formControlName="cvv"
+                    placeholder="Ingresá el CVV"
+                    inputmode="numeric"
+                    autocomplete="cc-csc">
+
+                @if (cvv.invalid && cvv.touched) {
+                    <div class="error">
+                        @if (cvv.hasError('required')) {
+                            <span>El CVV es obligatorio.</span>
+                        }
+                        @if (cvv.hasError('minlength') || cvv.hasError('maxlength')) {
+                            <span>El CVV debe tener 3 o 4 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Vencimiento -->
+            <fieldset class="form-group">
+                <label for="vencimientoTarjeta">Vencimiento de la tarjeta:</label>
+                <input type="text" id="vencimientoTarjeta"
+                    formControlName="vencimientoTarjeta"
+                    placeholder="MM/AA"
+                    autocomplete="cc-exp">
+
+                @if (vencimientoTarjeta.invalid && vencimientoTarjeta.touched) {
+                    <div class="error">
+                        @if (vencimientoTarjeta.hasError('required')) {
+                            <span>El vencimiento de la tarjeta es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Franquicia -->
+            <fieldset class="form-group">
+                <label for="franquicia">Franquicia:</label>
+                <select id="franquicia" formControlName="franquicia">
+                    <option value="">Seleccioná la franquicia</option>
+                    <option value="VISA">Visa</option>
+                    <option value="MASTERCARD">Mastercard</option>
+                    <option value="AMEX">American Express</option>
+                    <option value="CABAL">Cabal</option>
+                </select>
+
+                @if (franquicia.invalid && franquicia.touched) {
+                    <div class="error">
+                        @if (franquicia.hasError('required')) {
+                            <span>La franquicia es obligatoria.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Botón -->
+            <button type="submit" [disabled]="formulario.invalid">
+                {{ editando ? 'Actualizar pago' : 'Registrar pago' }}
+            </button>
+
+        </form>
+    </div>
+</div>

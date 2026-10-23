@@ -1,1 +1,20 @@
-<p>detalle-trabajo works!</p>
+<div class="container">
+    <ul>
+        @if(trabajo){
+                <li>
+                    @if(trabajo.idTrabajo){
+                        <p>presupuesto : {{trabajo.idTrabajo}}</p>
+                    }
+                    <p>presupuesto : {{trabajo.presupuesto}}</p>
+                    <p>descripcionTrabajo : {{trabajo.descripcionTrabajo}}</p>
+                    <p>fechaEstimadaInicio : {{trabajo.fechaEstimadaInicio}}</p>
+                    <p>fechaEstimadaFin : {{trabajo.fechaEstimadaFin}}</p>
+                    <p>estadoTrabajo : {{trabajo.estadoTrabajo}}</p>
+                </li>    
+        }@else{
+            <li>
+                no se encontro el trabajo!
+            </li>
+        }
+    </ul>
+</div>
