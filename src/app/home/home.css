@@ -1,0 +1,166 @@
+*{
+    font-family: "Creato Display";
+}
+.inicio {
+  position: relative;      /* referencia para la decoración */
+  overflow: hidden;        /* evita scroll horizontal */
+  padding: 3rem 1rem 0;
+  text-align: center;
+}
+
+/* El contenido real queda por encima de la decoración */
+.inicio > *:not(.deco) {
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.resaltado       { color: #6c4df0; }
+.resaltado-clarito { color: #a58cf5; }
+
+.inicio > p {
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+/* ---------- Decoración ---------- */
+.deco {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 8px 16px rgba(108, 77, 240, 0.35));
+}
+
+.deco-megafono {
+  width: 110px;
+  left: 4%;
+  top: 140px;
+  transform: rotate(-10deg);
+}
+
+.deco-lupa {
+  width: 90px;
+  right: 6%;
+  top: 60px;
+}
+
+/* ---------- Buscador ---------- */
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 800px;
+  margin: 2.5rem auto;
+  padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+  background: #fff;
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.boton-busqueda {
+  flex-shrink: 0;
+  padding: 1rem 1.75rem;
+  border: none;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #6c4df0, #a58cf5);
+  cursor: pointer;
+}
+
+.boton-busqueda:focus-visible {
+  outline: 3px solid #cfc6f7;
+  outline-offset: 2px;
+}
+
+.campo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.icono-campo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* El pin de ubicación es más alto que ancho */
+.icono-ubicacion {
+  width: 16px;
+}
+
+.campo input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+}
+
+.divisor {
+  width: 1px;
+  height: 36px;
+  background: #cfc6f7;
+}
+
+/* ---------- Tarjetas ---------- */
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 3rem auto 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 180px;
+  padding: 2rem 1rem;
+  color: #fff;
+  background: #6c4df0;
+  border-radius: 12px;
+}
+
+.tarjeta h2 {
+  margin: 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.icono-tarjeta {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 700px) {
+  .tarjetas { grid-template-columns: 1fr; }
+
+  .buscador {
+    flex-wrap: wrap;
+    padding: 0.5rem;
+    border-radius: 24px;
+  }
+
+  .divisor { display: none; }
+
+  .deco { width: 60px; opacity: 0.6; }
+  .deco-megafono { top: 110px; left: 2%; }
+  .deco-lupa { top: 20px; right: 2%; }
+}
