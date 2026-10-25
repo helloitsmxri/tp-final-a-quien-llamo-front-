@@ -1,17 +1,22 @@
-<div class="inbox-container">
-  <h2>Mis Conversaciones</h2>
+<div class="search-box">
+  <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Inserte un nombre aquí para buscar" />
+</div>
 
-  <div class="lista-conversaciones">
-    @for (chat of chats; track chat.uuidChat) {
-      <div class="item-chat" (click)="abrirChat(chat.uuidChat)">
-        <div class="avatar">💬</div>
-        <div class="info-chat">
-          <h4>{{ chat.nombreTecnico || 'Técnico' }}</h4>
-          <p class="subtexto">Toca para abrir la conversación</p>
-        </div>
+<div class="lista-chats">
+  @for (chat of chats; track chat.uuidChat) {
+    <div 
+      class="item-chat" 
+      [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
+      (click)="seleccionarChat(chat)"
+    >
+      <div class="avatar-chat">
+        <img [src]="'https://ui-avatars.com/api/?name=' + (chat.nombreTecnico || 'Usuario')" alt="Avatar" />
       </div>
-    } @empty {
-      <p class="sin-chats">No tenés conversaciones abiertas.</p>
-    }
-  </div>
+      <div class="info-chat">
+        <span class="nombre">{{ chat.nombreTecnico || 'Contacto' }}</span>
+      </div>
+    </div>
+  } @empty {
+    <p class="sin-chats">No tenés conversaciones activas.</p>
+  }
 </div>

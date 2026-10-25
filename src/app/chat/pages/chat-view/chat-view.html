@@ -1,0 +1,24 @@
+<div class="app-layout">
+
+  <!-- Sidebar Íconos -->
+  <aside class="sidebar-nav">
+    <div class="nav-icon active">💬</div>
+  </aside>
+
+  <!-- Panel Izquierdo (Lista) -->
+  <section class="panel-conversaciones">
+    <app-lista-chat (chatSeleccionadoEvent)="alSeleccionarChat($event)"></app-lista-chat>
+  </section>
+
+  <!-- Panel Derecho (Detalle del Chat) -->
+  <main class="panel-chat-activo">
+    @if (chatSeleccionado) {
+      <app-detalle-chat [chat]="chatSeleccionado"></app-detalle-chat>
+    } @else {
+      <div class="sin-chat-seleccionado">
+        <p>Seleccione una conversación</p>
+      </div>
+    }
+  </main>
+
+</div>
