@@ -22,6 +22,17 @@ export class ListaChat implements OnInit{
   constructor(private chatService: ChatService) {}
 
   ngOnInit(): void {
+
+    /* Chats de prueba para visualizar cómo se vería realmente */
+    this.chats = [
+  { uuidChat: '1', idUsuario: 1, idTecnico: 2, nombreTecnico: 'Paulina Saffer' },
+  { uuidChat: '2', idUsuario: 1, idTecnico: 3, nombreTecnico: 'Juana Roldán' },
+  {uuidChat: '3', idUsuario: 1, idTecnico: 3, nombreTecnico: 'Lourdes Elencow'},
+  {uuidChat: '4', idUsuario: 1, idTecnico: 3, nombreTecnico: 'Gerónimo Silvestre'}
+
+];
+this.seleccionarChat(this.chats[0]);
+
     this.cargarChats();
   }
 
@@ -41,5 +52,6 @@ export class ListaChat implements OnInit{
     this.chatSeleccionado = chat;
     this.chatSeleccionadoEvent.emit(chat); // Dispara el evento hacia ChatView
   }
+  
 
 }

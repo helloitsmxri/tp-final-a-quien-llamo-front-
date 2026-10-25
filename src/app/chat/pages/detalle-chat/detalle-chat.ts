@@ -18,7 +18,7 @@ export class DetalleChat implements OnChanges {
   mensajes: MensajeModel[] = [];
   nuevoMensajeTexto: string = '';
   archivoSeleccionado: File | null = null;
-  currentUuidSender: string = 'uuid-del-usuario-logueado';
+  currentUuidSender: string = '729c5bdf-7f18-4beb-926e-1e808951c220';
 
   constructor(private mensajeService: MensajeService) {}
 
