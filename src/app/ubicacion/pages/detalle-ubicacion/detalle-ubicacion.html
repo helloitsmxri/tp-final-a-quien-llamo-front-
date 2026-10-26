@@ -1,1 +1,106 @@
-<p>detalle-ubicacion works!</p>
+<div class="container">
+
+  <h2 class="titulo-pagina">Mis Ubicaciones</h2>
+
+  <!-- Sección 1: Buscador rápido con Google Maps -->
+  <section class="card-box">
+    <h3>🔍 Buscar dirección con Google Maps</h3>
+    <div class="search-group">
+      <input 
+        type="text" 
+        [(ngModel)]="busquedaDireccion" 
+        placeholder="Ej: Av. Colón 2000, Mar del Plata"
+        (keyup.enter)="buscarEnMaps()"
+      />
+      <button class="btn-primary" (click)="buscarEnMaps()" [disabled]="cargandoMaps">
+        {{ cargandoMaps ? 'Buscando...' : 'Buscar' }}
+      </button>
+    </div>
+
+    @if (resultadoMaps) {
+      <div class="info-maps">
+        <p><strong>Encontrado:</strong> {{ resultadoMaps.direccionFormateada }}</p>
+        <p class="coords">Lat: {{ resultadoMaps.latitud }} | Lng: {{ resultadoMaps.longitud }}</p>
+      </div>
+    }
+  </section>
+
+  <!-- Sección 2: Formulario para crear/editar -->
+  <section class="card-box">
+    <h3>{{ ubicacionEditandoUuid ? 'Editar Ubicación' : 'Cargar Nueva Ubicación' }}</h3>
+
+    <form (ngSubmit)="guardarUbicacion()" class="formulario">
+      <div class="row">
+        <div class="campo">
+          <label>Calle</label>
+          <input type="text" [(ngModel)]="formData.calle" name="calle" required placeholder="Calle" />
+        </div>
+        <div class="campo corto">
+          <label>Número</label>
+          <input type="text" [(ngModel)]="formData.numero" name="numero" required placeholder="1234" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="campo">
+          <label>Ciudad</label>
+          <input type="text" [(ngModel)]="formData.ciudad" name="ciudad" required placeholder="Mar del Plata" />
+        </div>
+        <div class="campo">
+          <label>Provincia</label>
+          <input type="text" [(ngModel)]="formData.provincia" name="provincia" required placeholder="Buenos Aires" />
+        </div>
+        <div class="campo corto">
+          <label>Código Postal</label>
+          <input type="text" [(ngModel)]="formData.codigoPostal" name="codigoPostal" required placeholder="7600" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="campo corto">
+          <label>Piso (opcional)</label>
+          <input type="text" [(ngModel)]="formData.piso" name="piso" placeholder="4" />
+        </div>
+        <div class="campo corto">
+          <label>Depto (opcional)</label>
+          <input type="text" [(ngModel)]="formData.numeroPiso" name="numeroPiso" placeholder="B" />
+        </div>
+      </div>
+
+      <div class="botones-form">
+        <button type="submit" class="btn-primary">
+          {{ ubicacionEditandoUuid ? 'Guardar Cambios' : 'Crear Ubicación' }}
+        </button>
+        @if (ubicacionEditandoUuid) {
+          <button type="button" class="btn-cancelar" (click)="resetForm()">Cancelar</button>
+        }
+      </div>
+    </form>
+  </section>
+
+  <!-- Sección 3: Lista de ubicaciones guardadas -->
+  <section class="card-box">
+    <h3>Ubicaciones Guardadas</h3>
+
+    <div class="lista-ubicaciones">
+      @for (ub of ubicaciones; track ub.uuid) {
+        <div class="item-ubicacion">
+          <div class="datos-ubicacion">
+            <h4>📍 {{ ub.calle }} {{ ub.numero }}</h4>
+            <p>{{ ub.ciudad }}, {{ ub.provincia }} (CP: {{ ub.codigoPostal }})</p>
+            @if (ub.piso || ub.numeroPiso) {
+              <span class="piso-depto">Piso: {{ ub.piso || '-' }} | Depto: {{ ub.numeroPiso || '-' }}</span>
+            }
+          </div>
+          <div class="acciones">
+            <button class="btn-icon" (click)="editar(ub)" title="Editar">✏️</button>
+            <button class="btn-icon" (click)="eliminar(ub.uuid!)" title="Eliminar">🗑️</button>
+          </div>
+        </div>
+      } @empty {
+        <p class="sin-datos">No tenés ubicaciones guardadas todavía.</p>
+      }
+    </div>
+  </section>
+
+</div>
