@@ -13,6 +13,7 @@ export class AuthService{
 
     private readonly API_URL_REGISTER = 'http://localhost:8080/auth/register'
     private readonly API_URL_LOGIN = 'http://localhost:8080/auth/login'
+    private readonly API_URL_VALIDAR_TOKEN = 'http://localhost:8080/auth/login'
     usuarios: UsuarioModel[] = [];
     usuario!: UsuarioModel;
     usuarioRegister!: UsuarioModelRegister;
@@ -20,11 +21,15 @@ export class AuthService{
     constructor(private http: HttpClient) {}
 
     // CREATE: registrar un usuario
-      store(usuario: FormData): Observable<UsuarioModelRegister> {
-          return this.http.post<UsuarioModelRegister>(this.API_URL_REGISTER,usuario);
-      }
+        store(usuario: FormData): Observable<UsuarioModelRegister> {
+            return this.http.post<UsuarioModelRegister>(this.API_URL_REGISTER,usuario);
+        }
 
-      login(login:UserModelLogin): Observable<AuthResponseModel> {
-          return this.http.post<AuthResponseModel>(this.API_URL_LOGIN,login);
-      }
+        login(login:UserModelLogin): Observable<AuthResponseModel> {
+            return this.http.post<AuthResponseModel>(this.API_URL_LOGIN,login);
+        }
+
+        validarToken(){
+            
+        }
 }
