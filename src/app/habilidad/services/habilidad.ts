@@ -14,9 +14,8 @@ export class HabilidadService {
 
     constructor(private http: HttpClient) {}
 
-  // READ: obtener todas las habilidades
     getAll(): Observable<HabilidadModel[]> {
-        return this.http.get<HabilidadModel[]>(this.API_URL);
+    return this.http.get<HabilidadModel[]>(`${this.API_URL}/listar`);
     }
 
   // READ: obtener una habilidad por UUID

@@ -10,12 +10,14 @@ import { DetalleUbicacion } from './ubicacion/pages/detalle-ubicacion/detalle-ub
 import { FormPago } from './pago/pages/form-pago/form-pago';
 import { ListPago } from './pago/pages/list-pago/list-pago';
 import { DetallePago } from './pago/pages/detalle-pago/detalle-pago';
+import {FormularioRegistro} from './tecnico/pages/formulario-registro/formulario-registro';
 
 export const routes: Routes = [
     {path: '', component: Home},
     {path: 'register', component: Register},
     {path: 'iniciar-sesion', component: Login},
     {path: 'planes', component: Planes},
+    {path: 'registro-tecnico', component: FormularioRegistro},
 
     //Nota: paths para probar
     {path: 'chats', component: ChatView },

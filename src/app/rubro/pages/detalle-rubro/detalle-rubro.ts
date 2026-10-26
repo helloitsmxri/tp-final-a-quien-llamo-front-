@@ -22,6 +22,6 @@ export class DetalleRubro implements OnInit{
   }
 
   seleccionar (uuid : string){
-    this.rubroSeleccionado.emit(this.rubros.find(rubro => rubro.uuid) ?? null);
+    this.rubroSeleccionado.emit(this.rubros.find(rubro => rubro.uuidRubro===uuid) ?? null);
   }
 }
