@@ -7,7 +7,7 @@ import { HabilidadModel } from '../models/habilidad-model';
 @Injectable({ providedIn: 'root' })
 export class HabilidadService {
 
-    private readonly API_URL = 'http://localhost:8080/api/habilidades';
+    private readonly API_URL = 'http://localhost:8080/aquienllamo/habilidades';
 
     habilidades: HabilidadModel[] = [];
     habilidad!: HabilidadModel;
