@@ -1,0 +1,197 @@
+:host {
+  display: block;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  color: #372f47;
+}
+
+.container {
+  max-width: 750px;
+  margin: 20px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.titulo-pagina {
+  color: #513689;
+  margin-bottom: 0;
+}
+
+/* Tarjetas */
+.card-box {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.card-box h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #5c4391;
+  font-size: 1.1rem;
+}
+
+/* Buscador */
+.search-group {
+  display: flex;
+  gap: 10px;
+}
+
+.search-group input {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid #e2d9fc;
+  border-radius: 20px;
+  outline: none;
+  background-color: #fcfaff;
+}
+
+.search-group input:focus {
+  border-color: #8b5cf6;
+}
+
+.info-maps {
+  margin-top: 12px;
+  padding: 10px 14px;
+  background-color: #f1edfd;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.info-maps p {
+  margin: 2px 0;
+}
+
+.coords {
+  color: #7b2cbf;
+  font-size: 0.8rem;
+}
+
+/* Formulario */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.campo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.campo.corto {
+  flex: 0.5;
+  min-width: 90px;
+}
+
+.campo label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.campo input {
+  padding: 10px 12px;
+  border: 1px solid #e2d9fc;
+  border-radius: 10px;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.campo input:focus {
+  border-color: #8b5cf6;
+}
+
+/* Botones */
+.botones-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-primary {
+  background-color: #8b5cf6;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #7c3aed;
+}
+
+.btn-cancelar {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+/* Lista de Ubicaciones */
+.lista-ubicaciones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-ubicacion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  border-radius: 14px;
+  background-color: #f9f7fe;
+  border: 1px solid #f0eafc;
+}
+
+.datos-ubicacion h4 {
+  margin: 0 0 4px 0;
+  color: #513689;
+}
+
+.datos-ubicacion p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #6b7280;
+}
+
+.piso-depto {
+  font-size: 0.8rem;
+  color: #8b5cf6;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.sin-datos {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
