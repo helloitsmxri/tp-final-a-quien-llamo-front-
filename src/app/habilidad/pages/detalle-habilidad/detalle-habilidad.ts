@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges, OnChanges} from '@angular/core';
 import { HabilidadModel } from '../../models/habilidad-model';
 import { HabilidadService } from '../../services/habilidad';
 
@@ -8,7 +8,7 @@ import { HabilidadService } from '../../services/habilidad';
   styleUrl: './detalle-habilidad.css',
   templateUrl: './detalle-habilidad.html',
 })
-export class DetalleHabilidad implements OnInit{
+export class DetalleHabilidad implements OnInit, OnChanges{
   private servicio = inject(HabilidadService);
   habilidades: HabilidadModel[] = [];
   seleccionadas = new Set<string>();
