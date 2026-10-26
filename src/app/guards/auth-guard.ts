@@ -1,10 +1,11 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { catchError, map } from 'rxjs';
+import { AuthService } from '../auth/services/auth-service';
 
 export const authGuard: CanActivateFn = (route, state) => {
-/*   const router = inject(Router);
-  const authService = inject(Auth);
+  const router = inject(Router);
+  const authService = inject(AuthService);
 
   const token = localStorage.getItem('token');
 
@@ -18,6 +19,6 @@ export const authGuard: CanActivateFn = (route, state) => {
       localStorage.removeItem('token');
       return of(router.createUrlTree(['/login']));
     })
-  )  */
+  )
   return true;
 };

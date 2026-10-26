@@ -1,9 +1,7 @@
 
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { UsuarioModel } from '../models/user-model';
-import { UsuarioModelRegister } from '../../auth/models/user-model-register';
 import { UserPatchModel } from '../../user/models/user-patch-model'
 import { UserProfileDTO } from '../models/user-profile-DTO';
 
