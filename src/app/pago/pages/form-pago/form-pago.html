@@ -1,6 +1,6 @@
 <div class="register-container">
     <div class="register-card">
-        <h2>Registrar pago</h2>
+        <h2>¡Realizá tu pago!</h2>
         <p>Completá los datos para realizar el pago</p>
 
         <form class="formulario" [formGroup]="formulario"
@@ -27,10 +27,11 @@
                 <label for="metodoDePago">Método de pago:</label>
                 <select id="metodoDePago" formControlName="metodoDePago">
                     <option value="">Seleccioná un método de pago</option>
-                    <option value="EFECTIVO">Efectivo</option>
-                    <option value="TARJETA_CREDITO">Tarjeta de crédito</option>
-                    <option value="TARJETA_DEBITO">Tarjeta de débito</option>
-                    <option value="TRANSFERENCIA">Transferencia bancaria</option>
+                    <option value="EFECTIVO" selected disabled>Efectivo</option>
+                    <option value="TARJETA_CREDITO" selected disabled>Tarjeta de crédito</option>
+                    <option value="TARJETA_DEBITO" selected disabled>Tarjeta de débito</option>
+                    <option value="TRANSFERENCIA" selected disabled>Transferencia bancaria</option>
+                    <option value="MERCADO_PAGO">Mercado Pago</option>
                 </select>
 
                 @if (metodoDePago.invalid && metodoDePago.touched) {
