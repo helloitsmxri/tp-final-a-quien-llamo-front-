@@ -195,3 +195,10 @@
   color: #9ca3af;
   font-size: 0.9rem;
 }
+.mapa {
+  height: 300px;
+  width: 100%;
+  border-radius: 16px;
+  margin-top: 16px;
+  border: 1px solid #e2d9fc;
+}

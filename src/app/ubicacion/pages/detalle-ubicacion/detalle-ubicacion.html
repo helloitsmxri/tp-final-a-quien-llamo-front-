@@ -4,26 +4,28 @@
 
   <!-- Sección 1: Buscador rápido con Google Maps -->
   <section class="card-box">
-    <h3>🔍 Buscar dirección con Google Maps</h3>
-    <div class="search-group">
-      <input 
-        type="text" 
-        [(ngModel)]="busquedaDireccion" 
-        placeholder="Ej: Av. Colón 2000, Mar del Plata"
-        (keyup.enter)="buscarEnMaps()"
-      />
-      <button class="btn-primary" (click)="buscarEnMaps()" [disabled]="cargandoMaps">
-        {{ cargandoMaps ? 'Buscando...' : 'Buscar' }}
-      </button>
-    </div>
+  <h3>🔍 Buscar dirección en el mapa</h3>
+  <div class="search-group">
+    <input 
+      type="text" 
+      [(ngModel)]="busquedaDireccion" 
+      placeholder="Ej: Av. Colón 2000, Mar del Plata"
+      (keyup.enter)="buscarEnMaps()"
+    />
+    <button class="btn-primary" (click)="buscarEnMaps()" [disabled]="cargandoMaps">
+      {{ cargandoMaps ? 'Buscando...' : 'Buscar' }}
+    </button>
+  </div>
 
-    @if (resultadoMaps) {
-      <div class="info-maps">
-        <p><strong>Encontrado:</strong> {{ resultadoMaps.direccionFormateada }}</p>
-        <p class="coords">Lat: {{ resultadoMaps.latitud }} | Lng: {{ resultadoMaps.longitud }}</p>
-      </div>
-    }
-  </section>
+  @if (resultadoMaps) {
+    <div class="info-maps">
+      <p><strong>Encontrado:</strong> {{ resultadoMaps.direccionFormateada }}</p>
+    </div>
+  }
+
+  <!-- CONTENEDOR DEL MAPA (OBLIGATORIO) -->
+  <div id="mapa-container" class="mapa"></div>
+</section>
 
   <!-- Sección 2: Formulario para crear/editar -->
   <section class="card-box">
