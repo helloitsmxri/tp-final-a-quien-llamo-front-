@@ -33,9 +33,9 @@ export class UsuarioService {
     }
 
     // eliminar un usuario
-    // {uuid} -> hay q cambiar esto para q sea así y no con 'actualizar' x el momento lo dejo porq sino hay q tocar el back
+    // {uuid} -> hay q cambiar esto para q sea así y no con 'eliminar' x el momento lo dejo porq sino hay q tocar el back
     deleteUser(usuario : UsuarioModel){
-        return this.http.delete<UsuarioModel>(`${this.url}/${usuario.uuid}`);
+        return this.http.delete<UsuarioModel>(`${this.url}/eliminar/${usuario.uuid}`);
     }
 
     // ver mi perfil
