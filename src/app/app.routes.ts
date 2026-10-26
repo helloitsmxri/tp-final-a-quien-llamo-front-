@@ -7,12 +7,14 @@ import { ListaChat } from './chat/pages/lista-chat/lista-chat';
 import { Planes } from './planes/planes';
 import { ChatView } from './chat/pages/chat-view/chat-view';
 import { DetalleUbicacion } from './ubicacion/pages/detalle-ubicacion/detalle-ubicacion';
+import {FormularioRegistro} from './tecnico/pages/formulario-registro/formulario-registro';
 
 export const routes: Routes = [
     {path: '', component: Home},
     {path: 'register', component: Register},
     {path: 'iniciar-sesion', component: Login},
     {path: 'planes', component: Planes},
+    {path: 'registro-tecnico', component: FormularioRegistro},
 
     //Nota: paths para probar
     {path: 'chats', component: ChatView },

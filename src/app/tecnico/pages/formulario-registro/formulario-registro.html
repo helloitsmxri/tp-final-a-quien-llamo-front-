@@ -1,0 +1,112 @@
+<form [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+
+  <h2>Registro de técnico</h2>
+  <p>Paso {{ paso }} de {{ totalPasos }}</p>
+
+  <!-- PASO 1: CUENTA -->
+  @if (paso === 1) {
+    <section>
+      <h3>Tu cuenta</h3>
+
+      <label for="nombre">Nombre</label>
+      <input id="nombre" type="text" formControlName="nombre">
+      @if (errorMensaje('nombre'); as msg) { <small class="error">{{ msg }}</small> }
+
+      <label for="apellido">Apellido</label>
+      <input id="apellido" type="text" formControlName="apellido">
+      @if (errorMensaje('apellido'); as msg) { <small class="error">{{ msg }}</small> }
+
+      <label for="email">Email</label>
+      <input id="email" type="email" formControlName="email">
+      @if (errorMensaje('email'); as msg) { <small class="error">{{ msg }}</small> }
+
+      <label for="clave">Contraseña</label>
+      <input id="clave" type="password" formControlName="clave">
+      @if (errorMensaje('clave'); as msg) { <small class="error">{{ msg }}</small> }
+
+      <label for="repetirClave">Repetir contraseña</label>
+      <input id="repetirClave" type="password" formControlName="repetirClave">
+      @if (errorMensaje('repetirClave'); as msg) { <small class="error">{{ msg }}</small> }
+    </section>
+  }
+
+  <!-- PASO 2: DATOS PERSONALES -->
+  @if (paso === 2) {
+    <section>
+      <h3>Datos personales</h3>
+
+      <label for="dni">DNI</label>
+      <input id="dni" type="text" inputmode="numeric" maxlength="8" formControlName="dni">
+      @if (errorMensaje('dni'); as msg) { <small class="error">{{ msg }}</small> }
+
+      <label for="fechaNacimiento">Fecha de nacimiento</label>
+      <input id="fechaNacimiento" type="date" formControlName="fechaNacimiento">
+      @if (errorMensaje('fechaNacimiento'); as msg) { <small class="error">{{ msg }}</small> }
+
+      <label for="telefono">Teléfono</label>
+      <input id="telefono" type="tel" inputmode="numeric" maxlength="10"
+             placeholder="Sin guiones ni espacios" formControlName="telefono">
+      @if (errorMensaje('telefono'); as msg) { <small class="error">{{ msg }}</small> }
+
+      <label for="foto">Foto de perfil (opcional)</label>
+      <input id="foto" type="file" accept="image/*" (change)="seleccionarFoto($event)">
+
+      <label for="sobreMi">Sobre mí</label>
+      <textarea id="sobreMi" rows="3" formControlName="sobreMi"
+                placeholder="Contanos algo interesante"></textarea>
+      @if (errorMensaje('sobreMi'); as msg) { <small class="error">{{ msg }}</small> }
+    </section>
+  }
+
+  <!-- PASO 3: DATOS DE TÉCNICO -->
+  <section [hidden]="paso !== 3">
+    <h3>Tu trabajo</h3>
+
+    <label for="cuit">CUIT</label>
+    <input id="cuit" type="text" inputmode="numeric" maxlength="11"
+           placeholder="Sin guiones" formControlName="cuit">
+    @if (errorMensaje('cuit'); as msg) { <small class="error">{{ msg }}</small> }
+
+    <label for="descripcionTrabajo">Descripción de tu trabajo</label>
+    <textarea id="descripcionTrabajo" rows="3" formControlName="descripcionTrabajo"></textarea>
+    @if (errorMensaje('descripcionTrabajo'); as msg) { <small class="error">{{ msg }}</small> }
+
+    <label for="proyectos">Proyectos realizados</label>
+    <textarea id="proyectos" rows="4" formControlName="proyectos"></textarea>
+    @if (errorMensaje('proyectos'); as msg) { <small class="error">{{ msg }}</small> }
+
+    <app-detalle-rubro
+      (rubroSeleccionado)="onRubro($event)" />
+
+    <app-detalle-especialidad
+      [nombresPermitidos]="especialidadesDelRubro"
+      (especialidadesSeleccionadas)="onEspecialidades($event)" />
+
+    <app-detalle-habilidad
+      [nombresEspecialidades]="nombresEspecialidades"
+      (habilidadesSeleccionadas)="onHabilidades($event)" />
+
+    @if (errorSeleccion) { <small class="error">{{ errorSeleccion }}</small> }
+  </section>
+
+  <!-- MENSAJE DEL SERVIDOR-->
+  @if (errorServidor) {
+    <p class="error">{{ errorServidor }}</p>
+  }
+
+  <!-- BOTONES-->
+  <div class="botones">
+    @if (paso > 1) {
+      <button type="button" (click)="volver()">Volver</button>
+    }
+
+    @if (paso < totalPasos) {
+      <button type="button" (click)="siguiente()">Siguiente</button>
+    } @else {
+      <button type="submit" [disabled]="enviado">
+        {{ enviado ? 'Registrando...' : 'Registrarme' }}
+      </button>
+    }
+  </div>
+
+</form>
