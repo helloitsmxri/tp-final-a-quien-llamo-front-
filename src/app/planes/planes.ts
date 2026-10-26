@@ -27,7 +27,7 @@ export class Planes {
       imagen: '/planes/planes2.png',
       boton: 'Elegir plan dúo',
       invertido: true,
-      ruta: '/register'
+      ruta: '/registro-tecnico'
     }
   ]
   
