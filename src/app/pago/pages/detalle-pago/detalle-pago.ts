@@ -1,27 +1,64 @@
-import { Component } from '@angular/core';
+
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PagoService } from '../../services/pago';
 import { PagoModel } from '../../models/pago-model';
 
-@Component({
-  imports: [],
-  selector: 'app-detalle-pago',
-  styleUrl: './detalle-pago.css',
-  templateUrl: './detalle-pago.html',
-})
-export class DetallePago {
-    pago:PagoModel | undefined
-  constructor(public pService:PagoService, public route:ActivatedRoute){}
+type MetodoDetallePago =
+  | 'uuid'
+  | 'mercadoPagoOrderId';
 
-  ngOnInit(): void {  
-    const uuid = this.route.snapshot.paramMap.get('uuid');
-    this.detallePago(uuid)
+@Component({
+  selector: 'app-detalle-pago',
+  standalone: true,
+  imports: [],
+  templateUrl: './detalle-pago.html',
+  styleUrl: './detalle-pago.css',
+})
+export class DetallePago implements OnInit {
+
+  @Input() metodo: MetodoDetallePago = 'uuid';
+  @Input() identificador: string | null = null;
+
+  pago: PagoModel | undefined;
+  cargando = false;
+  error = false;
+
+  constructor(
+    private pService: PagoService,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    const id = this.identificador
+      ?? this.route.snapshot.paramMap.get('uuid');
+
+    if (!id) {
+      this.error = true;
+      return;
+    }
+
+    this.detallePago(id);
   }
 
-  detallePago(uuid : string|null){
-    this.pService.getByUuid(uuid).subscribe({
-      next:(data)=>(this.pago=data),
-      error:(e)=>(console.log(e))
-    })
+  detallePago(id: string): void {
+    this.cargando = true;
+    this.error = false;
+
+    const peticion = this.metodo === 'mercadoPagoOrderId'
+      ? this.pService.getByMercadoPagoOrderId(id)
+      : this.pService.getByUuid(id);
+
+    peticion.subscribe({
+      next: (data: PagoModel) => {
+        this.pago = data;
+        this.cargando = false;
+      },
+      error: (e) => {
+        console.error('Error al obtener el pago', e);
+        this.error = true;
+        this.cargando = false;
+      }
+    });
   }
 }

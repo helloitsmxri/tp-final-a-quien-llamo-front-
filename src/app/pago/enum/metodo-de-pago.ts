@@ -3,5 +3,4 @@ export enum MetodoDePago {
     Efectivo,
     Debito,
     Credito,
-
 }
