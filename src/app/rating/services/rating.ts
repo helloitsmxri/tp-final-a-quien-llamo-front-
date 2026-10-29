@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RatingModel } from '../models/rating-model';
+import { RatingResponse } from '../models/rating-response';
 
 @Injectable({ providedIn: 'root' })
 export class RatingService {
@@ -22,5 +23,9 @@ export class RatingService {
     // crear una reseña
     createRatings(rating : RatingModel){
         return this.http.post<RatingModel>(this.url, rating);
+    }
+
+    getRecibidas(uuid: string): Observable<RatingResponse[]> {
+     return this.http.get<RatingResponse[]>(`${this.url}/recibidas/${uuid}`);
     }
 }
