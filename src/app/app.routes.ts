@@ -11,6 +11,7 @@ import { FormPago } from './pago/pages/form-pago/form-pago';
 import { ListPago } from './pago/pages/list-pago/list-pago';
 import { DetallePago } from './pago/pages/detalle-pago/detalle-pago';
 import {FormularioRegistro} from './tecnico/pages/formulario-registro/formulario-registro';
+import { PerfilTecnico } from './tecnico/pages/perfil-tecnico/perfil-tecnico';
 
 export const routes: Routes = [
     {path: '', component: Home},
@@ -18,6 +19,7 @@ export const routes: Routes = [
     {path: 'iniciar-sesion', component: Login},
     {path: 'planes', component: Planes},
     {path: 'registro-tecnico', component: FormularioRegistro},
+    {path: 'perfil-tecnico/:uuid', component: PerfilTecnico},
 
     //Nota: paths para probar
     {path: 'chats', component: ChatView },
