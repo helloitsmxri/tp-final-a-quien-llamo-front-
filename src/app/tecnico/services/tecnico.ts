@@ -3,11 +3,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TecnicoModel } from '../models/tecnico-model';
+import { PerfilTecnico } from '../pages/perfil-tecnico/perfil-tecnico';
+import { PerfilTecnicoModel } from '../pages/perfil-tecnico/models/PerfilTecnicoModel';
 
 @Injectable({ providedIn: 'root' })
 export class TecnicoService {
 
-    private readonly url = 'http://localhost:8080/api/tecnicos';
+    private readonly url = 'http://localhost:8080/aquienllamo/tecnicos';
 
     tecnicos: TecnicoModel[] = [];
     tecnico!: TecnicoModel;
@@ -19,11 +21,8 @@ export class TecnicoService {
         return this.http.get<TecnicoModel[]>(this.url);
     }
 
-    // READ: obtener un técnico por UUID
-    getByUuid(uuid: string): Observable<TecnicoModel> {
-        return this.http.get<TecnicoModel>(
-        `${this.url}/${uuid}`
-        );
+    getPerfil(uuid: string): Observable<PerfilTecnicoModel> {
+     return this.http.get<PerfilTecnicoModel>(`${this.url}/${uuid}`);
     }
 
     // CREATE: crear un técnico
