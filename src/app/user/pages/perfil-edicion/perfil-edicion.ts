@@ -13,8 +13,6 @@ export class PerfilEdicion implements OnInit {
   private usuarioService = inject(UsuarioService);
 
   archivoSeleccionado : File | null = null;
-  mensajeExito : string = '';
-  mensajeError : string = '';
 
   ngOnInit() : void {
   }
@@ -48,8 +46,7 @@ export class PerfilEdicion implements OnInit {
 
   onSubmit() {
     if (this.formulario.invalid) {
-      this.mensajeError = 'Por favor, revisa los campos inválidos.';
-      return;
+      alert ('Por favor, revisá los campos.');
     }
 
     const formData = new FormData();
@@ -67,15 +64,11 @@ export class PerfilEdicion implements OnInit {
 
     // El servicio solo ejecuta la llamada HTTP pasándole el objeto listo
     this.usuarioService.updateMyProfile(formData).subscribe({
-      next: (response) => {
-        this.mensajeExito = '¡Perfil actualizado con éxito!';
-        this.mensajeError = '';
-        console.log('Actualizado:', response);
+      next: () => {
+        alert ('¡Perfil actualizado con éxito!');
       },
-      error: (err) => {
-        this.mensajeError = 'Ocurrió un error al actualizar el perfil.';
-        this.mensajeExito = '';
-        console.error(err);
+      error: () => {
+        alert ('Ocurrió un error al actualizar el perfil.');
       }
     });
   }
