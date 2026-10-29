@@ -1,10 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UsuarioService } from '../../services/user';
 
 @Component({
   selector: 'app-perfil-edicion',
-  imports: [],
+  imports: [ReactiveFormsModule],
   templateUrl: './perfil-edicion.html',
   styleUrl: './perfil-edicion.css',
 })

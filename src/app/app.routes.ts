@@ -13,6 +13,7 @@ import { DetallePago } from './pago/pages/detalle-pago/detalle-pago';
 import {FormularioRegistro} from './tecnico/pages/formulario-registro/formulario-registro';
 import { PerfilTecnico } from './tecnico/pages/perfil-tecnico/perfil-tecnico';
 import { Proyecto } from './proyecto/proyecto';
+import { PerfilEdicion } from './user/pages/perfil-edicion/perfil-edicion';
 
 export const routes: Routes = [
     {path: '', component: Home},
@@ -23,6 +24,8 @@ export const routes: Routes = [
     {path: 'perfil-tecnico/:uuid', component: PerfilTecnico},
      {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto},
 
+     //NOTA: PATHS PARA PROBAR Q EL USER FUNCA
+     {path: 'perfil-edicion', component: PerfilEdicion},
     //Nota: paths para probar
     {path: 'chats', component: ChatView },
     {path: '', redirectTo: 'chats', pathMatch: 'full' },
