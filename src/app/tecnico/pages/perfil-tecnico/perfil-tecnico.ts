@@ -4,8 +4,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TecnicoService } from '../../services/tecnico';
 import { RatingService } from '../../../rating/services/rating';
 import { PerfilTecnicoModel } from './models/PerfilTecnicoModel';
-import { RatingResponse } from '../../../rating/models/rating-response';
 import { Calendario } from '../../../components/calendario/calendario';
+import { RatingResponse } from '../../../rating/models/rating-response';
 
 interface ItemDetalle {
   titulo: string;
