@@ -1,13 +1,13 @@
-import { TrabajoModel } from "../../trabajo/models/trabajo-model";
-import { Estado } from "../enum/estado";
+import { EstadoPago } from "../enum/estado-pago";
 import { MetodoDePago } from "../enum/metodo-de-pago";
 
 
 export interface PagoModel {
-    idPago: number;
     uuid: string;
-    trabajo: TrabajoModel | null;
+    uuidTrabajo: string;
     metodoDePago: MetodoDePago;
     fechaPago: string;
-    estadoPago: Estado;
+    estadoPago: EstadoPago;
+    checkoutUrl: string | null;
+    mercadoPagoOrderId: string | null;
 }

@@ -1,0 +1,95 @@
+
+<div class="register-container">
+    <div class="register-card">
+        <h2>Registrar trabajo</h2>
+        <p>Completá los datos para registrar un trabajo</p>
+
+        <form class="formulario" [formGroup]="formulario" (ngSubmit)="manejarEnvio()">
+
+            <!-- UUID del presupuesto -->
+            <fieldset class="form-group">
+                <label for="uuidPresupuesto">Presupuesto:</label>
+                <input type="text" id="uuidPresupuesto" formControlName="uuidPresupuesto" placeholder="Ingresá el UUID del presupuesto">
+                @if (uuidPresupuesto.invalid && uuidPresupuesto.touched) {
+                    <div class="error">
+                        @if (uuidPresupuesto.hasError('required')) {
+                            <span>El presupuesto es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Descripción del trabajo -->
+            <fieldset class="form-group">
+                <label for="descripcionTrabajo">Descripción del trabajo:</label>
+                <textarea id="descripcionTrabajo" formControlName="descripcionTrabajo" placeholder="Describí el trabajo a realizar..." rows="4"></textarea>
+
+                @if (descripcionTrabajo.invalid && descripcionTrabajo.touched) {
+                    <div class="error">
+                        @if (descripcionTrabajo.hasError('required')) {
+                            <span>La descripción es obligatoria.</span>
+                        }
+                        @if (descripcionTrabajo.hasError('minlength')) {
+                            <span>La descripción debe tener al menos 10 caracteres.</span>
+                        }
+                        @if (descripcionTrabajo.hasError('maxlength')) {
+                            <span>La descripción no debe superar los 500 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Fecha estimada de inicio -->
+            <fieldset class="form-group">
+                <label for="fechaEstimadaInicio">Fecha estimada de inicio:</label>
+                <input type="date" id="fechaEstimadaInicio" formControlName="fechaEstimadaInicio">
+                @if (fechaEstimadaInicio.invalid && fechaEstimadaInicio.touched) {
+                    <div class="error">
+                        @if (fechaEstimadaInicio.hasError('required')) {
+                            <span>La fecha de inicio es obligatoria.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Fecha estimada de finalización -->
+            <fieldset class="form-group">
+                <label for="fechaEstimadaFin">Fecha estimada de finalización:</label>
+                <input type="date" id="fechaEstimadaFin" formControlName="fechaEstimadaFin">
+                @if (fechaEstimadaFin.invalid && fechaEstimadaFin.touched) {
+                    <div class="error">
+                        @if (fechaEstimadaFin.hasError('required')) {
+                            <span>La fecha de finalización es obligatoria.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Estado del trabajo -->
+            <fieldset class="form-group">
+                <label for="estadoTrabajo">Estado del trabajo:</label>
+                <select id="estadoTrabajo" formControlName="estadoTrabajo">
+                    @for (estado of estadosTrabajo; track estado) {
+                        <option [value]="estado">
+                            {{ estado }}
+                        </option>
+                    }
+                </select>
+
+                @if (estadoTrabajo.invalid && estadoTrabajo.touched) {
+                    <div class="error">
+                        @if (estadoTrabajo.hasError('required')) {
+                            <span>El estado del trabajo es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Botón de envío -->
+            <button type="submit" [disabled]="formulario.invalid">
+                Registrar trabajo
+            </button>
+
+        </form>
+    </div>
+</div>

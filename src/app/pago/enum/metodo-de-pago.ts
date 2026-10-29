@@ -1,1 +1,6 @@
-export enum MetodoDePago {}
+export enum MetodoDePago {
+    Transferencia,
+    Efectivo,
+    Debito,
+    Credito,
+}

@@ -8,6 +8,7 @@ import { TrabajoModel } from '../models/trabajo-model';
 export class TrabajoService {
 
     private readonly API_URL = 'http://localhost:8080/api/trabajos';
+    private readonly API_URL_FORM_TRABAJO = 'http://localhost:8080/aquienllamo/trabajos';
 
     trabajos: TrabajoModel[] = [];
     trabajo!: TrabajoModel;
@@ -20,16 +21,14 @@ export class TrabajoService {
     }
 
     // READ: obtener un trabajo por UUID
-    getByUuid(uuid: string): Observable<TrabajoModel> {
-    return this.http.get<TrabajoModel>(
-        `${this.API_URL}/${uuid}`
-        );
+    getByUuid(uuid: string|null): Observable<TrabajoModel> {
+    return this.http.get<TrabajoModel>(`${this.API_URL}/${uuid}`);
     }
 
     // CREATE: crear un trabajo
     store(trabajo: Partial<TrabajoModel>): Observable<TrabajoModel> {
         return this.http.post<TrabajoModel>(
-        this.API_URL,
+        this.API_URL_FORM_TRABAJO,
         trabajo
         );
     }

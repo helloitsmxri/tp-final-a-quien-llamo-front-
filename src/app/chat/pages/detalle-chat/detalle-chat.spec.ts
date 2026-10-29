@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { DetalleChat } from './detalle-chat';
 
 describe('DetalleChat', () => {
@@ -7,12 +8,13 @@ describe('DetalleChat', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DetalleChat],
-    }).compileComponents();
+      imports: [DetalleChat]
+    })
+    .compileComponents();
 
     fixture = TestBed.createComponent(DetalleChat);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

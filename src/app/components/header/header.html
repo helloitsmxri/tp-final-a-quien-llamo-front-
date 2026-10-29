@@ -36,8 +36,10 @@
  
     <!-- los dos botones van juntos en un div, así la barra tiene 3 zonas: logo | opciones | botones -->
     <div class="acciones">
-      <a class="boton iniciar-sesion" routerLink="/iniciar-sesion" (pointerenter)="cerrar()">Iniciar sesión</a>
-      <a class="boton registro" routerLink="/registrarse" (pointerenter)="cerrar()">Registrarse</a>
+      <a class="boton iniciar-sesion" [routerLink]="['iniciar-sesion']" (pointerenter)="cerrar()">Iniciar sesión</a>
+      @if (!enPlanes) {
+      <a class="boton registro" [routerLink]="['/planes']" (pointerenter)="cerrar()">Registrarse</a>
+      }
     </div>
  
   </nav>

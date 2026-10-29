@@ -1,0 +1,67 @@
+<div class="cal">
+
+    <!-- El campo que se ve en el formulario -->
+    <button type="button" class="campo" [class.vacio]="!seleccionada"
+        [disabled]="deshabilitado" (click)="alternar()">
+        <span>{{ textoCampo || 'dd/mm/aaaa' }}</span>
+    </button>
+
+    @if (abierto) {
+        <div class="calendario">
+
+            <!-- Flechas y título -->
+            <div class="cabecera">
+                <button type="button" class="flecha" aria-label="Anterior" (click)="anterior()">‹</button>
+
+                <button type="button" class="titulo" (click)="alternarAnios()">
+                    @if (vistaAnios) {
+                        {{ anios[0] }} - {{ anios[11] }}
+                    } @else {
+                        {{ meses[mes] }} del {{ anio }}
+                    }
+                </button>
+
+                <button type="button" class="flecha" aria-label="Siguiente" (click)="siguiente()">›</button>
+            </div>
+
+            @if (vistaAnios) {
+
+                <!-- Vista de años -->
+                <div class="anios">
+                    @for (a of anios; track a) {
+                        <button type="button" class="anio"
+                            [class.seleccionado]="a === anioSeleccionado"
+                            [disabled]="a > anioHoy"
+                            (click)="elegirAnio(a)">
+                            {{ a }}
+                        </button>
+                    }
+                </div>
+
+            } @else {
+
+                <!-- Letras de los días de la semana -->
+                <div class="semana">
+                    @for (letra of diasSemana; track $index) {
+                        <span>{{ letra }}</span>
+                    }
+                </div>
+
+                <!-- Días del mes -->
+                <div class="dias">
+                    @for (dia of dias; track dia.fecha) {
+                        <button type="button" class="dia"
+                            [class.otro-mes]="dia.otroMes"
+                            [class.seleccionado]="dia.fecha === seleccionada"
+                            [disabled]="dia.futuro"
+                            (click)="elegir(dia)">
+                            {{ dia.numero }}
+                        </button>
+                    }
+                </div>
+
+            }
+        </div>
+    }
+
+</div>

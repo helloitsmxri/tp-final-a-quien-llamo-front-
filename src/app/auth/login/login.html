@@ -1,0 +1,20 @@
+<div class="inicio-container">
+<div class="inicio-tarjeta">
+    <h2 class="texto-principal">Iniciar Sesión</h2>
+    <p class="registro">¿No tenés una cuenta? <a [routerLink]="['/planes']">Registrate acá</a></p>
+    <form>
+    <div class="campos">
+    <label>EMAIL</label>
+    <input type="email" placeholder="ejemplo@hotmail.com">
+    <label>CLAVE</label>
+    <input type="password" placeholder="Ingrese aquí su clave">
+    <p class="recuperar">¿No recordás tu clave o email?<br><a [routerLink]="['/recuperar']">Recuperá tu cuenta acá</a></p>
+
+</div>
+
+    <button class="iniciar-sesion">
+        Ingresar <span class="flecha">→</span>
+    </button>
+</form>
+</div>
+</div>
