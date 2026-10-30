@@ -12,4 +12,3 @@ export interface UsuarioModelRegister {
     tipoImagen: string;
     foto: string | null;
 }
-
