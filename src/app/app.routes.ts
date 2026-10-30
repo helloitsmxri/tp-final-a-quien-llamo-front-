@@ -13,9 +13,11 @@ import { DetallePago } from './pago/pages/detalle-pago/detalle-pago';
 import {FormularioRegistro} from './tecnico/pages/formulario-registro/formulario-registro';
 import { PerfilTecnico } from './tecnico/pages/perfil-tecnico/perfil-tecnico';
 import { Proyecto } from './proyecto/proyecto';
+import { authGuard } from './auth/guards/authGuard';
 
 export const routes: Routes = [
     {path: '', component: Home},
+    {path: 'home', component: Home},
     {path: 'planes', component: Planes},
     {path: 'registro-tecnico', component: FormularioRegistro},
     {path: 'perfil-tecnico/:uuid', component: PerfilTecnico},
@@ -28,7 +30,7 @@ export const routes: Routes = [
     {path:'ubicacion', component:DetalleUbicacion },
 
 
-    {path: 'pagos', component: FormPago },
+    {path: 'pagos', component: FormPago,canActivate: [authGuard]},//los guard entre ellos no se choquen porque no entran 
     {path: 'pagos/lista', component: ListPago },
     {path: 'pagos/:uuid', component: DetallePago },
     {path: 'pagos/metodo/:metodoPago', component: ListPago },

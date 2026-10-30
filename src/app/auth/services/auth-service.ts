@@ -9,7 +9,7 @@ import { AuthResponseModel } from '../models/auth-response-model';
 @Injectable({
   providedIn: 'root',
 })
-export class RegisterService {
+export class AuthService {
 
     private readonly API_URL_REGISTER = 'http://localhost:8080/auth/register'
     private readonly API_URL_LOGIN = 'http://localhost:8080/auth/login'
