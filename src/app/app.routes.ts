@@ -23,11 +23,7 @@ export const routes: Routes = [
     {path: 'registro-tecnico', component: FormularioRegistro},
     {path: 'perfil-tecnico/:uuid', component: PerfilTecnico},
     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto},
-
-     //NOTA: PATHS PARA PROBAR Q EL USER FUNCA
-     {path: 'perfil-edicion', component: PerfilEdicion},
-    //Nota: paths para probar
-    //Nota: el comentario como el de arriba no se dejan en el codigo (comentario hecho por Gero)
+    {path: 'perfil-edicion', component: PerfilEdicion},
     {path: 'chats', component: ChatView },
     {path: '', redirectTo: 'chats', pathMatch: 'full' },
     {path:'ubicacion', component:DetalleUbicacion },

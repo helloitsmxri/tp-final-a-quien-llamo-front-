@@ -1,9 +1,10 @@
 import { RatingModel } from "../../rating/models/rating-model";
+import { RatingResponse } from "../../rating/models/rating-response";
 
 export interface UserProfileDTO{
         uuid: string;
         tipoImagen: string | null;
-        foto: string | null;
+        foto: string | null; // imagen lista para <img src> (data URL) o base64 + tipoImagen
     
         nombre: string;
         apellido: string;
@@ -15,6 +16,8 @@ export interface UserProfileDTO{
         fechaRegistro ?: string;
         sobreMi: string;
 
-        calificacionesEnviadas?: RatingModel[];
-        calificacionesRecibidas?: RatingModel[];
+        promedioCalificaciones ?: number;   // lo calcula el back
+        cantidadCalificaciones ?: number;
+        calificacionesEnviadas ?: RatingResponse[];
+        calificacionesRecibidas ?: RatingResponse[];
 }

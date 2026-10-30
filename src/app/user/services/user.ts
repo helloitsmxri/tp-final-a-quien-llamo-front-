@@ -27,14 +27,14 @@ export class UsuarioService {
 
     // obtener un perfil de usuario
     // perfil/{uuid}
-    getProfile(usuario : UserProfileDTO){
-        return this.http.get<UserProfileDTO>(`${this.url}/${usuario.uuid}`);
+    getProfile(uuid : string){
+        return this.http.get<UserProfileDTO>(`${this.url}/${uuid}`);
     }
 
     // eliminar un usuario
     // {uuid} -> hay q cambiar esto para q sea así y no con 'eliminar' x el momento lo dejo porq sino hay q tocar el back
-    deleteUser(usuario : UsuarioModel){
-        return this.http.delete<UsuarioModel>(`${this.url}/eliminar/${usuario.uuid}`);
+    deleteUser(uuid : string){
+        return this.http.delete<void>(`${this.url}/eliminar/${uuid}`);
     }
 
     // ver mi perfil
