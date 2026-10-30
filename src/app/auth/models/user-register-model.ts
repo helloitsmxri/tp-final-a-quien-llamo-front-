@@ -1,4 +1,4 @@
-export interface UsuarioModelRegister {
+export interface UsuarioRegisterModel {
 
     nombre: string;
     dni: string;
@@ -12,4 +12,3 @@ export interface UsuarioModelRegister {
     tipoImagen: string;
     foto: string | null;
 }
-

@@ -16,14 +16,13 @@ import { Proyecto } from './proyecto/proyecto';
 
 export const routes: Routes = [
     {path: '', component: Home},
-    {path: 'register', component: Register},
-    {path: 'iniciar-sesion', component: Login},
     {path: 'planes', component: Planes},
     {path: 'registro-tecnico', component: FormularioRegistro},
     {path: 'perfil-tecnico/:uuid', component: PerfilTecnico},
-     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto},
+    {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto},
 
     //Nota: paths para probar
+    //Nota: el comentario como el de arriba no se dejan en el codigo (comentario hecho por Gero)
     {path: 'chats', component: ChatView },
     {path: '', redirectTo: 'chats', pathMatch: 'full' },
     {path:'ubicacion', component:DetalleUbicacion },
@@ -41,4 +40,6 @@ export const routes: Routes = [
 
 
     //RUTAS PUBLICAS
+    {path: 'register', component: Register},
+    {path: 'iniciar-sesion', component: Login},
 ];
