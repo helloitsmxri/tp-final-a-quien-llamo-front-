@@ -1,0 +1,186 @@
+:host {
+  display: block;
+  padding: 24px 20px;
+  font-family: "Creato Display", Arial, sans-serif;
+}
+
+.proyectos {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 28px;
+  background: #f1f1f1;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(90, 70, 160, 0.25);
+  box-sizing: border-box;
+}
+
+.proyectos * {
+  box-sizing: border-box;
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: #7d5ff0;
+}
+
+.lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lista li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2dcf7;
+  color: #5b3fd6;
+  font-size: 0.9rem;
+}
+
+.lista li:last-child {
+  border-bottom: none;
+}
+
+.lista strong {
+  color: #3b2a7a;
+}
+
+.acciones-item {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.vacio {
+  margin: 12px 0 0;
+  color: #666;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+
+.form-proyecto {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  background: #fff;
+  border-radius: 14px;
+}
+
+.form-group {
+  margin: 0 0 12px;
+  padding: 0;
+  border: none;
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+  color: #5b3fd6;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #c9bdf5;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+input:focus, textarea:focus {
+  outline: 2px solid #a58cff;
+}
+
+.error-campo {
+  margin-top: 4px;
+  color: #c62828;
+  font-size: 0.75rem;
+}
+
+.error-campo span {
+  display: block;
+}
+
+.acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn:disabled, .btn-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primario {
+  color: #fff;
+  background: linear-gradient(90deg, #5b3fd6, #8f74f2);
+}
+
+.btn-secundario {
+  color: #5b3fd6;
+  background: #e2dcf7;
+}
+
+.btn-link {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 0.8rem;
+  color: #5b3fd6;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-link.peligro {
+  color: #c62828;
+}
+
+.mensaje {
+  margin: 0 0 14px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+
+.mensaje.exito {
+  color: #1b5e20;
+  background: #e1f5e3;
+}
+
+.mensaje.error {
+  color: #c62828;
+  background: #fde7e7;
+}

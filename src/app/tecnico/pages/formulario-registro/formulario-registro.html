@@ -40,7 +40,7 @@
       @if (errorMensaje('dni'); as msg) { <small class="error">{{ msg }}</small> }
 
       <label for="fechaNacimiento">Fecha de nacimiento</label>
-      <input id="fechaNacimiento" type="date" formControlName="fechaNacimiento">
+      <app-calendario formControlName="fechaNacimiento"></app-calendario>
       @if (errorMensaje('fechaNacimiento'); as msg) { <small class="error">{{ msg }}</small> }
 
       <label for="telefono">Teléfono</label>

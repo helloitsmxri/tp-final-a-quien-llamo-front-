@@ -1,0 +1,124 @@
+@if (tecnico) {
+  <div class="main-container">
+
+    <div class="grid-top">
+
+      <div class="left-stack">
+
+        <section class="card profile-card">
+          <div class="profile-header">
+            <div class="avatar-wrapper">
+              @if (fotoSrc) {
+                <img [src]="fotoSrc" [alt]="tecnico.nombre" class="profile-img" />
+              } @else {
+                <div class="profile-img avatar-vacio">{{ iniciales }}</div>
+              }
+              <button type="button" class="btn-hire">¡Contrátame!</button>
+            </div>
+
+            <div class="profile-info">
+              <div class="name-rating">
+                <h2>{{ tecnico.nombre }} {{ tecnico.apellido }}</h2>
+                <span class="stars">{{ estrellas(promedio) }}</span>
+              </div>
+
+              <div class="pills-container">
+                @for (esp of tecnico.especialidades; track esp) {
+                  <span class="pill pill-primary">{{ esp }}</span>
+                }
+              </div>
+
+              <p class="bio-text">{{ tecnico.descripcionTrabajo }}</p>
+              <p class="bio-text">{{ tecnico.sobreMi }}</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card skills-card">
+          <h3>Habilidades</h3>
+          <div class="pills-container">
+            @for (hab of tecnico.habilidades; track hab) {
+              <span class="pill pill-secondary">{{ hab }}</span>
+            }
+          </div>
+        </section>
+
+      </div>
+
+      <section class="card detail-card">
+        <div class="detail-columns">
+
+          <div class="col-left">
+            <h3 class="title-box">Proyectos</h3>
+            <div class="scroll-list">
+              <ul class="styled-list">
+                @for (p of proyectosLista; track $index) {
+                  <li><strong>{{ p.titulo }}</strong>@if (p.detalle) { — {{ p.detalle }}}</li>
+                }
+              </ul>
+            </div>
+
+            <app-calendario />
+          </div>
+
+          <div class="col-right">
+            <h3>Estudios</h3>
+            <ul class="styled-list">
+              @for (e of estudios; track $index) {
+                <li>{{ e.titulo }} — <strong>{{ e.detalle }}</strong></li>
+              }
+            </ul>
+
+            <h3>Certificaciones &amp; Portfolio</h3>
+            <ul class="styled-list">
+              @for (c of certificaciones; track $index) {
+                <li>{{ c.titulo }}@if (c.detalle) { — <strong>{{ c.detalle }}</strong>}</li>
+              }
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <section class="reviews-section">
+      <h2 class="reviews-title">¿Qué es lo que dice la gente de {{ tecnico.nombre }}?</h2>
+
+      <div class="reviews-grid">
+        @for (r of resenas; track $index) {
+          <article class="card review-card clicable" role="link" tabindex="0"
+                   (click)="verPerfilUsuario(r.uuidRemitente)"
+                   (keydown.enter)="verPerfilUsuario(r.uuidRemitente)">
+            <div class="review-avatar avatar-vacio">{{ inicialesDe(r.nombreRemitente) }}</div>
+            <div class="review-content">
+              <div class="review-header">
+                <h4>{{ r.nombreRemitente }}</h4>
+                <span class="stars">{{ estrellas(r.valoracion) }}</span>
+              </div>
+              <div class="pills-container">
+                @for (c of r.caracteristicas; track c) {
+                  <span class="pill pill-soft">{{ c }}</span>
+                }
+              </div>
+              @if (r.descripcion) {
+                <p class="review-text">{{ r.descripcion }}</p>
+              }
+            </div>
+          </article>
+        } @empty {
+          <p class="sin-resenas">Todavía no tiene reseñas.</p>
+        }
+      </div>
+    </section>
+
+  </div>
+} @else if (errorCarga) {
+  <div class="loading-container">
+    <p>No se pudo cargar el perfil del técnico.</p>
+  </div>
+} @else {
+  <div class="loading-container">
+    <p>Cargando información del técnico...</p>
+  </div>
+}
