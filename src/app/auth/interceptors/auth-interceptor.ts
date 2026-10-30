@@ -5,9 +5,9 @@ import { catchError, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
-  const accessToken = localStorage.getItem('accessToken');
+  const accesToken = localStorage.getItem('accesToken');
 
-  const request = accessToken ? req.clone({setHeaders:{Authorization:`Bearer ${accessToken}`}}) : req;
+  const request = accesToken ? req.clone({setHeaders:{Authorization:`Bearer ${accesToken}`}}) : req;
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
