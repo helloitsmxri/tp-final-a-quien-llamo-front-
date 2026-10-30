@@ -10,7 +10,7 @@ import {
 } from '@angular/forms';
 import { UsuarioService } from '../../user/services/user';
 import { Calendario } from '../../components/calendario/calendario';
-import { RegisterService } from '../services/register-service';
+import { AuthService } from '../services/auth-service';
 
 // Validador del grupo: compara "clave" con "repetirClave"
 function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
@@ -29,7 +29,7 @@ function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
 export class Register {
 
   private fb = inject(FormBuilder);
-  private uService = inject(RegisterService);
+  private uService = inject(AuthService);
  
   // Paso actual del formulario (1 o 2)
   paso = 1;
@@ -140,6 +140,8 @@ export class Register {
         this.formulario.reset();
         this.foto = null;
         this.paso = 1;
+        /* localStorage.setItem("accessToken",respuesta.sobreMi)
+        localStorage.removeItem("accessToken") */
       },
       error: (e) => {
         console.error('Error al registrar usuario', e);

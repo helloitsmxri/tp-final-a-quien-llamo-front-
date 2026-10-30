@@ -13,26 +13,27 @@ import { DetallePago } from './pago/pages/detalle-pago/detalle-pago';
 import {FormularioRegistro} from './tecnico/pages/formulario-registro/formulario-registro';
 import { PerfilTecnico } from './tecnico/pages/perfil-tecnico/perfil-tecnico';
 import { Proyecto } from './proyecto/proyecto';
+import { authGuard } from './auth/guards/authGuard';
 import { PerfilEdicion } from './user/pages/perfil-edicion/perfil-edicion';
 
 export const routes: Routes = [
     {path: '', component: Home},
-    {path: 'register', component: Register},
-    {path: 'iniciar-sesion', component: Login},
+    {path: 'home', component: Home},
     {path: 'planes', component: Planes},
     {path: 'registro-tecnico', component: FormularioRegistro},
     {path: 'perfil-tecnico/:uuid', component: PerfilTecnico},
-     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto},
+    {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto},
 
      //NOTA: PATHS PARA PROBAR Q EL USER FUNCA
      {path: 'perfil-edicion', component: PerfilEdicion},
     //Nota: paths para probar
+    //Nota: el comentario como el de arriba no se dejan en el codigo (comentario hecho por Gero)
     {path: 'chats', component: ChatView },
     {path: '', redirectTo: 'chats', pathMatch: 'full' },
     {path:'ubicacion', component:DetalleUbicacion },
 
 
-    {path: 'pagos', component: FormPago },
+    {path: 'pagos', component: FormPago,canActivate: [authGuard]},//los guard entre ellos no se choquen porque no entran 
     {path: 'pagos/lista', component: ListPago },
     {path: 'pagos/:uuid', component: DetallePago },
     {path: 'pagos/metodo/:metodoPago', component: ListPago },
@@ -44,4 +45,6 @@ export const routes: Routes = [
 
 
     //RUTAS PUBLICAS
+    {path: 'register', component: Register},
+    {path: 'iniciar-sesion', component: Login},
 ];
