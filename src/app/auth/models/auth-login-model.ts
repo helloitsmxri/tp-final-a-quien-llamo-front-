@@ -1,4 +1,4 @@
 export interface AuthLoginModel {
-    usuario: string;
+    username: string;
     password: string;
 }

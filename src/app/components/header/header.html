@@ -10,21 +10,21 @@
       <img class="logo" alt="" src="/íconos/logo/logo.png">
       <span class="logo-nombre">¿A Quién Llamo?</span>
     </a>
- 
+
     <ul class="opciones">
       <li (pointerenter)="cerrar()">
         <!-- routerLinkActive le pone la clase "activo" cuando estás en esa página. exact:true es xq "/" está dentro de todas las rutas, sino siempre estaría marcado -->
         <a [routerLink]="['']" routerLinkActive="activo" [routerLinkActiveOptions]="{exact: true}">Inicio</a>
       </li>
- 
+
       <li (pointerenter)="cerrar()">
         <a [routerLink]="['/contacto']" routerLinkActive="activo">Contacto</a>
       </li>
- 
+
       <!-- ESTE es el q abre el panel. Con mouse se abre al pasar por encima, con el dedo se abre tocando -->
       <li class="menu-desplegable" (pointerenter)="entrar($event)">
         <!-- es un <button> y no un link xq no lleva a ningún lado, solo abre y cierra el panel.
-             aria-expanded le avisa al lector si está abierto o cerrado, aria-controls dice a qué panel se refiere -->
+            aria-expanded le avisa al lector si está abierto o cerrado, aria-controls dice a qué panel se refiere -->
         <button type="button"
         class="dropdown-toggle"
         [class.activo]="abierto() || enCategorias()" [attr.aria-expanded]="abierto()"
@@ -33,7 +33,7 @@
         </button>
       </li>
     </ul>
- 
+
     <!-- los dos botones van juntos en un div, así la barra tiene 3 zonas: logo | opciones | botones -->
     <div class="acciones">
       <a class="boton iniciar-sesion" [routerLink]="['iniciar-sesion']" (pointerenter)="cerrar()">Iniciar sesión</a>
@@ -41,22 +41,22 @@
       <a class="boton registro" [routerLink]="['/planes']" (pointerenter)="cerrar()">Registrarse</a>
       }
     </div>
- 
+
   </nav>
- 
+
   <!-- el panel está DENTRO del header (no del li) xq así el mouse puede bajar de la barra al panel sin q se cierre.
-       @if hace q solo exista en la página cuando abierto() es true -->
+      @if hace q solo exista en la página cuando abierto() es true -->
   @if (abierto()) {
     <div id="menu-categorias" class="mega-panel">
       <ul class="mega-grid">
- 
+
         <!-- @for repite una tarjeta por cada categoría del array de categorias del .ts.
-             track c.ruta es para q Angular identifique cada una (tiene q ser algo único) -->
+            track c.ruta es para q Angular identifique cada una (tiene q ser algo único) -->
         @for (c of categorias; track c.ruta) {
- 
+
           <!-- [style.grid-area]="c.ruta" le dice a cada tarjeta en qué lugar de la grilla va (el nombre coincide con el del CSS) -->
           <li [style.grid-area]="c.ruta">
- 
+
             <!-- toda la tarjeta es un link, así se puede hacer clic en cualquier parte del dibujo -->
             <a class="tarjeta" [routerLink]="['/categorias', c.ruta]">
               <span class="tarjeta__nombre">{{ c.nombre }}</span>
