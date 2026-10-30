@@ -1,4 +1,4 @@
-export interface UsuarioModelRegister {
+export interface UsuarioRegisterModel {
 
     nombre: string;
     dni: string;
