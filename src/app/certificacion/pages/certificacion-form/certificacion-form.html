@@ -1,0 +1,30 @@
+<!-- Sin <form> propio: en el registro vive dentro de otro formulario -->
+<div [formGroup]="formulario">
+  <h3>{{ modo === 'registro' ? 'Título o certificación (opcional)' : 'Cargar título o certificación' }}</h3>
+
+  <label for="numMatricula">Número de matrícula</label>
+  <input id="numMatricula" type="text" formControlName="numMatricula">
+  @if (errorMensaje('numMatricula'); as msg) { <small class="error">{{ msg }}</small> }
+
+  <label for="enteOtorgador">Ente otorgador</label>
+  <input id="enteOtorgador" type="text" formControlName="enteOtorgador">
+  @if (errorMensaje('enteOtorgador'); as msg) { <small class="error">{{ msg }}</small> }
+
+  <label for="fechaVencimiento">Fecha de vencimiento</label>
+  <input id="fechaVencimiento" type="date" formControlName="fechaVencimiento">
+  @if (errorMensaje('fechaVencimiento'); as msg) { <small class="error">{{ msg }}</small> }
+
+  <label for="archivo">Archivo (PDF, JPG o PNG, hasta {{ maxMb }} MB)</label>
+  <input id="archivo" #inputArchivo type="file"
+         accept="application/pdf,image/jpeg,image/png"
+         (change)="seleccionarArchivo($event)">
+  @if (errorMensaje('archivo'); as msg) { <small class="error">{{ msg }}</small> }
+
+  @if (modo === 'perfil') {
+    @if (errorServidor) { <p class="error">{{ errorServidor }}</p> }
+    @if (exito) { <p>Listo: tu título quedó pendiente de verificación.</p> }
+    <button type="button" (click)="enviar()" [disabled]="enviando">
+      {{ enviando ? 'Enviando...' : 'Cargar título' }}
+    </button>
+  }
+</div>

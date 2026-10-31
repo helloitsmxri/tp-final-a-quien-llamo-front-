@@ -1,1 +1,19 @@
-<p>detalle-certificacion works!</p>
+@if (cargando) { <p>Cargando...</p> }
+@if (error) { <p class="error">{{ error }}</p> }
+@if (!cargando && !error && certificaciones.length === 0) {
+  <p>Todavía no cargaste títulos ni certificaciones.</p>
+}
+
+<ul>
+  @for (c of certificaciones; track c.uuid) {
+    <li>
+      <strong>{{ c.enteOtorgador }}</strong> · matrícula {{ c.numMatricula }}
+      · vence {{ c.fechaVencimiento }}
+      · <span>{{ c.estadoVerificacion }}</span>
+      @if (c.estadoVerificacion === Estado.Rechazado && c.notasAdmin) {
+        <small class="error">Motivo: {{ c.notasAdmin }}</small>
+      }
+      <button type="button" (click)="abrir(c)">Ver archivo</button>
+    </li>
+  }
+</ul>
