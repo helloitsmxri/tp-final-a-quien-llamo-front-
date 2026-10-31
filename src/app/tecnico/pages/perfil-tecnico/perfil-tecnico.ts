@@ -202,28 +202,32 @@ export class PerfilTecnico implements OnInit {
 
     this.procesarProyectos();
 
-    this.resenas = [
-      {
-        uuidRemitente: 'u1',
-        nombreRemitente: 'Abril González',
-        nombreDestinatario: 'Jane Doe',
-        valoracion: 5,
-        descripcion: 'Excelente trabajo y muy buena atención.',
-        tipoFoto: null,
-        foto: null,
-        caracteristicas: ['Responsable', 'Amigable', 'Ordenada'],
-      },
-      {
-        uuidRemitente: 'u2',
-        nombreRemitente: 'Ludmila Domínguez',
-        nombreDestinatario: 'Jane Doe',
-        valoracion: 5,
-        descripcion: 'Muy conforme con el resultado.',
-        tipoFoto: null,
-        foto: null,
-        caracteristicas: ['Pulcra', 'Clara', 'Ordenada'],
-      },
-    ];
+this.resenas = [
+  {
+    uuidCalificacion: 'calificacion-1',
+    uuidRemitente: '123',
+    nombreRemitente: 'María',
+    apellidoRemitente: 'López',
+    nombreDestinatario: 'Juan',
+    valoracion: 5,
+    descripcion: 'Excelente trabajo.',
+    tipoFoto: null,
+    foto: null,
+    caracteristicas: ['Puntual', 'Responsable']
+  },
+  {
+    uuidCalificacion: 'calificacion-2',
+    uuidRemitente: 'u2',
+    nombreRemitente: 'Ludmila',
+    apellidoRemitente: 'Domínguez',
+    nombreDestinatario: 'Jane Doe',
+    valoracion: 5,
+    descripcion: 'Muy conforme con el resultado.',
+    tipoFoto: null,
+    foto: null,
+    caracteristicas: ['Pulcra', 'Clara', 'Ordenada']
+  }
+];
 
     this.promedio = this.calcularPromedio(this.resenas);
   }
