@@ -1,6 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { RatingService } from '../../services/rating';
 import { RatingModel } from '../../models/rating-model';
+import { RatingResponse } from '../../models/rating-response';
 
 @Component({
   imports: [],
@@ -8,28 +10,35 @@ import { RatingModel } from '../../models/rating-model';
   styleUrl: './detalle-rating.css',
   templateUrl: './detalle-rating.html',
 })
-export class DetalleRating implements OnInit{
 
-  detalleService = inject(RatingService);
-  ratings : RatingModel[] = [];
-  
+export class DetalleRating implements OnInit {
+
+  private detalleService = inject(RatingService);
+  private route = inject(ActivatedRoute);
+
+  ratings: RatingResponse[] = [];
+
   ngOnInit(): void {
-    this.obtenerRatingPersona;
+    const uuid = this.route.snapshot.paramMap.get('uuid');
+
+    if (uuid) {
+      this.obtenerRatingPersona(uuid);
+    }
   }
 
-  //obtener RATING por la persona 
-  obtenerRatingPersona(uuid : string){
-        this.detalleService.getRatings(uuid).subscribe({
-      next : (data) => { this.ratings = data},
-      error : () => { alert('No se pudieron obtener los ratings')}
-    })
+  // obtener las reseñas que recibió una persona (uuid del USUARIO)
+  obtenerRatingPersona(uuid: string) {
+    this.detalleService.getRecibidas(uuid).subscribe({
+      next: (data) => { this.ratings = data; },
+      error: () => { alert('No se pudieron obtener los ratings'); }
+    });
   }
 
   // crear una reseña
-  createRating(rating : RatingModel){
+  createRating(rating: RatingModel) {
     this.detalleService.createRatings(rating).subscribe({
-      next : () => {alert ('Se creó con éxito tu reseña')},
-      error : () => {alert('No se pudo crear la reseña')}
-    })
+      next: () => { alert('Se creó con éxito tu reseña'); },
+      error: () => { alert('No se pudo crear la reseña'); }
+    });
   }
 }

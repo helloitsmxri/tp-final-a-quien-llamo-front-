@@ -3,7 +3,7 @@
         <h2>Crear valoración</h2>
         <p>Completá los datos para calificar al usuario</p>
 
-        <form class="formulario" [formGroup]="formulario" (ngSubmit)="editando ? actualizar() : registrar()">
+        <form class="formulario" [formGroup]="formulario" (ngSubmit)="registrar()">
 
             <!-- UUID del remitente -->
             <fieldset class="form-group">
@@ -118,12 +118,7 @@
                     rows="3"></textarea>
 
                 <button type="button"
-                    (click)="caracteristicas.setValue(
-                        caracteristicasInput.value
-                            .split(',')
-                            .map(c => c.trim())
-                            .filter(c => c.length > 0)
-                    ); caracteristicasInput.value = ''">
+                    (click)="agregarCaracteristicas(caracteristicasInput.value); caracteristicasInput.value = ''">
                     Agregar características
                 </button>
 
@@ -149,7 +144,7 @@
 
             <!-- Botón -->
             <button type="submit" [disabled]="formulario.invalid">
-                {{ editando ? 'Actualizar valoración' : 'Registrar valoración' }}
+                Registrar valoración
             </button>
 
         </form>
