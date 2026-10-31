@@ -1,1 +1,25 @@
-<p>detalle-rating works!</p>
+<div class="container">
+    <ul>
+        @if(rating){
+            
+                <li>
+                @if(rating.idRating){
+                    <p>id : {{rating.idRating}}</p>
+                }
+                
+                    <p>usuarioRemitente : {{rating.usuarioRemitente}}</p>
+                    <p>usuarioDestinatario : {{rating.usuarioDestinatario}}</p>
+                    <p>usuarioDestinatario : {{rating.usuarioDestinatario}}</p>
+                    <p>valoracion : {{rating.valoracion}}</p>
+                    <p>tipoFoto : {{rating.tipoFoto}}</p>
+                    <p>foto : {{rating.foto}}</p>
+                    <p>caracteristicas : {{rating.caracteristicas}}</p>
+                </li>
+        }@else{
+            <li>
+                no se encontro la reseñas!
+            </li>
+        }
+    </ul>
+</div>
+

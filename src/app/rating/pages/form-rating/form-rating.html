@@ -1,0 +1,157 @@
+<div class="register-container">
+    <div class="register-card">
+        <h2>Crear valoración</h2>
+        <p>Completá los datos para calificar al usuario</p>
+
+        <form class="formulario" [formGroup]="formulario" (ngSubmit)="editando ? actualizar() : registrar()">
+
+            <!-- UUID del remitente -->
+            <fieldset class="form-group">
+                <label for="uuidRemitente">UUID del remitente:</label>
+                <input type="text" id="uuidRemitente"
+                    formControlName="uuidRemitente"
+                    placeholder="Ingresá el UUID del remitente">
+
+                @if (uuidRemitente.invalid && uuidRemitente.touched) {
+                    <div class="error">
+                        @if (uuidRemitente.hasError('required')) {
+                            <span>El UUID del remitente es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- UUID del destinatario -->
+            <fieldset class="form-group">
+                <label for="uuidDestinatario">UUID del destinatario:</label>
+                <input type="text" id="uuidDestinatario"
+                    formControlName="uuidDestinatario"
+                    placeholder="Ingresá el UUID del destinatario">
+
+                @if (uuidDestinatario.invalid && uuidDestinatario.touched) {
+                    <div class="error">
+                        @if (uuidDestinatario.hasError('required')) {
+                            <span>El UUID del destinatario es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Usuario destinatario -->
+            <fieldset class="form-group">
+                <label for="usuarioDestinatario">Usuario destinatario:</label>
+                <input type="text" id="usuarioDestinatario"
+                    formControlName="usuarioDestinatario"
+                    placeholder="Ingresá el nombre del destinatario">
+
+                @if (usuarioDestinatario.invalid && usuarioDestinatario.touched) {
+                    <div class="error">
+                        @if (usuarioDestinatario.hasError('required')) {
+                            <span>El usuario destinatario es obligatorio.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Valoración -->
+            <fieldset class="form-group">
+                <label for="valoracion">Valoración:</label>
+                <select id="valoracion" formControlName="valoracion">
+                    <option [ngValue]="1">1 - Muy mala</option>
+                    <option [ngValue]="2">2 - Mala</option>
+                    <option [ngValue]="3">3 - Regular</option>
+                    <option [ngValue]="4">4 - Buena</option>
+                    <option [ngValue]="5">5 - Excelente</option>
+                </select>
+
+                @if (valoracion.invalid && valoracion.touched) {
+                    <div class="error">
+                        @if (valoracion.hasError('required')) {
+                            <span>La valoración es obligatoria.</span>
+                        }
+                        @if (valoracion.hasError('min') || valoracion.hasError('max')) {
+                            <span>La valoración debe estar entre 1 y 5.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Descripción -->
+            <fieldset class="form-group">
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" formControlName="descripcion"
+                    placeholder="Escribí tu opinión sobre el usuario..."
+                    rows="4"></textarea>
+
+                @if (descripcion.invalid && descripcion.touched) {
+                    <div class="error">
+                        @if (descripcion.hasError('maxlength')) {
+                            <span>La descripción no debe superar los 500 caracteres.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Tipo de foto -->
+            <fieldset class="form-group">
+                <label for="tipoFoto">Tipo de foto:</label>
+                <input type="text" id="tipoFoto"
+                    formControlName="tipoFoto"
+                    placeholder="Ingresá el tipo de foto">
+
+            </fieldset>
+
+            <!-- Foto -->
+            <fieldset class="form-group">
+                <label for="foto">Foto:</label>
+                <input type="text" id="foto"
+                    formControlName="foto"
+                    placeholder="Ingresá la URL o ruta de la foto">
+            </fieldset>
+
+            <!-- Características -->
+            <fieldset class="form-group">
+                <label for="caracteristicas">Características:</label>
+                <textarea id="caracteristicas"
+                    #caracteristicasInput
+                    placeholder="Ingresá características separadas por comas..."
+                    rows="3"></textarea>
+
+                <button type="button"
+                    (click)="caracteristicas.setValue(
+                        caracteristicasInput.value
+                            .split(',')
+                            .map(c => c.trim())
+                            .filter(c => c.length > 0)
+                    ); caracteristicasInput.value = ''">
+                    Agregar características
+                </button>
+
+                @if (caracteristicas.value.length > 0) {
+                    <div class="caracteristicas-lista">
+                        <p>Características agregadas:</p>
+                        <ul>
+                            @for (caracteristica of caracteristicas.value; track $index) {
+                                <li>{{ caracteristica }}</li>
+                            }
+                        </ul>
+                    </div>
+                }
+
+                @if (caracteristicas.invalid && caracteristicas.touched) {
+                    <div class="error">
+                        @if (caracteristicas.hasError('required')) {
+                            <span>Agregá al menos una característica.</span>
+                        }
+                    </div>
+                }
+            </fieldset>
+
+            <!-- Botón -->
+            <button type="submit" [disabled]="formulario.invalid">
+                {{ editando ? 'Actualizar valoración' : 'Registrar valoración' }}
+            </button>
+
+        </form>
+    </div>
+</div>
