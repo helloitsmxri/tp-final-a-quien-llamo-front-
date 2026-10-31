@@ -1,0 +1,72 @@
+<section class="proyectos">
+  <div class="cabecera">
+    <h2>Proyectos</h2>
+    @if (editable && !mostrarForm && !cargando) {
+      <button type="button" class="btn btn-primario" (click)="nuevo()">+ Agregar proyecto</button>
+    }
+  </div>
+
+  @if (exito) {
+    <p class="mensaje exito" role="status">{{ exito }}</p>
+  }
+  @if (error) {
+    <p class="mensaje error" role="alert">{{ error }}</p>
+  }
+
+  @if (editable && mostrarForm) {
+    <form class="form-proyecto" [formGroup]="formulario" (ngSubmit)="guardar()">
+      <h3>{{ indiceEditando === null ? 'Nuevo proyecto' : 'Modificar proyecto' }}</h3>
+
+      <fieldset class="form-group">
+        <label for="titulo">Título:</label>
+        <input id="titulo" type="text" formControlName="titulo" placeholder="Ej: Casa Aurelia" />
+        @if (titulo.invalid && titulo.touched) {
+          <div class="error-campo"><span>{{ errorTitulo() }}</span></div>
+        }
+      </fieldset>
+
+      <fieldset class="form-group">
+        <label for="detalle">Detalle (opcional):</label>
+        <textarea id="detalle" rows="3" formControlName="detalle"
+                  placeholder="Ej: Buenos Aires, Argentina (Interior + landscaping)"></textarea>
+        @if (detalle.invalid && detalle.touched) {
+          <div class="error-campo"><span>{{ errorDetalle() }}</span></div>
+        }
+      </fieldset>
+
+      <div class="acciones">
+        <button type="submit" class="btn btn-primario" [disabled]="formulario.invalid || guardando">
+          {{ guardando ? 'Guardando...' : 'Guardar' }}
+        </button>
+        <button type="button" class="btn btn-secundario" (click)="cancelar()" [disabled]="guardando">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  }
+
+  @if (cargando) {
+    <p class="vacio">Cargando proyectos...</p>
+  } @else {
+    <ul class="lista">
+      @for (p of proyectos; track $index) {
+        <li>
+          <div class="texto">
+            <strong>{{ p.titulo }}</strong>
+            @if (p.detalle) { <span> — {{ p.detalle }}</span> }
+          </div>
+          @if (editable) {
+            <div class="acciones-item">
+              <button type="button" class="btn-link" (click)="editar($index)" [disabled]="guardando">Editar</button>
+              <button type="button" class="btn-link peligro" (click)="eliminar($index)" [disabled]="guardando">Eliminar</button>
+            </div>
+          }
+        </li>
+      } @empty {
+        @if (!error) {
+          <p class="vacio">Todavía no cargaste proyectos.</p>
+        }
+      }
+    </ul>
+  }
+</section>

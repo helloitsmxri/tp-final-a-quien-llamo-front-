@@ -1,51 +1,31 @@
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RatingModel } from '../models/rating-model';
+import { RatingResponse } from '../models/rating-response';
 
 @Injectable({ providedIn: 'root' })
 export class RatingService {
+    private http = inject(HttpClient);
+    private url = "http://localhost:8080/aquienllamo/ratings";
 
-    private readonly API_URL = 'http://localhost:8080/api/ratings';
-
-    ratings: RatingModel[] = [];
-    rating!: RatingModel;
-
-    constructor(private http: HttpClient) {}
-
-    // READ: obtener todas las calificaciones
-    getAll(): Observable<RatingModel[]> {
-        return this.http.get<RatingModel[]>(this.API_URL);
+    // obtener las reseñas recibidas
+    getRatings(uuid : string){
+        return this.http.get<RatingModel[]>(`${this.url}/recibidas/${uuid}`)
     }
 
-    // READ: obtener una calificación por UUID
-    getByUuid(uuid: string|null): Observable<RatingModel> {
-        return this.http.get<RatingModel>(
-        `${this.API_URL}/${uuid}`
-        );
+    // obtener las reseñas enviadas
+    getSentRatings(uuid : string){
+        return this.http.get<RatingModel[]>(`${this.url}/remitidas/${uuid}}`)
     }
 
-    // CREATE: crear una calificación
-    store(rating: Partial<RatingModel>): Observable<RatingModel> {
-        return this.http.post<RatingModel>(
-        this.API_URL,
-        rating
-        );
+    // crear una reseña
+    createRatings(rating : RatingModel){
+        return this.http.post<RatingModel>(this.url, rating);
     }
 
-    // UPDATE: actualizar una calificación
-    update(uuid: string,rating: Partial<RatingModel>): Observable<RatingModel> {
-        return this.http.put<RatingModel>(
-        `${this.API_URL}/${uuid}`,
-        rating
-        );
-    }
-
-    // DELETE: eliminar una calificación
-    delete(uuid: string): Observable<void> {
-    return this.http.delete<void>(
-        `${this.API_URL}/${uuid}`
-        );
+    getRecibidas(uuid: string): Observable<RatingResponse[]> {
+     return this.http.get<RatingResponse[]>(`${this.url}/recibidas/${uuid}`);
     }
 }

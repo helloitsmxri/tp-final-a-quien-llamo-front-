@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { RatingModel } from '../../models/rating-model';
+import { Component, inject, OnInit } from '@angular/core';
 import { RatingService } from '../../services/rating';
-import { ActivatedRoute } from '@angular/router';
+import { RatingModel } from '../../models/rating-model';
 
 @Component({
   imports: [],
@@ -9,19 +8,28 @@ import { ActivatedRoute } from '@angular/router';
   styleUrl: './detalle-rating.css',
   templateUrl: './detalle-rating.html',
 })
-export class DetalleRating implements OnInit {
-    rating:RatingModel | undefined
-  constructor(public rService:RatingService, public route:ActivatedRoute){}
+export class DetalleRating implements OnInit{
 
-  ngOnInit(): void {  
-    const uuid = this.route.snapshot.paramMap.get('uuid');
-    this.detalleRating(uuid)
+  detalleService = inject(RatingService);
+  ratings : RatingModel[] = [];
+  
+  ngOnInit(): void {
+    this.obtenerRatingPersona;
   }
 
-  detalleRating(uuid : string|null){
-    this.rService.getByUuid(uuid).subscribe({
-      next:(data)=>(this.rating=data),
-      error:(e)=>(console.log(e))
+  //obtener RATING por la persona 
+  obtenerRatingPersona(uuid : string){
+        this.detalleService.getRatings(uuid).subscribe({
+      next : (data) => { this.ratings = data},
+      error : () => { alert('No se pudieron obtener los ratings')}
+    })
+  }
+
+  // crear una reseña
+  createRating(rating : RatingModel){
+    this.detalleService.createRatings(rating).subscribe({
+      next : () => {alert ('Se creó con éxito tu reseña')},
+      error : () => {alert('No se pudo crear la reseña')}
     })
   }
 }

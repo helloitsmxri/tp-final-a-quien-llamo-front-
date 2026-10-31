@@ -1,1 +1,3 @@
-export enum TipoCaracteristica {}
+export enum TipoCaracteristica {
+    
+}

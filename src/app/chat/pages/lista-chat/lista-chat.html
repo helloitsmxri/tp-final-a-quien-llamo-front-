@@ -1,0 +1,22 @@
+<div class="search-box">
+  <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Inserte un nombre aquí para buscar" />
+</div>
+
+<div class="lista-chats">
+  @for (chat of chats; track chat.uuidChat) {
+    <div 
+      class="item-chat" 
+      [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
+      (click)="seleccionarChat(chat)"
+    >
+      <div class="avatar-chat">
+        <img [src]="'https://ui-avatars.com/api/?name=' + (chat.nombreTecnico || 'Usuario')" alt="Avatar" />
+      </div>
+      <div class="info-chat">
+        <span class="nombre">{{ chat.nombreTecnico || 'Contacto' }}</span>
+      </div>
+    </div>
+  } @empty {
+    <p class="sin-chats">No tenés conversaciones activas.</p>
+  }
+</div>

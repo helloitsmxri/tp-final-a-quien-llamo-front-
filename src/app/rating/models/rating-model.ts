@@ -3,13 +3,11 @@ import { UsuarioModel } from "../../user/models/user-model";
 
 
 export interface RatingModel {
-    idRating?: number;
-    uuid: string;
-    usuarioRemitente: UsuarioModel;
-    usuarioDestinatario: UsuarioModel;
-    valoracion: number;
-    descripcion: string | null;
-    tipoFoto: string | null;
+    uuidRemitente : string;
+    uuidDestinatario : string;
+    valoracion : number;
+    descripcion ?: string;
+    tipoFoto: string;
     foto: string | null;
-    caracteristicas: CaracteristicaModel[];
+    uuidCaracteristicas : string[];
 }
