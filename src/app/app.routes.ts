@@ -14,6 +14,8 @@ import {FormularioRegistro} from './tecnico/pages/formulario-registro/formulario
 import { PerfilTecnico } from './tecnico/pages/perfil-tecnico/perfil-tecnico';
 import { Proyecto } from './proyecto/proyecto';
 import { authGuard } from './auth/guards/authGuard';
+import { PerfilEdicion } from './user/pages/perfil-edicion/perfil-edicion';
+import { Perfil } from './user/pages/perfil/perfil';
 
 export const routes: Routes = [
     {path: '', component: Home},
@@ -22,9 +24,8 @@ export const routes: Routes = [
     {path: 'registro-tecnico', component: FormularioRegistro},
     {path: 'perfil-tecnico/:uuid', component: PerfilTecnico},
     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto},
-
-    //Nota: paths para probar
-    //Nota: el comentario como el de arriba no se dejan en el codigo (comentario hecho por Gero)
+    {path: 'perfil-edicion', component: PerfilEdicion},
+    {path: 'mi-perfil', component: Perfil},
     {path: 'chats', component: ChatView },
     {path: '', redirectTo: 'chats', pathMatch: 'full' },
     {path:'ubicacion', component:DetalleUbicacion },

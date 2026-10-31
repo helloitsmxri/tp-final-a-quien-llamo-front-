@@ -1,1 +1,28 @@
-<p>perfil-edicion works!</p>
+<div class="container">
+    <h2>Editar Mi Perfil</h2>
+
+    <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
+        <div class="dato">
+            <label>Nombre</label>
+            <input type="text" formControlName="nombre" class="form-control">
+        </div>
+        <div class="dato">
+            <label>Apellido</label>
+            <input type="text" formControlName="apellido" class="form-control">
+        </div>
+        <div class="dato">
+            <label>Teléfono</label>
+            <input type="text" formControlName="telefono" class="form-control">
+        </div>
+        <div class="dato">
+            <label>Sobre Mí</label>
+            <textarea formControlName="sobreMi" class="form-control"></textarea>
+        </div>
+        <div class="dato">
+            <label>Foto de Perfil</label>
+            <input type="file" (change)="onFileSelected($event)" class="form-control">
+        </div>
+
+        <button type="submit" class="btn-primario" [disabled]="formulario.invalid">Guardar Cambios</button>
+    </form>
+</div>
