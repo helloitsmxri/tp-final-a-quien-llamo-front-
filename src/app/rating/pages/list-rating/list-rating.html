@@ -1,25 +1,15 @@
 <div class="container">
     <ul>
-        @if(ratings){
-            @for (rating of ratings; track rating.uuid) {
-                @if(rating.idRating){
-                    <p>id : {{rating.idRating}}</p>
-                }
-                <li>
-                    <p>usuarioRemitente : {{rating.usuarioRemitente}}</p>
-                    <p>usuarioDestinatario : {{rating.usuarioDestinatario}}</p>
-                    <p>usuarioDestinatario : {{rating.usuarioDestinatario}}</p>
-                    <p>valoracion : {{rating.valoracion}}</p>
-                    <p>tipoFoto : {{rating.tipoFoto}}</p>
-                    <p>foto : {{rating.foto}}</p>
-                    <p>caracteristicas : {{rating.caracteristicas}}</p>
-                </li>    
-
-            }
-        }@else{
+        @for (rating of ratings; track $index) {
             <li>
-                no se encontraron reseñas!
+                <p>remitente : {{ rating.nombreRemitente }} {{ rating.apellidoRemitente }}</p>
+                <p>destinatario : {{ rating.nombreDestinatario }}</p>
+                <p>valoracion : {{ rating.valoracion }}</p>
+                <p>descripcion : {{ rating.descripcion }}</p>
+                <p>caracteristicas : {{ rating.caracteristicas.join(', ') }}</p>
             </li>
+        } @empty {
+            <li>no se encontraron reseñas!</li>
         }
     </ul>
 </div>

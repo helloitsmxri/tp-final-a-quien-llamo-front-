@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import {
   FormControl,
@@ -9,6 +8,7 @@ import {
 
 import { RatingService } from '../../services/rating';
 import { RatingModel } from '../../models/rating-model';
+import { FormRatingModel } from '../../models/form-rating-model';
 
 @Component({
   selector: 'app-form-rating',
@@ -30,22 +30,13 @@ export class FormRating {
 
   formulario: FormGroup;
 
-  uuid: string | null = null;
-  editando = false;
-
   constructor(public rService: RatingService) {
 
-    this.uuidRemitente = new FormControl('', [
-      Validators.required
-    ]);
+    this.uuidRemitente = new FormControl('', [Validators.required]);
 
-    this.uuidDestinatario = new FormControl('', [
-      Validators.required
-    ]);
+    this.uuidDestinatario = new FormControl('', [Validators.required]);
 
-    this.usuarioDestinatario = new FormControl('', [
-      Validators.required
-    ]);
+    this.usuarioDestinatario = new FormControl('', [Validators.required]);
 
     this.valoracion = new FormControl(5, [
       Validators.required,
@@ -53,17 +44,13 @@ export class FormRating {
       Validators.max(5)
     ]);
 
-    this.descripcion = new FormControl('', [
-      Validators.maxLength(500)
-    ]);
+    this.descripcion = new FormControl('', [Validators.maxLength(500)]);
 
     this.tipoFoto = new FormControl(null);
 
     this.foto = new FormControl(null);
 
-    this.caracteristicas = new FormControl([], [
-      Validators.required
-    ]);
+    this.caracteristicas = new FormControl([], [Validators.required]);
 
     this.formulario = new FormGroup({
       uuidRemitente: this.uuidRemitente,
@@ -77,15 +64,37 @@ export class FormRating {
     });
   }
 
+  // Suma las características escritas (separadas por coma) a las que ya hay
+  agregarCaracteristicas(texto: string): void {
+    const nuevas = texto
+      .split(',')
+      .map((c) => c.trim())
+      .filter((c) => c.length > 0);
+
+    this.caracteristicas.setValue([...this.caracteristicas.value, ...nuevas]);
+    this.caracteristicas.markAsTouched();
+  }
+
   registrar(): void {
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       return;
     }
 
-    const rating: Partial<RatingModel> = this.formulario.value;
+    const form: FormRatingModel = this.formulario.value;
 
-    this.rService.store(rating).subscribe({
+    // El formulario y el back no usan los mismos nombres: se convierte antes de enviar
+    const rating: RatingModel = {
+      uuidRemitente: form.uuidRemitente,
+      uuidDestinatario: form.uuidDestinatario,
+      valoracion: form.valoracion,
+      descripcion: form.descripcion ?? undefined,
+      tipoFoto: form.tipoFoto ?? '',
+      foto: form.foto,
+      uuidCaracteristicas: form.caracteristicas
+    };
+
+    this.rService.createRatings(rating).subscribe({
       next: (respuesta) => {
         console.log('Calificación registrada correctamente', respuesta);
         this.formulario.reset({
@@ -102,47 +111,7 @@ export class FormRating {
     });
   }
 
-  cargarRating(uuid: string): void {
-    this.rService.getByUuid(uuid).subscribe({
-      next: (respuesta: RatingModel) => {
-        this.uuid = uuid;
-        this.editando = true;
-        this.formulario.patchValue(respuesta);
-      },
-      error: (e) => {
-        console.error('Error al cargar la calificación', e);
-      }
-    });
-  }
-
-  actualizar(): void {
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      return;
-    }
-
-    if (!this.uuid) {
-      console.error('No se encontró el UUID de la calificación');
-      return;
-    }
-
-    const rating: Partial<RatingModel> = this.formulario.value;
-
-    this.rService.update(this.uuid, rating).subscribe({
-      next: (respuesta) => {
-        console.log('Calificación actualizada correctamente', respuesta);
-        this.formulario.reset();
-        this.uuid = null;
-        this.editando = false;
-      },
-      error: (e) => {
-        console.error('Error al actualizar la calificación', e);
-      }
-    });
-  }
-
   verSubmit(): void {
     console.log(this.formulario.value);
   }
 }
-

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { RatingModel } from '../../models/rating-model';
-import { RatingService } from '../../services/rating';
 import { ActivatedRoute } from '@angular/router';
+import { RatingResponse } from '../../models/rating-response';
+import { RatingService } from '../../services/rating';
 
 @Component({
   selector: 'app-list-rating',
@@ -9,21 +9,27 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './list-rating.html',
   styleUrl: './list-rating.css',
 })
-export class ListRating implements OnInit{
 
-    ratings:RatingModel[]
-  constructor(public rService: RatingService, public root:ActivatedRoute){
-    this.ratings=[];
-  }
+export class ListRating implements OnInit {
+
+  ratings: RatingResponse[] = [];
+
+  constructor(public rService: RatingService, public root: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.listarRatings()
+    this.listarRatings();
   }
 
-  listarRatings(){
-    this.rService.getAll().subscribe({
-      next:(data)=>(this.ratings=data),
-      error:(e)=>(console.log(e))
-    })
+  listarRatings() {
+    const uuid = this.root.snapshot.paramMap.get('uuid');
+
+    if (!uuid) {
+      return;
+    }
+
+    this.rService.getRecibidas(uuid).subscribe({
+      next: (data) => (this.ratings = data),
+      error: (e) => console.log(e)
+    });
   }
 }
