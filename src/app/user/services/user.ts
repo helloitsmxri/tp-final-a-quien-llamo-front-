@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { UsuarioModel } from '../models/user-model';
 import { UserPatchModel } from '../../user/models/user-patch-model'
 import { UserProfileDTO } from '../models/user-profile-DTO';
+import { Observable } from 'rxjs';
 
 
 @Injectable({ providedIn: 'root' })
