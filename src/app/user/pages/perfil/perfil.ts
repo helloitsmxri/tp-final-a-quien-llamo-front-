@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { UsuarioService } from '../../services/user';
 import { UserProfileDTO } from '../../models/user-profile-DTO';
 import { RatingResponse } from '../../../rating/models/rating-response';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-perfil',
@@ -13,6 +13,7 @@ import { RouterLink } from '@angular/router';
 
 export class Perfil implements OnInit{
   private usuarioService = inject(UsuarioService);
+  private route = inject(ActivatedRoute);
 
   perfil : UserProfileDTO | null = null;
 
@@ -24,6 +25,10 @@ export class Perfil implements OnInit{
 
   resenas : RatingResponse[] = [];
   cargando : boolean = true;
+
+
+  // esto es pa q funcione el get de un perfil ajeno
+  esMiPerfil = false;
 
   // esto es para el rating:
   // la otra opción sería armar un array q ya lo hcie en otros forms
@@ -42,29 +47,49 @@ export class Perfil implements OnInit{
 };
 
   ngOnInit () : void {
-    this.cargarPerfil();
+    this.route.paramMap.subscribe(() => {
+      this.cargarPerfil();
+    })
   }
 
   cargarPerfil() {
-    this.usuarioService.getMyProfile().subscribe({
-      next : (p) => {
-        this.perfil = p;
-        this.fotoSrc = this.armarFoto(p.foto, p.tipoImagen);
-        this.iniciales = this.obtenerIniciales(p.nombre, p.apellido);
+    this.cargando = true;
 
-        //obtener calificaciones recibidas
-        this.resenas = p.calificacionesRecibidas ?? [];
-        // calcular promedio
-        this.promedio = p.promedioCalificaciones ?? this.calcularPromedio();
-        // imagen según estrellita
-        this.imagenEstrellas = this.resenas.length > 0 ? this.obtenerImagenEstrellas(this.promedio) : null;
-        this.cargando = false;
-      },
+    const uuid = this.route.snapshot.paramMap.get('uuid');
+    if (uuid){
+      this.esMiPerfil = false;
+
+      this.usuarioService.getProfile(uuid).subscribe({
+        next : (perfil) => { this.procesarPerfil(perfil)},
+        error : () => {
+          this.cargando = false;
+          alert('No se pudo cargar este perfil.')
+        }
+      })
+
+      return;
+    }
+
+    this.esMiPerfil = true;
+
+    this.usuarioService.getMyProfile().subscribe({
+      next : (perfil) => {this.procesarPerfil(perfil)},
       error : () => {
         this.cargando = false;
         alert('No se pudo cargar la información del perfil.');
       }
     })
+  }
+
+  private procesarPerfil( perfil : UserProfileDTO){
+    this.perfil = perfil;
+
+    this.fotoSrc = this.armarFoto(perfil.foto, perfil.tipoImagen);
+    this.iniciales = this.obtenerIniciales(perfil.nombre, perfil.apellido);
+    this.resenas = perfil.calificacionesRecibidas ?? [];
+    this.promedio = perfil.promedioCalificaciones ?? this.calcularPromedio();
+    this.imagenEstrellas = this.resenas.length > 0 ? this.obtenerImagenEstrellas(this.promedio) : null;
+    this.cargando = false;
   }
 
   armarFoto(foto: string | null | undefined, tipo: string | null | undefined): string | null {

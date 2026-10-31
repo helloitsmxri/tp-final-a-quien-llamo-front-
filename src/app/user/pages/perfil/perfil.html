@@ -1,4 +1,3 @@
-
 @if (cargando) {
     <main class="perfil-contenedor">
         <p class="mensaje-carga" role="status" aria-live="polite">
@@ -8,12 +7,13 @@
 } @else if (perfil) {
     <main class="perfil-contenedor" aria-labelledby="titulo-perfil">
         <section class="perfil-card" aria-labelledby="titulo-perfil">
+            <!-- FOTO DE PERFIL -->
             <div class="perfil-foto">
                 @if (fotoSrc) {
                     <img [src]="fotoSrc" [alt]="'Foto de perfil de ' + perfil.nombre + ' ' + perfil.apellido">
                 } @else {
                     <span aria-hidden="true">{{ iniciales }}</span>
-                    <span class="sr-only">El usuario no tiene foto de perfil.</span>
+                    <span class="sr-only"> El usuario no tiene foto de perfil. </span>
                 }
             </div>
             <div class="perfil-informacion">
@@ -22,36 +22,33 @@
                         {{ perfil.nombre }} {{ perfil.apellido }}
                     </h1>
                     <div class="perfil-calificacion" [attr.aria-label]="resenas.length > 0 ? 'Calificación promedio: ' + promedioTexto + ' de 5' : 'Este usuario todavía no tiene calificaciones'">
-                        @if (imagenEstrellas) { 
-                          <img[src]="imagenEstrellas" alt="" aria-hidden="true">
-                            <span aria-hidden="true">{{ promedioTexto }}</span>
+                        @if (imagenEstrellas) {
+                            <img [src]="imagenEstrellas" alt="" aria-hidden="true">
+                            <span aria-hidden="true"> {{ promedioTexto }}</span>
                         } @else {
-                            <span class="sin-calificacion">
-                                Sin calificaciones
-                            </span>
+                            <span class="sin-calificacion">Sin calificaciones</span>
                         }
                     </div>
                 </div>
                 @if (perfil.sobreMi) {
-                    <p class="sobre-mi">{{ perfil.sobreMi }}</p>
+                    <p class="sobre-mi">
+                        {{ perfil.sobreMi }}
+                    </p>
                 } @else {
                     <p class="sobre-mi">
                         Este usuario todavía no agregó una descripción.
                     </p>
                 }
-                <div class="perfil-datos" aria-label="Datos de contacto">
-                    <p>
-                        <span class="sr-only">Correo electrónico: </span>
-                        {{ perfil.email }}
-                    </p>
-                    <p>
-                        <span class="sr-only">Teléfono: </span>
-                        {{ perfil.telefono }}
-                    </p>
-                </div>
-                <a routerLink="/perfil/editar" class="boton-editar" aria-label="Editar mi perfil">
-                    Editar perfil
-                </a>
+                @if (esMiPerfil) {
+                    <div class="perfil-acciones">
+                        <a
+                            routerLink="/perfil/editar"
+                            class="boton-editar"
+                            aria-label="Editar mi perfil">
+                            Editar perfil
+                        </a>
+                    </div>
+                }
             </div>
         </section>
         <section class="resenas-seccion" aria-labelledby="titulo-resenas">
@@ -76,12 +73,10 @@
                             </div>
                             <div class="resena-contenido">
                                 <div class="resena-encabezado">
-                                    <h3>
-                                        {{ r.nombreRemitente }}
-                                        {{ r.apellidoRemitente }}
-                                    </h3>
+                                    <h3> {{ r.nombreRemitente }} {{ r.apellidoRemitente }}</h3>
                                     <div class="resena-calificacion" [attr.aria-label]="'Calificación: ' + r.valoracion + ' de 5'">
-                                        <img [src]="obtenerImagenEstrellas(r.valoracion)" alt="" aria-hidden="true"class="resena-estrellas">
+
+                                        <img [src]="obtenerImagenEstrellas(r.valoracion)" alt="" aria-hidden="true" class="resena-estrellas">
                                         <span class="sr-only">
                                             {{ r.valoracion }} de 5 estrellas.
                                         </span>
@@ -93,7 +88,7 @@
                                     </p>
                                 }
                                 @if (r.caracteristicas.length > 0) {
-                                    <div class="caracteristicas"aria-label="Características destacadas">
+                                    <div class="caracteristicas" aria-label="Características destacadas">
                                         @for (c of r.caracteristicas; track c) {
                                             <span class="caracteristica">
                                                 {{ c }}
@@ -107,7 +102,9 @@
                 </div>
             } @else {
                 <div class="sin-resenas" role="status">
-                    <p>Este usuario todavía no recibió reseñas.</p>
+                    <p>
+                        Este usuario todavía no recibió reseñas.
+                    </p>
                 </div>
             }
         </section>
