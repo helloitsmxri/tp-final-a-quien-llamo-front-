@@ -1,0 +1,54 @@
+<!-- Sin <form> propio: en el registro vive dentro de otro formulario.
+     La clase "tarjeta" (fondo gris con sombra) solo se aplica cuando se usa suelto, en modo perfil. -->
+<div [formGroup]="form" class="portfolio" [class.tarjeta]="modo === 'perfil'">
+  <h3>Portfolio (opcional)</h3>
+
+  <label for="uuidEspecialidad">Especialidad</label>
+  <select id="uuidEspecialidad" formControlName="uuidEspecialidad">
+    <option value="">Elegí una</option>
+    @for (e of especialidades; track e.uuid) {
+      <option [value]="e.uuid">{{ e.nombre }}</option>
+    }
+  </select>
+  @if (errorMensaje('uuidEspecialidad'); as msg) {
+    <small class="error">{{ msg }}</small>
+  }
+
+  <label for="notasAspirante">Contanos sobre tu trabajo</label>
+  <textarea id="notasAspirante" rows="3" formControlName="notasAspirante"></textarea>
+  @if (errorMensaje('notasAspirante'); as msg) {
+    <small class="error">{{ msg }}</small>
+  }
+
+  <label for="enlaceExterno">Link a tu portfolio</label>
+  <input id="enlaceExterno" type="url" placeholder="https://..." formControlName="enlaceExterno">
+  @if (errorMensaje('enlaceExterno'); as msg) {
+    <small class="error">{{ msg }}</small>
+  }
+
+  <label for="archivoPortfolio">o un archivo (PDF, JPG o PNG, hasta {{ maxMb }} MB)</label>
+  <input id="archivoPortfolio" #inputArchivo type="file"
+         accept="application/pdf,image/jpeg,image/png"
+         (change)="seleccionarArchivo($event)">
+  @if (errorMensaje('archivo'); as msg) {
+    <small class="error">{{ msg }}</small>
+  }
+
+  @if (form.touched && form.hasError('faltaEnlaceOArchivo')) {
+    <small class="error">Agregá un link, un archivo, o los dos.</small>
+  }
+
+  @if (modo === 'perfil') {
+    @if (errorServidor) {
+      <p class="error">{{ errorServidor }}</p>
+    }
+    @if (exito) {
+      <p class="exito">Listo: tu portfolio quedó pendiente de verificación.</p>
+    }
+    <div class="botones">
+      <button type="button" (click)="enviar()" [disabled]="enviando">
+        {{ enviando ? 'Enviando...' : 'Cargar portfolio' }}
+      </button>
+    </div>
+  }
+</div>
