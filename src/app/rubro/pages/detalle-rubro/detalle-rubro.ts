@@ -8,20 +8,22 @@ import { RubroModel } from '../../models/rubro-model';
   styleUrl: './detalle-rubro.css',
   templateUrl: './detalle-rubro.html',
 })
-export class DetalleRubro implements OnInit{
+export class DetalleRubro implements OnInit {
   private servicioRubros = inject(RubroService);
-  rubros : RubroModel[] = [];
+  rubros: RubroModel[] = [];
+  seleccionados = new Set<string>();   // uuidRubro
 
-  @Output() rubroSeleccionado =  new EventEmitter<RubroModel | null>();
+  @Output() rubrosSeleccionados = new EventEmitter<RubroModel[]>();
 
   ngOnInit(): void {
     this.servicioRubros.getRubros().subscribe({
-      next : (data) => {this.rubros = data},
-      error : () => {alert("Error al obtener rubros.")}
-    })
+      next: (data) => { this.rubros = data; },
+      error: () => { alert('Error al obtener rubros.'); }
+    });
   }
 
-  seleccionar (uuid : string){
-    this.rubroSeleccionado.emit(this.rubros.find(rubro => rubro.uuidRubro===uuid) ?? null);
+  toggle(uuid: string, checked: boolean): void {
+    checked ? this.seleccionados.add(uuid) : this.seleccionados.delete(uuid);
+    this.rubrosSeleccionados.emit(this.rubros.filter((r) => this.seleccionados.has(r.uuidRubro)));
   }
 }
