@@ -96,7 +96,18 @@ export class DetalleUbicacion implements OnInit, AfterViewInit{
     if (!this.busquedaDireccion.trim()) return;
 
     this.cargandoMaps = true;
-    const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.busquedaDireccion)}`;
+
+    //Coordenadas que delimintan Mar del Plata y zonas cercanas
+    const minLon = -57.6800; // Límite Oeste
+    const maxLat = -37.9000; // Límite Norte
+    const maxLon = -57.4800; // Límite Este (costa)
+    const minLat = -38.1200; // Límite Sur
+
+    const viewbox = `${minLon},${maxLat},${maxLon},${minLat}`;
+    const query = `${encodeURIComponent(this.busquedaDireccion)}, Mar del Plata`; //agrega la ciudad a la consulta
+
+//el código de país para Argentina
+const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&countrycodes=ar&viewbox=${viewbox}&bounded=1`;
 
     fetch(url)
       .then(res => res.json())
