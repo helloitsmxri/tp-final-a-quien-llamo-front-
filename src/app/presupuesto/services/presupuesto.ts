@@ -1,51 +1,55 @@
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PresupuestoModel } from '../models/presupuesto-model';
+import { PresupuestoRequestModel } from '../models/presupuesto-request-model';
 
 @Injectable({ providedIn: 'root' })
 export class PresupuestoService {
 
-    private readonly API_URL = 'http://localhost:8080/api/presupuestos';
+    private http = inject(HttpClient);
+    private url = 'http://localhost:8080/aquienllamo/presupuestos';
 
-    presupuestos: PresupuestoModel[] = [];
-    presupuesto!: PresupuestoModel;
-
-    constructor(private http: HttpClient) {}
-
-  // READ: obtener todos los presupuestos
-    getAll(): Observable<PresupuestoModel[]> {
-        return this.http.get<PresupuestoModel[]>(this.API_URL);
+    // CREAR PRESUPUESTO
+    crearPresupuesto(uuidChat : string, presupuesto : PresupuestoRequestModel){
+        return this.http.post<PresupuestoModel>(`${this.url}/chat/${uuidChat}`, presupuesto);
     }
 
-    // READ: obtener un presupuesto por UUID
-    getByUuid(uuid: string): Observable<PresupuestoModel> {
-        return this.http.get<PresupuestoModel>(
-        `${this.API_URL}/${uuid}`
-        );
+    // MODIFICAR PRESUPUESTO
+    modificarPresupuesto(uuid : string, presupuesto : PresupuestoRequestModel){
+        return this.http.put<void>(`${this.url}/${uuid}`, presupuesto);
     }
 
-    // CREATE: crear un presupuesto
-    store(presupuesto: Partial<PresupuestoModel>): Observable<PresupuestoModel> {
-        return this.http.post<PresupuestoModel>(
-        this.API_URL,
-        presupuesto
-        );
+    // OBTENER UN PRESUPUESTO ESPECÍFICO
+    obtenerPresupuesto (uuid : string){
+        return this.http.get<PresupuestoModel>(`${this.url}/${uuid}`);
     }
 
-    // UPDATE: actualizar un presupuesto
-    update(uuid: string,presupuesto: Partial<PresupuestoModel>): Observable<PresupuestoModel> {
-        return this.http.put<PresupuestoModel>(
-        `${this.API_URL}/${uuid}`,
-        presupuesto
-        );
+    // OBTENER PRESUPUESTOS DE UN CHAT
+    obtenerPresupuestoChat(uuidCHat : string){
+        return this.http.get<PresupuestoModel[]>(`${this.url}/chat/${uuidCHat}`);
     }
 
-    // DELETE: eliminar un presupuesto
-    delete(uuid: string): Observable<void> {
-    return this.http.delete<void>(
-        `${this.API_URL}/${uuid}`
-        );
+    // OBTENER MIS PRESUPUESTOS
+    obtenerMisPresupuestos(tipo: 'CREADOS' | 'RECIBIDOS') {
+        return this.http.get<PresupuestoModel[]>(`${this.url}/mis-presupuestos`, { params: { tipo } });
+    }
+
+    // ACEPTAR PRESUPUESTO
+    aceptarPresupuesto(uuid : string){
+        return this.http.patch<void>(`${this.url}/${uuid}/aceptar`, {});
+    }
+
+    // RECHAZAR PRESUPUESTO
+    rechazarPresupuesto (uuid : string){
+        return this.http.patch<void>(`${this.url}/${uuid}/rechazar`, {});
+    }
+
+
+    // CANCELAR PRESUPUESTO
+    cancelarPresupuesto (uuid : string){
+        return this.http.patch<void>(`${this.url}/${uuid}/cancelar`, {});
     }
 }
+
