@@ -1,18 +1,19 @@
-import { Component, EventEmitter, inject, Input, Output, SimpleChanges } from '@angular/core';
-import {EspecialidadModel} from "../../models/especialidad-model";
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { EspecialidadService } from '../../services/especialidad';
+import { EspecialidadModel } from '../../models/especialidad-model';
+
 @Component({
   imports: [],
   selector: 'app-detalle-especialidad',
   styleUrl: './detalle-especialidad.css',
   templateUrl: './detalle-especialidad.html',
 })
-export class DetalleEspecialidad {
+export class DetalleEspecialidad implements OnInit, OnChanges {
   private servicio = inject(EspecialidadService);
   especialidades: EspecialidadModel[] = [];
-  seleccionadas = new Set<string>();           // uuids
+  seleccionadas = new Set<string>();// uuids
 
-  @Input() nombresPermitidos: string[] = [];   // especialidades del rubro elegido
+  @Input() nombresPermitidos: string[] = [];// especialidades de los rubros elegidos
   @Output() especialidadesSeleccionadas = new EventEmitter<EspecialidadModel[]>();
 
   ngOnInit(): void {
@@ -22,16 +23,17 @@ export class DetalleEspecialidad {
     });
   }
 
-  //si cambia el rubro, se limpia la selección
+  // si cambian los rubros, se conservan las elegidas que siguen disponibles
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['nombresPermitidos'] && !changes['nombresPermitidos'].firstChange) {
-      this.seleccionadas.clear();
+      const validas = new Set(this.disponibles.map((e) => e.uuid));
+      this.seleccionadas = new Set([...this.seleccionadas].filter((u) => validas.has(u)));
       this.emitir();
     }
   }
 
   get disponibles(): EspecialidadModel[] {
-    return this.especialidades.filter(e => this.nombresPermitidos.includes(e.nombreEspecialidad));
+    return this.especialidades.filter((e) => this.nombresPermitidos.includes(e.nombreEspecialidad));
   }
 
   toggle(uuid: string, checked: boolean): void {
@@ -41,7 +43,7 @@ export class DetalleEspecialidad {
 
   private emitir(): void {
     this.especialidadesSeleccionadas.emit(
-      this.especialidades.filter(e => this.seleccionadas.has(e.uuid))
+      this.especialidades.filter((e) => this.seleccionadas.has(e.uuid))
     );
   }
 }
