@@ -3,7 +3,7 @@
 </div>
 
 <div class="lista-chats">
-  @for (chat of chats; track chat.uuidChat) {
+  @for (chat of chatsFiltrados; track chat.uuidChat) {
     <div 
       class="item-chat" 
       [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"

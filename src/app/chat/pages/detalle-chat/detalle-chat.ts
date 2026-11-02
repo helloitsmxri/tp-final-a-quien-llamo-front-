@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatModel } from '../../models/chat-model';
 import { MensajeModel } from '../../../mensaje/models/mensaje-model';
 import { MensajeService } from '../../../mensaje/services/mensaje';
+import { AuthService } from '../../../auth/services/auth-service';
 
 @Component({
   selector: 'app-detalle-chat',
@@ -14,14 +15,22 @@ import { MensajeService } from '../../../mensaje/services/mensaje';
 export class DetalleChat implements OnChanges {
 
   @Input() chat: ChatModel | null = null;
+  @ViewChild('areaMensajes') private areaMensajesContainer!: ElementRef;
 
   mensajes: MensajeModel[] = [];
   nuevoMensajeTexto: string = '';
   archivoSeleccionado: File | null = null;
-  currentUuidSender: string = '729c5bdf-7f18-4beb-926e-1e808951c220';
+  currentUuidSender: string = '';
 
-  constructor(private mensajeService: MensajeService) {}
+  constructor(private mensajeService: MensajeService, private authService:AuthService) {}
 
+  //para utilizar el uuid de la persona que inicie sesión
+  ngOnInit():void{
+    const uuid = this.authService.getUuidUsuarioLogueado();
+    if (uuid) {
+      this.currentUuidSender = uuid;
+    }
+  }
   // Se ejecuta cada vez que cambia el @Input() chat
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['chat'] && this.chat) {
@@ -62,5 +71,14 @@ export class DetalleChat implements OnChanges {
       },
       error: (err) => console.error('Error al enviar mensaje:', err)
     });
+  }
+
+  private scrollToBottom(): void {
+    setTimeout(() => {
+      if (this.areaMensajesContainer) {
+        this.areaMensajesContainer.nativeElement.scrollTop = 
+          this.areaMensajesContainer.nativeElement.scrollHeight;
+      }
+    }, 100);
   }
 }
