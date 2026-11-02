@@ -3,6 +3,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatModel } from '../../models/chat-model';
 import { ChatService } from '../../services/chat-service';
+import { AuthService } from '../../../auth/services/auth-service';
 
 @Component({
   selector: 'app-lista-chat',
@@ -19,24 +20,25 @@ export class ListaChat implements OnInit{
   // Evento para avisarle al padre (ChatView) qué chat se seleccionó
   @Output() chatSeleccionadoEvent = new EventEmitter<ChatModel>();
 
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService, private authService:AuthService) {}
 
   ngOnInit(): void {
 
-    /* Chats de prueba para visualizar cómo se vería realmente */
-    this.chats = [
-  { uuidChat: '1', idUsuario: 1, idTecnico: 2, nombreTecnico: 'Paulina Saffer' },
-  { uuidChat: '2', idUsuario: 1, idTecnico: 3, nombreTecnico: 'Juana Roldán' },
-  {uuidChat: '3', idUsuario: 1, idTecnico: 3, nombreTecnico: 'Lourdes Elencow'},
-  {uuidChat: '4', idUsuario: 1, idTecnico: 3, nombreTecnico: 'Gerónimo Silvestre'}
+    //obtenemos el uuid del usuario logueado dinámicamente.
+    const uuid = this.authService.getUuidUsuarioLogueado();
+    
+    if (uuid) {
+      this.currentUuidUsuario = uuid;
+      this.cargarChats();
+    } else {
+      console.warn('No hay un usuario autenticado para cargar sus chats.');
+    }
 
-];
-this.seleccionarChat(this.chats[0]);
-
-    this.cargarChats();
   }
 
   cargarChats(): void {
+    if (!this.currentUuidUsuario) return; 
+
     this.chatService.getByUsuario(this.currentUuidUsuario).subscribe({
       next: (data) => {
         this.chats = data;
@@ -53,5 +55,14 @@ this.seleccionarChat(this.chats[0]);
     this.chatSeleccionadoEvent.emit(chat); // Dispara el evento hacia ChatView
   }
   
+  get chatsFiltrados(): ChatModel[] {
+  if (!this.filtroBusqueda.trim()) {
+    return this.chats;
+  }
+  return this.chats.filter(c => 
+    c.nombreTecnico?.toLowerCase().includes(this.filtroBusqueda.toLowerCase()) ||
+    c.nombreUsuario?.toLowerCase().includes(this.filtroBusqueda.toLowerCase())
+  );
+}
 
 }
