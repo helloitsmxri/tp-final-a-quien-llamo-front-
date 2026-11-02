@@ -5,12 +5,13 @@ import { EstadoPresupuesto } from "../enum/estado-presupuesto";
 
 
 export interface PresupuestoModel {
-    id_presupuesto: number;
-    uuid: string;
-    usuario: UsuarioModel;
-    chat: ChatModel;
-    tecnico: TecnicoModel;
-    precioEstimado: number;
-    descripcionPresupuesto: string;
-    estado: EstadoPresupuesto;
+    uuid : string;
+    nombreTecnico : string;
+    apellidoTecnico : string;
+    nombreUsuario : string;
+    apellidoUsuario : string;
+    precioEstimado : number;
+    descripcionPresupuesto : string;
+    fechaRealizado : string;
+    estado : EstadoPresupuesto;
 }
