@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UbicacionModel } from '../../models/ubicacion-model';
 import { GoogleMapsModel } from '../../models/GoogleMapsModel';
 import { UbicacionService } from '../../services/ubicacion-service';
 import * as L from 'leaflet';
+import { AuthService } from '../../../auth/services/auth-service';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -14,7 +15,7 @@ import * as L from 'leaflet';
 })
 export class DetalleUbicacion implements OnInit, AfterViewInit{
 
-  currentUuidUsuario: string = '729c5bdf-7f18-4beb-926e-1e808951c220';
+  currentUuidUsuario: string = ''; // Se asigna dinámicamente según el usuario autenticado en el auth
 
   // 1. Lista de ubicaciones guardadas
   ubicaciones: UbicacionModel[] = [];
@@ -24,7 +25,7 @@ export class DetalleUbicacion implements OnInit, AfterViewInit{
   resultadoMaps: GoogleMapsModel | null = null;
   cargandoMaps: boolean = false;
 
-  // 3. Formulario. tengo que verificar si se hizo reactivo
+  // 3. Formulario.
   formData: UbicacionModel = {
     calle: '',
     numero: '',
@@ -41,10 +42,19 @@ export class DetalleUbicacion implements OnInit, AfterViewInit{
   private map!: L.Map;
   private marker!: L.Marker;
 
-  constructor(private ubicacionService: UbicacionService) {}
+  constructor(private ubicacionService: UbicacionService, private authService:AuthService) {}
 
   ngOnInit(): void {
-    this.cargarUbicaciones();
+
+    // Obtenemos el UUID directamente desde el AuthService
+    const uuid = this.authService.getUuidUsuarioLogueado();
+
+    if (uuid) {
+      this.currentUuidUsuario = uuid;
+      this.cargarUbicaciones();
+    } else {
+      console.warn('No hay un usuario autenticado o el token no es válido.');
+    }
   }
 
   ngAfterViewInit(): void {
