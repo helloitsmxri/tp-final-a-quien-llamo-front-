@@ -16,22 +16,41 @@ import { Proyecto } from './proyecto/proyecto';
 import { authGuard } from './auth/guards/authGuard';
 import { PerfilEdicion } from './user/pages/perfil-edicion/perfil-edicion';
 import { Perfil } from './user/pages/perfil/perfil';
+import { MisPresupuestos } from './presupuesto/pages/mis-presupuestos/mis-presupuestos';
 
 export const routes: Routes = [
+
+    // HOME (PÚBLICO)
     {path: '', component: Home},
     {path: 'home', component: Home},
+
+    // REGISTRO (PÚBLICO)
     {path: 'planes', component: Planes},
     {path: 'registro-tecnico', component: FormularioRegistro},
-    {path: 'perfil-tecnico/:uuid', component: PerfilTecnico},
-    {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto},
-    {path: 'perfil-edicion', component: PerfilEdicion},
+    {path: 'register', component: Register},
+
+    // PERFILES (AUTHGUARD)
+    // TÉCNICO
+    {path: 'perfil-tecnico/:uuid', component: PerfilTecnico, canActivate: [authGuard]},
+    {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto, canActivate: [authGuard]},
+    
+    // USUARIO
+    {path: 'perfil-edicion', component: PerfilEdicion, canActivate: [authGuard]},
     {path: 'mi-perfil', component: Perfil, canActivate: [authGuard]},
+    
+    // CUALQUIER PERFIL SELECCIONADO
     {path: 'perfil/:uuid', component: Perfil, canActivate: [authGuard]},
+    
+    // CHATS
     {path: 'chats', component: ChatView },
     {path: '', redirectTo: 'chats', pathMatch: 'full' },
     {path:'ubicacion', component:DetalleUbicacion },
 
+    // PRESUPUESTOS
 
+    {path: 'mis-presupuestos', component: MisPresupuestos, canActivate: [authGuard]}
+
+    // PAGOS
     {path: 'pagos', component: FormPago,canActivate: [authGuard]},//los guard entre ellos no se choquen porque no entran 
     {path: 'pagos/lista', component: ListPago },
     {path: 'pagos/:uuid', component: DetallePago },
@@ -42,8 +61,7 @@ export const routes: Routes = [
     {path: 'pagos/mercado-pago/:orderId', component: DetallePago },
 
 
+    // INICIO DE SESIÓN (PÚBLICO)
 
-    //RUTAS PUBLICAS
-    {path: 'register', component: Register},
     {path: 'iniciar-sesion', component: Login},
 ];
