@@ -191,3 +191,57 @@ button:disabled {
     font-size: 0.9rem;
   }
 }
+
+.btn-agregar {
+  flex: none;
+  align-self: flex-start;
+  margin-top: 10px;
+  padding: 8px 18px;
+  font-size: 0.85rem;
+  color: #5b3fd6;
+  background: transparent;
+  border: 1px solid #5b3fd6;
+  border-radius: 50px;
+}
+
+.proyectos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.proyecto-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: #3b2a7a;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.proyecto-item span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.proyecto-item strong {
+  color: #5b3fd6;
+}
+
+.btn-quitar {
+  flex: none;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  color: #b00020;
+  background: transparent;
+  border: 1px solid #b00020;
+  border-radius: 50px;
+}
