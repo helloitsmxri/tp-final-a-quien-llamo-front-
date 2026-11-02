@@ -18,6 +18,7 @@ export class CertificacionForm {
   private servicio = inject(CertificacionService);
 
   @Input() modo: 'registro' | 'perfil' = 'perfil';
+  @Input() obligatorio = false;
   @Input() uuidTecnico = '';
   @Output() creada = new EventEmitter<void>();
   @ViewChild('inputArchivo') inputArchivo?: ElementRef<HTMLInputElement>;
