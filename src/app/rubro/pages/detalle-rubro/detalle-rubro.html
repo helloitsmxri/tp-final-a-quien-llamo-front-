@@ -1,1 +1,13 @@
-<p>detalle-rubro works!</p>
+<label for="rubro">Rubro</label>
+
+<select id="rubro" (change)="seleccionar($any($event.target).value)">
+    <option value="" selected disabled>
+        Seleccioná tu rubro
+    </option>
+
+    @for (r of rubros; track r.uuidRubro) {
+        <option [value]="r.uuidRubro">
+            {{ r.nombreRubro }}
+        </option>
+    }
+</select>

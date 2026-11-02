@@ -1,0 +1,112 @@
+
+.container {
+  min-height: 100vh;
+  padding: 35px 20px;
+  background-color: #f3f4f6;
+  box-sizing: border-box;
+}
+
+/* Listado de pagos */
+.container ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+/* Tarjeta individual */
+.container li {
+  padding: 25px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow-wrap: anywhere;
+}
+
+.container li:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+}
+
+/* Información del pago */
+.container li p {
+  margin: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.container li p:last-child {
+  border-bottom: none;
+}
+
+/* Enlace al checkout */
+.container li a {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 11px 16px;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.container li a:hover {
+  background-color: #1d4ed8;
+}
+
+.container li a:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+/* Mensajes de carga, error y listado vacío */
+.container > p {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #4b5563;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* Adaptación para celulares */
+@media (max-width: 480px) {
+  .container {
+    padding: 20px 12px;
+  }
+
+  .container ul {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .container li {
+    padding: 18px;
+  }
+
+  .container li p {
+    font-size: 14px;
+  }
+
+  .container li a {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

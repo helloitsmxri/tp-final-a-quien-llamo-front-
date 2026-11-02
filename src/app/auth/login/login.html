@@ -1,0 +1,73 @@
+<div class="inicio-container">
+
+    <div class="inicio-tarjeta">
+
+        <h2 class="texto-principal">Iniciar Sesión</h2>
+
+        <p class="registro">
+            ¿No tenés una cuenta?
+            <a [routerLink]="['/planes']">Registrate acá</a>
+        </p>
+
+        <form [formGroup]="formulario" (ngSubmit)="manejarEnvio()">
+
+            <div class="campos">
+
+                <label for="username">EMAIL</label>
+
+                <input
+                    type="email"
+                    id="username"
+                    formControlName="username"
+                    placeholder="ejemplo@hotmail.com"
+                >
+
+                @if (username.invalid && username.touched) {
+                    @if (username.hasError('required')) {
+                        <small>El email es obligatorio.</small>
+                    }
+                    @if (username.hasError('email')) {
+                        <small>Ingresá un email válido.</small>
+                    }
+                }
+
+                <label for="password">CLAVE</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    formControlName="password"
+                    placeholder="Ingrese aquí su clave"
+                >
+
+                @if (password.invalid && password.touched) {
+                    <small>La clave es obligatoria.</small>
+                }
+
+                <p class="recuperar">
+                    ¿No recordás tu clave o email?<br>
+                    <a [routerLink]="['/recuperar']">
+                        Recuperá tu cuenta acá
+                    </a>
+                </p>
+
+            </div>
+
+            @if (error) {
+                <p class="error">{{ error }}</p>
+            }
+
+            <button
+                class="iniciar-sesion"
+                type="submit"
+                [disabled]="cargando"
+            >
+                {{ cargando ? 'Ingresando...' : 'Ingresar' }}
+                <span class="flecha">→</span>
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

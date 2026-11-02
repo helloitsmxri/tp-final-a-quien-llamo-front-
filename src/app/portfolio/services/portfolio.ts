@@ -1,51 +1,27 @@
-
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { PortfolioModel } from '../models/portfolio-model';
+import { Injectable, inject } from '@angular/core';
+import { Observable, from, switchMap } from 'rxjs';
+import { archivoABase64 } from '../../utils/validadores';
+import { PortfolioDatos } from '../models/portfolio-datos';
 
 @Injectable({ providedIn: 'root' })
 export class PortfolioService {
+  private http = inject(HttpClient);
+  private readonly url = 'http://localhost:8080/aquienllamo/portafolios/usuario';
 
-    private readonly API_URL = 'http://localhost:8080/api/portfolios';
+  crear(uuidTecnico: string, datos: PortfolioDatos): Observable<unknown> {
+    return from(this.armarPayload(datos)).pipe(
+      switchMap((payload) => this.http.post(`${this.url}/${uuidTecnico}`, payload))
+    );
+  }
 
-    portfolios: PortfolioModel[] = [];
-    portfolio!: PortfolioModel;
-
-    constructor(private http: HttpClient) {}
-
-    // READ: obtener todos los portfolios
-    getAll(): Observable<PortfolioModel[]> {
-        return this.http.get<PortfolioModel[]>(this.API_URL);
-    }
-
-    // READ: obtener un portfolio por UUID
-    getByUuid(uuid: string): Observable<PortfolioModel> {
-    return this.http.get<PortfolioModel>(
-        `${this.API_URL}/${uuid}`
-        );
-    }
-
-    // CREATE: crear un portfolio
-    store(portfolio: Partial<PortfolioModel>): Observable<PortfolioModel> {
-    return this.http.post<PortfolioModel>(
-        this.API_URL,
-        portfolio
-        );
-    }
-
-    // UPDATE: actualizar un portfolio
-    update(uuid: string,portfolio: Partial<PortfolioModel>): Observable<PortfolioModel> {
-    return this.http.put<PortfolioModel>(
-        `${this.API_URL}/${uuid}`,
-        portfolio
-        );
-    }
-
-    // DELETE: eliminar un portfolio
-    delete(uuid: string): Observable<void> {
-    return this.http.delete<void>(
-        `${this.API_URL}/${uuid}`
-        );
-    }
+  private async armarPayload(d: PortfolioDatos) {
+    return {
+      uuidEspecialidad: d.uuidEspecialidad,
+      notasAspirante: d.notasAspirante,
+      enlaceExterno: d.enlaceExterno,
+      tipoArchivo: d.archivo?.type || 'enlace', // el back exige tipoArchivo no vacío
+      archivoAdjunto: d.archivo ? await archivoABase64(d.archivo) : null,
+    };
+  }
 }

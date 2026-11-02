@@ -3,11 +3,13 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TecnicoModel } from '../models/tecnico-model';
+import { PerfilTecnico } from '../pages/perfil-tecnico/perfil-tecnico';
+import { PerfilTecnicoModel } from '../pages/perfil-tecnico/models/PerfilTecnicoModel';
 
 @Injectable({ providedIn: 'root' })
 export class TecnicoService {
 
-    private readonly API_URL = 'http://localhost:8080/api/tecnicos';
+    private readonly url = 'http://localhost:8080/aquienllamo/tecnicos';
 
     tecnicos: TecnicoModel[] = [];
     tecnico!: TecnicoModel;
@@ -15,37 +17,38 @@ export class TecnicoService {
     constructor(private http: HttpClient) {}
 
     // READ: obtener todos los técnicos
-    getAll(): Observable<TecnicoModel[]> {
-        return this.http.get<TecnicoModel[]>(this.API_URL);
+    getTecnicos(): Observable<TecnicoModel[]> {
+        return this.http.get<TecnicoModel[]>(this.url);
     }
 
-    // READ: obtener un técnico por UUID
-    getByUuid(uuid: string): Observable<TecnicoModel> {
-        return this.http.get<TecnicoModel>(
-        `${this.API_URL}/${uuid}`
-        );
+    getPerfil(uuid: string): Observable<PerfilTecnicoModel> {
+     return this.http.get<PerfilTecnicoModel>(`${this.url}/${uuid}`);
     }
 
     // CREATE: crear un técnico
-    store(tecnico: Partial<TecnicoModel>): Observable<TecnicoModel> {
+    guardarTecnico(tecnico: Partial<TecnicoModel>): Observable<TecnicoModel> {
     return this.http.post<TecnicoModel>(
-        this.API_URL,
+        this.url,
         tecnico
         );
     }
 
+    crearTecnico(formData: FormData): Observable<unknown> {
+      return this.http.post<unknown>(`${this.url}/registrar-nuevo`, formData);
+    }
+
     // UPDATE: actualizar un técnico
-    update(uuid: string,tecnico: Partial<TecnicoModel>): Observable<TecnicoModel> {
+    modificarTecnico(uuid: string,tecnico: Partial<TecnicoModel>): Observable<TecnicoModel> {
         return this.http.put<TecnicoModel>(
-        `${this.API_URL}/${uuid}`,
+        `${this.url}/${uuid}`,
         tecnico
         );
     }
 
     // DELETE: eliminar un técnico
-    delete(uuid: string): Observable<void> {
+    eliminarTecnico(uuid: string): Observable<void> {
     return this.http.delete<void>(
-        `${this.API_URL}/${uuid}`
+        `${this.url}/${uuid}`
         );
     }
 }

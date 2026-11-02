@@ -94,4 +94,8 @@ export class Header {
   escape() { 
     this.cerrar(); 
   }
+
+    get enPlanes(): boolean {
+    return this.router.url.startsWith('/planes');
+  }
 }

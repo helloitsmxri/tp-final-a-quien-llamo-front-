@@ -7,16 +7,15 @@ import { HabilidadModel } from '../models/habilidad-model';
 @Injectable({ providedIn: 'root' })
 export class HabilidadService {
 
-    private readonly API_URL = 'http://localhost:8080/api/habilidades';
+    private readonly API_URL = 'http://localhost:8080/aquienllamo/habilidades';
 
     habilidades: HabilidadModel[] = [];
     habilidad!: HabilidadModel;
 
     constructor(private http: HttpClient) {}
 
-  // READ: obtener todas las habilidades
     getAll(): Observable<HabilidadModel[]> {
-        return this.http.get<HabilidadModel[]>(this.API_URL);
+    return this.http.get<HabilidadModel[]>(`${this.API_URL}/listar`);
     }
 
   // READ: obtener una habilidad por UUID

@@ -19,28 +19,31 @@ export class MensajeService {
         return this.http.get<MensajeModel[]>(this.API_URL);
     }
 
-  // READ: obtener un mensaje por UUID
-    getByUuid(uuid: string): Observable<MensajeModel> {
-    return this.http.get<MensajeModel>(
-        `${this.API_URL}/${uuid}`
-        );
-    }
 
   // CREATE: crear un mensaje
-    store(mensaje: Partial<MensajeModel>): Observable<MensajeModel> {
-    return this.http.post<MensajeModel>(
-        this.API_URL,
-        mensaje
-        );
+ store(uuidChat: string, uuidSender: string, mensaje?: string, archivo?: File): Observable<MensajeModel> {
+    const formData = new FormData();
+    formData.append('uuidChat', uuidChat);
+    formData.append('uuidSender', uuidSender);
+
+    if (mensaje) {
+      formData.append('mensaje', mensaje);
+    }
+    if (archivo) {
+      formData.append('archivo', archivo);
     }
 
+    return this.http.post<MensajeModel>(`${this.API_URL}/crear`, formData);
+  }
+
     // UPDATE: actualizar un mensaje
-    update(uuid: string,mensaje: Partial<MensajeModel>): Observable<MensajeModel> {
-    return this.http.put<MensajeModel>(
-        `${this.API_URL}/${uuid}`,
-        mensaje
-        );
-    }
+   update(uuidMensaje: string, nuevoTexto: string): Observable<MensajeModel> {
+    const formData = new FormData();
+    formData.append('uuidMensaje', uuidMensaje);
+    formData.append('mensaje', nuevoTexto);
+
+    return this.http.patch<MensajeModel>(`${this.API_URL}/modificar`, formData);
+  }
 
     // DELETE: eliminar un mensaje
     delete(uuid: string): Observable<void> {

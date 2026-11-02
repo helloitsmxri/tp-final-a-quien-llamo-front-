@@ -1,0 +1,115 @@
+:host {
+  display: block;
+  font-family: "Creato Display", Arial, sans-serif;
+  color: #3b2a7a;
+}
+
+:host * {
+  box-sizing: border-box;
+}
+
+
+p {
+  margin: 16px 0;
+  padding: 10px;
+  font-size: 0.85rem;
+  text-align: center;
+  background: rgba(125, 95, 240, 0.12);
+  border-radius: 8px;
+}
+
+p.error {
+  color: #b00020;
+  background: #fdecea;
+}
+
+
+ul {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+
+li {
+  padding: 18px 22px;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  background: #f1f1f1;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(90, 70, 160, 0.2);
+}
+
+li strong {
+  font-size: 1rem;
+  color: #5b3fd6;
+}
+
+
+li span {
+  display: inline-block;
+  padding: 2px 12px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  border-radius: 999px;
+}
+
+
+small.error {
+  display: block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  color: #b00020;
+  background: #fdecea;
+  border-radius: 8px;
+}
+
+
+button {
+  display: block;
+  margin-top: 12px;
+  padding: 8px 22px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5b3fd6;
+  background: transparent;
+  border: 1px solid #5b3fd6;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: rgba(91, 63, 214, 0.08);
+}
+
+@media (max-width: 480px) {
+  li {
+    padding: 16px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+li span.estado-pendiente {
+  background: #e0a100;
+}
+
+li span.estado-aprobado {
+  background: #2e9e5b;
+}
+
+li span.estado-rechazado {
+  background: #b00020;
+}

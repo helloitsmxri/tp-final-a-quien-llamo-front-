@@ -1,1 +1,13 @@
-<p>detalle-habilidad works!</p>
+@if (disponibles.length) {
+  <fieldset>
+    <legend>Habilidades</legend>
+    @for (h of disponibles; track h.uuid) {
+      <label>
+        <input type="checkbox"
+               [checked]="seleccionadas.has(h.uuid)"
+               (change)="toggle(h.uuid, $any($event.target).checked)">
+        {{ h.nombreHabilidad }}
+      </label>
+    }
+  </fieldset>
+}

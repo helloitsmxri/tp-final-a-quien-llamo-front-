@@ -1,0 +1,157 @@
+
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 15px;
+  background-color: #f3f4f6;
+  box-sizing: border-box;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 520px;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
+  box-sizing: border-box;
+}
+
+.register-card h2 {
+  margin: 0 0 10px;
+  color: #1f2937;
+  font-size: 26px;
+  text-align: center;
+}
+
+.register-card > p {
+  margin: 0 0 25px;
+  color: #6b7280;
+  font-size: 15px;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.form-group label {
+  color: #374151;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #1f2937;
+  font-size: 15px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.form-group select {
+  cursor: pointer;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #dc2626;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.formulario button {
+  width: 100%;
+  margin-top: 5px;
+  padding: 13px 18px;
+  border: none;
+  border-radius: 8px;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.formulario button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  transform: translateY(-2px);
+}
+
+.formulario button:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 3px;
+}
+
+.formulario button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Adaptación para celulares */
+@media (max-width: 480px) {
+  .register-container {
+    padding: 20px 12px;
+    align-items: flex-start;
+  }
+
+  .register-card {
+    padding: 22px 18px;
+  }
+
+  .register-card h2 {
+    font-size: 23px;
+  }
+
+  .register-card > p {
+    font-size: 14px;
+  }
+
+  .formulario {
+    gap: 16px;
+  }
+
+  .form-group input,
+  .form-group select {
+    padding: 11px 12px;
+    font-size: 14px;
+  }
+}

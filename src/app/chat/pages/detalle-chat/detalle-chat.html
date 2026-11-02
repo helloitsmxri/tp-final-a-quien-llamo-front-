@@ -1,1 +1,66 @@
-<p>detalle-chat works!</p>
+<div class="chat-activo-container">
+
+  <!-- Header -->
+  <header class="header-chat-activo">
+    <div class="info-contacto">
+      <img 
+        [src]="'https://ui-avatars.com/api/?name=' + (chat?.nombreTecnico || 'Contacto') + '&background=random'" 
+        alt="Avatar" 
+        class="avatar-header" 
+      />
+      <div>
+        <h3>{{ chat?.nombreTecnico || 'Contacto' }}</h3>
+        <span class="estado-enlinea">🟢 En línea</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Lista de Mensajes -->
+  <div class="area-mensajes">
+    @for (msg of mensajes; track msg.uuidMensaje) {
+      <div 
+        class="burbuja-wrapper"
+        [class.sent]="msg.uuidSender === currentUuidSender"
+        [class.received]="msg.uuidSender !== currentUuidSender"
+      >
+        <div class="burbuja">
+          @if (msg.mensaje) {
+            <p class="texto-msg">{{ msg.mensaje }}</p>
+          }
+          @if (msg.archivoUrl && msg.tipoArchivo === 'imagen') {
+            <img [src]="msg.archivoUrl" alt="Imagen adjunta" class="img-preview" />
+          }
+          @if (msg.archivoUrl && msg.tipoArchivo === 'pdf') {
+            <a [href]="msg.archivoUrl" target="_blank" rel="noopener noreferrer" class="pdf-link">
+              📄 Ver documento PDF
+            </a>
+          }
+        </div>
+      </div>
+    } @empty {
+      <p class="sin-mensajes">No hay mensajes en esta conversación aún.</p>
+    }
+  </div>
+
+  <!-- Input Footer -->
+  <footer class="footer-chat-input">
+    <div class="input-pill">
+      <input 
+        type="text" 
+        [(ngModel)]="nuevoMensajeTexto" 
+        placeholder="Escribe un mensaje aquí para chatear..." 
+        (keyup.enter)="enviarMensaje()"
+      />
+      <label for="file-attach" class="btn-input-icon" title="Adjuntar archivo">🖼️</label>
+      <input 
+        id="file-attach" 
+        type="file" 
+        (change)="onFileSelected($event)" 
+        accept="image/*,.pdf" 
+        style="display: none;" 
+      />
+      <button class="btn-send" (click)="enviarMensaje()">➕</button>
+    </div>
+  </footer>
+
+</div>

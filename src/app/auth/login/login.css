@@ -1,0 +1,118 @@
+.inicio-tarjeta,
+.inicio-tarjeta * {
+  box-sizing: border-box;
+}
+
+.inicio-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 40px 20px;
+  font-family: "Creato Display", Arial, sans-serif;
+}
+
+.inicio-tarjeta {
+  width: 100%;
+  max-width: 440px;
+  padding: 40px 36px;
+  text-align: center;
+  background: #f1f1f1;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(90, 70, 160, 0.25);
+}
+
+/* título con degradé violeta */
+.texto-principal {
+  margin: 0 0 6px;
+  font-size: 2.4rem;   /* ~38px: lo más grande de la tarjeta */
+  line-height: 1.1;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* textos chicos de apoyo */
+.registro,
+.recuperar {
+  font-size: 0.95rem;  /* ~15px */
+  line-height: 1.5;
+}
+
+.inicio-tarjeta a {
+  font-weight: bold;
+  color: #8b6cf0;
+  text-decoration: none;
+}
+
+.campos {
+  width: 100%;
+  margin: 28px 0 24px;
+  text-align: left;
+}
+
+/* etiquetas: chicas y en mayúscula, para que no compitan con el título */
+label {
+  display: block;
+  margin: 16px 0 6px;
+  font-size: 0.75rem;  /* 12px */
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;     /* 16px: cómodo para escribir */
+  font-family: inherit;
+  background: white;
+  border: 1px solid #888;
+  border-radius: 8px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #7d5ff0;
+  box-shadow: 0 0 0 3px rgba(125, 95, 240, 0.25);
+}
+
+.recuperar {
+  margin-top: 18px;
+  text-align: center;
+}
+
+/* botón violeta con flechita */
+.inicio-tarjeta button.iniciar-sesion {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 8px 8px 26px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+}
+
+.flecha {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* en celulares la tarjeta se achica sola */
+@media (max-width: 480px) {
+  .inicio-tarjeta {
+    padding: 30px 22px;
+  }
+
+  .texto-principal {
+    font-size: 2rem;
+  }
+}

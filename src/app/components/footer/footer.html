@@ -40,12 +40,11 @@
 
   <a class="promo-barra" [routerLink]="['/promociones']">
     <div class="promo-va-moviendo">
-      <span>20% off pagando con Mercado Pago</span>
-      <span>3 cuotas sin interés con tarjeta</span>
-      <span>Hacé clic acá para más información sobre las promociones vigentes</span>
-      <span aria-hidden="true">20% off pagando con Mercado Pago</span>
-      <span aria-hidden="true">3 cuotas sin interés con tarjeta</span>
-      <span aria-hidden="true">Hacé clic acá para más información sobre las promociones vigentes</span>
+      @for (c of copias; track c){
+        @for(m of mensajes; track m){
+          <span [attr.aria-hidden]="c > 0 ? 'true' : null">{{m}}</span>  
+        }
+      }
     </div>
   </a>
 

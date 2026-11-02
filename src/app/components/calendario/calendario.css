@@ -1,0 +1,191 @@
+:host {
+  display: block;
+}
+ 
+.cal,
+.cal * {
+  box-sizing: border-box;
+}
+ 
+.cal {
+  position: relative;
+  font-family: inherit;
+}
+ 
+/* NOTA: cada botón define su propio padding, borde, fondo y color
+   para pisar el estilo global de "button" que está en styles.css */
+.campo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1rem;
+  font-family: inherit;
+  text-align: left;
+  color: #222;
+  background: white;
+  border: 1px solid #888;
+  border-radius: 8px;
+  cursor: pointer;
+}
+ 
+.campo.vacio {
+  color: #757575;
+}
+ 
+.campo:focus-visible {
+  outline: none;
+  border-color: #7d5ff0;
+  box-shadow: 0 0 0 3px rgba(125, 95, 240, 0.25);
+}
+ 
+.campo:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+ 
+.calendario {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  max-width: 320px;
+  padding: 14px;
+  background: white;
+  border: 2px solid #c9bff0;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(90, 70, 160, 0.25);
+}
+ 
+
+.cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+ 
+.flecha {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+  line-height: 1;
+  font-family: inherit;
+  color: #111;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+ 
+.flecha:hover {
+  color: #7d5ff0;
+}
+ 
+.titulo {
+  padding: 4px 10px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  font-family: inherit;
+  color: #111;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+ 
+.titulo:hover {
+  background: #ece7ff;
+}
+ 
+/*L M X J V S D*/
+.semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+ 
+.semana span {
+  padding: 4px 0;
+  font-size: 0.65rem;
+  font-weight: bold;
+  text-align: center;
+  color: #111;
+  background: #755eda;
+  border-radius: 3px;
+}
+ 
+
+.dias {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+ 
+.dia {
+  aspect-ratio: 1;
+  padding: 0;
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: #222;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+ 
+.dia:hover:not(:disabled):not(.seleccionado) {
+  background: #ece7ff;
+}
+ 
+.dia.otro-mes {
+  color: #b5b5b5;
+}
+ 
+/* el día elegido: círculo violeta */
+.dia.seleccionado {
+  color: white;
+  background: #7d5ff0;
+}
+ 
+.dia:disabled {
+  color: #d0d0d0;
+  cursor: not-allowed;
+}
+ 
+.anios {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+ 
+.anio {
+  padding: 12px 0;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: #222;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+ 
+.anio:hover:not(:disabled):not(.seleccionado) {
+  background: #ece7ff;
+}
+ 
+.anio.seleccionado {
+  color: white;
+  background: #7d5ff0;
+}
+ 
+.anio:disabled {
+  color: #d0d0d0;
+  cursor: not-allowed;
+}
+ 

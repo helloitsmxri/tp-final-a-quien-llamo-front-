@@ -1,0 +1,42 @@
+
+<div class="container">
+
+    @if (cargando) {
+        <p>Cargando pagos...</p>
+    } @else if (error) {
+        <p>No se pudieron cargar los pagos.</p>
+    } @else if (pagos.length > 0) {
+        <ul>
+            @for (pago of pagos; track pago.uuid) {
+                <li>
+                    <p>UUID del pago: {{ pago.uuid }}</p>
+                    <p>UUID del trabajo: {{ pago.uuidTrabajo }}</p>
+                    <p>Estado del pago: {{ pago.estadoPago }}</p>
+                    <p>Fecha de pago: {{ pago.fechaPago }}</p>
+                    <p>Método de pago: {{ pago.metodoDePago }}</p>
+
+                    @if (pago.checkoutUrl) {
+                        <p>
+                            <a
+                                [href]="pago.checkoutUrl"
+                                target="_blank"
+                                rel="noopener noreferrer">
+                                Ir al checkout
+                            </a>
+                        </p>
+                    }
+
+                    @if (pago.mercadoPagoOrderId) {
+                        <p>
+                            Orden de Mercado Pago:
+                            {{ pago.mercadoPagoOrderId }}
+                        </p>
+                    }
+                </li>
+            }
+        </ul>
+    } @else {
+        <p>No se encontraron pagos.</p>
+    }
+
+</div>

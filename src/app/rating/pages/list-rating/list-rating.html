@@ -1,0 +1,15 @@
+<div class="container">
+    <ul>
+        @for (rating of ratings; track $index) {
+            <li>
+                <p>remitente : {{ rating.nombreRemitente }} {{ rating.apellidoRemitente }}</p>
+                <p>destinatario : {{ rating.nombreDestinatario }}</p>
+                <p>valoracion : {{ rating.valoracion }}</p>
+                <p>descripcion : {{ rating.descripcion }}</p>
+                <p>caracteristicas : {{ rating.caracteristicas.join(', ') }}</p>
+            </li>
+        } @empty {
+            <li>no se encontraron reseñas!</li>
+        }
+    </ul>
+</div>

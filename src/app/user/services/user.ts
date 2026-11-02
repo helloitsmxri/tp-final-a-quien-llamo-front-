@@ -1,55 +1,45 @@
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { UsuarioModel } from '../models/user-model';
-import { UsuarioModelRegister } from '../models/user-model-register';
+import { UserPatchModel } from '../../user/models/user-patch-model'
+import { UserProfileDTO } from '../models/user-profile-DTO';
+import { Observable } from 'rxjs';
 
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
 
-    private readonly API_URL = 'http://localhost:8080/api/usuarios';
-    private readonly API_URL_REGISTER = 'http://localhost:8080/auth/register'
+    private http = inject(HttpClient);
+    private url = "http://localhost:8080/aquienllamo/usuarios"
 
-    usuarios: UsuarioModel[] = [];
-    usuario!: UsuarioModel;
-    usuarioRegister!: UsuarioModelRegister;
-
-    constructor(private http: HttpClient) {}
-
-    // READ: obtener todos los usuarios
-    getAll(): Observable<UsuarioModel[]> {
-        return this.http.get<UsuarioModel[]>(this.API_URL);
+    // obtener todos los usuarios
+    getAll(){
+        return this.http.get<UsuarioModel[]>(`${this.url}/todos`)
     }
 
-    // READ: obtener un usuario por UUID
-    getByUuid(uuid: string): Observable<UsuarioModel> {
-        return this.http.get<UsuarioModel>(
-        `${this.API_URL}/${uuid}`
-        );
+    // obtener un perfil de usuario
+    // perfil/{uuid}
+    getProfile(uuid : string){
+        return this.http.get<UserProfileDTO>(`${this.url}/${uuid}`);
     }
 
-  // CREATE: registrar un usuario
-    store(usuario: FormData): Observable<UsuarioModelRegister> {
-        return this.http.post<UsuarioModelRegister>(
-        this.API_URL_REGISTER,
-        usuario
-        );
+    // ver mi perfil
+    // mi-perfil
+    getMyProfile(): Observable<UserProfileDTO> {
+    return this.http.get<UserProfileDTO>(`${this.url}/mi-perfil`);
     }
-
-  // UPDATE: actualizar un usuario
-    update(uuid: string,usuario: Partial<UsuarioModel>): Observable<UsuarioModel> {
-        return this.http.put<UsuarioModel>(
-            `${this.API_URL}/${uuid}`,
-            usuario
-        );
+    
+    // editar perfil
+    // {uuid} -> hay q cambiar esto para q sea así y no con 'actualizar' x el momento lo dejo porq sino hay q tocar el back
+    // recibe el FormData directamente desde el componente
+    updateMyProfile(formData: FormData): Observable<UserProfileDTO> {
+    return this.http.patch<UserProfileDTO>(`${this.url}/mi-perfil`, formData);
     }
-
-  // DELETE: eliminar un usuario
-    delete(uuid: string): Observable<void> {
-        return this.http.delete<void>(
-            `${this.API_URL}/${uuid}`
-        );
+    
+    // eliminar un usuario
+    // {uuid} -> hay q cambiar esto para q sea así y no con 'eliminar' x el momento lo dejo porq sino hay q tocar el back
+    deleteUser(uuid : string){
+        return this.http.delete<void>(`${this.url}/eliminar/${uuid}`);
     }
 }
