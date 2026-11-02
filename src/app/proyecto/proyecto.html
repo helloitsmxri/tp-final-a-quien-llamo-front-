@@ -21,7 +21,14 @@
         <label for="titulo">Título:</label>
         <input id="titulo" type="text" formControlName="titulo" placeholder="Ej: Casa Aurelia" />
         @if (titulo.invalid && titulo.touched) {
-          <div class="error-campo"><span>{{ errorTitulo() }}</span></div>
+          <div class="error-campo">
+            @if (titulo.hasError('maxlength')) {
+              <span>El título no debe superar los 100 caracteres.</span>
+            }
+            @if (titulo.hasError('separador')) {
+              <span>El título no puede contener " — ".</span>
+            }
+          </div>
         }
       </fieldset>
 

@@ -44,7 +44,7 @@ export class Proyecto implements OnInit {
   exito: string | null = null;
 
   formulario = this.fb.group({
-    titulo: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), sinSeparador]],
+    titulo: ['', [Validators.maxLength(100), sinSeparador]],
     detalle: ['', [Validators.maxLength(200)]],
   });
 
@@ -161,24 +161,6 @@ export class Proyecto implements OnInit {
     this.exito = null;
   }
 
-  //mensajes de error personalizados
-  errorTitulo(): string {
-    const c = this.formulario.controls.titulo;
-
-    if (c.hasError('required')) {
-      return 'El título es obligatorio.';
-    }
-    if (c.hasError('minlength')) {
-      return 'El título debe tener al menos 3 caracteres.';
-    }
-    if (c.hasError('maxlength')) {
-      return 'El título no debe superar los 100 caracteres.';
-    }
-    if (c.hasError('separador')) {
-      return 'El título no puede contener " — ".';
-    }
-    return '';
-  }
 
   errorDetalle(): string {
     const c = this.formulario.controls.detalle;
