@@ -1,15 +1,19 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
+import { AuthService } from '../../auth/services/auth-service';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, AsyncPipe],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
 export class Header {
+  authService = inject(AuthService);
+  menuUsuarioAbierto = signal(false);
 // ElementRef = me deja agarrar el elemento HTML de este componente (lo uso para saber si hicieron clic afuera)
   private el = inject(ElementRef);
   // Router = lo uso para enterarme cuando la persona cambia de página
@@ -59,6 +63,7 @@ export class Header {
   }
   cerrar() { 
     this.abierto.set(false); 
+    this.cerrarMenuUsuario();
   }
  
   // se ejecuta cuando el puntero entra a "Categorías".
@@ -86,8 +91,15 @@ export class Header {
   // este: si hacen clic o tocan en cualquier lado q NO sea el header, se cierra
   @HostListener('document:click', ['$event'])
   clickFuera(e: MouseEvent) {
-    if (!this.el.nativeElement.contains(e.target)) this.cerrar();
-  }
+    if (!this.el.nativeElement.contains(e.target))
+      { 
+        this.cerrar(); 
+      }
+      const menuUser = this.el.nativeElement.querySelector('.menu-usuario');
+      if (menuUser && !menuUser.contains(e.target)){
+        this.cerrarMenuUsuario();
+      }
+    }
  
   // si aprietan Escape, se cierra (se espera eso de cualquier menú desplegable)
   @HostListener('document:keydown.escape')
@@ -98,4 +110,19 @@ export class Header {
     get enPlanes(): boolean {
     return this.router.url.startsWith('/planes');
   }
+
+  alternarMenuUsuario() {
+  this.menuUsuarioAbierto.update((valor) => !valor);
+}
+
+cerrarMenuUsuario() {
+  this.menuUsuarioAbierto.set(false);
+}
+
+cerrarSesion() {
+  this.authService.logout();
+  this.cerrarMenuUsuario();
+  this.router.navigate(['/home']);
+}
+
 }

@@ -35,12 +35,46 @@
     </ul>
 
     <!-- los dos botones van juntos en un div, así la barra tiene 3 zonas: logo | opciones | botones -->
-    <div class="acciones">
-      <a class="boton iniciar-sesion" [routerLink]="['iniciar-sesion']" (pointerenter)="cerrar()">Iniciar sesión</a>
-      @if (!enPlanes) {
-      <a class="boton registro" [routerLink]="['/planes']" (pointerenter)="cerrar()">Registrarse</a>
+<div class="acciones">
+  @if (authService.isLoggedIn$ | async) {
+    <div class="menu-usuario">
+      <button type="button" class="boton-usuario" aria-label="Abrir menú de usuario" aria-controls="menu-usuario" [attr.aria-expanded]="menuUsuarioAbierto()" (click)="alternarMenuUsuario()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24"height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="8" r="4"></circle>
+          <path d="M5 21v-2a7 7 0 0 1 14 0v2"></path>
+        </svg>
+        <span>Mi cuenta</span>
+        <span aria-hidden="true">⌄</span>
+      </button>
+
+      @if (menuUsuarioAbierto()) {
+        <nav class="desplegable-usuario" id="menu-usuario" aria-label="Menú de usuario">
+          <a routerLink="/mi-perfil" (click)="cerrarMenuUsuario()">Mi perfil
+          </a>
+          <a routerLink="/chats" (click)="cerrarMenuUsuario()">Mis mensajes
+          </a>
+          <a routerLink="/mis-trabajos" (click)="cerrarMenuUsuario()">Mis trabajos
+          </a>
+          <a routerLink="/mis-presupuestos" (click)="cerrarMenuUsuario()">Mis presupuestos
+          </a>
+          <a routerLink="/mis-resenas" (click)="cerrarMenuUsuario()">Mis reseñas
+          </a>
+          <button type="button" class="boton-cerrar-sesion" (click)="cerrarSesion()">Cerrar sesión</button>
+        </nav>
       }
     </div>
+  } @else {
+    <a class="boton iniciar-sesion" routerLink="/iniciar-sesion" (pointerenter)="cerrar()">
+      Iniciar sesión
+    </a>
+
+    @if (!enPlanes) {
+      <a class="boton registro" routerLink="/planes" (pointerenter)="cerrar()">
+        Registrarse
+      </a>
+    }
+  }
+</div>
 
   </nav>
 
