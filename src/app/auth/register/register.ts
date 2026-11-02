@@ -1,22 +1,35 @@
 import { Component, inject } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
-import { UsuarioService } from '../../user/services/user';
+import {AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators} from '@angular/forms';
 import { Calendario } from '../../components/calendario/calendario';
 import { AuthService } from '../services/auth-service';
+import { switchMap } from 'rxjs';
 
 // Validador del grupo: compara "clave" con "repetirClave"
 function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
   return grupo.get('clave')?.value === grupo.get('repetirClave')?.value
     ? null
     : { clavesDistintas: true };
+}
+
+// para validar la edad
+function validarEdad(control : AbstractControl) : ValidationErrors | null{
+  if (!control.value){
+    return null;
+  }
+
+  const [anio, mes, dia] = control.value.split('-').map(Number);
+
+  const hoy = new Date();
+  let edad = hoy.getFullYear() - anio;
+
+  // si no cumple todavía se le resta UN año.
+  if (hoy.getMonth() + 1 < mes || (hoy.getMonth() + 1 === mes && hoy.getDate() < dia)){
+    edad --;
+  }
+
+  return edad >= 18 ? null : {
+    menorDeEdad : true
+  }
 }
 
 @Component({
@@ -42,16 +55,16 @@ export class Register {
   formulario = this.fb.group({
     // Paso 1
     email: ['', [Validators.required, Validators.email]],
-    clave: ['', [Validators.required, Validators.minLength(8)]],
+    clave: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
     repetirClave: ['', [Validators.required]],
     nombre: ['', [Validators.required, Validators.minLength(2)]],
     apellido: ['', [Validators.required, Validators.minLength(2)]],
  
     // Paso 2
-    dni: ['', [Validators.required]],
-    fechaNacimiento: ['', [Validators.required]],
-    telefono: ['', [Validators.required, Validators.maxLength(10)]],
-    sobreMi: ['', [Validators.maxLength(500)]],
+    dni: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
+    fechaNacimiento: ['', [Validators.required, validarEdad]],
+    telefono: ['', [Validators.required, Validators.maxLength(10), Validators.pattern(/^\d{10}$/)]],
+    sobreMi: ['', [Validators.required, Validators.maxLength(500)]],
   }, { validators: clavesIguales });
  
   // Devuelve el mensaje de error de un campo (o null si no hay nada que mostrar)
@@ -70,6 +83,23 @@ export class Register {
  
     if (c.hasError('email')) {
       return 'Ingresá un email válido.';
+    }
+
+    if (c.hasError('pattern')) {
+      if (campo === 'clave') {
+        return 'La contraseña debe tener mayúscula, minúscula, número y carácter especial.';
+      }
+
+      if (campo === 'dni') {
+        return 'El DNI debe tener exactamente 8 números.';
+      }
+
+      if (campo === 'telefono') {
+        return 'El teléfono debe tener exactamente 10 números.';
+      }
+    }
+    if (c.hasError('menorDeEdad')){
+      return 'Tenés que ser mayor de 18 años para poder registrarte en la plataforma.';
     }
  
     if (c.hasError('minlength')) {
@@ -103,8 +133,17 @@ export class Register {
   seleccionarFoto(event: Event): void {
     const input = event.target as HTMLInputElement;
  
-    if (input.files && input.files.length > 0) {
-      this.foto = input.files[0];
+      if (input.files && input.files.length > 0) {
+        const archivo = input.files[0];
+
+      if (archivo.size > 5 * 1024 * 1024) {
+        alert('La imagen no puede superar los 5 MB.');
+        input.value = '';
+        this.foto = null;
+        return;
+      }
+
+      this.foto = archivo;
     }
   }
  
@@ -134,18 +173,24 @@ export class Register {
       formData.append('foto', this.foto);
     }
  
-    this.uService.store(formData).subscribe({
-      next: (respuesta) => {
-        console.log('Usuario registrado correctamente', respuesta);
+    // primero registra al usuario, dsps inicia sesión
+    this.uService.store(formData).pipe(
+      switchMap(() => {
+        return this.uService.login({
+          username : datos.email ?? '',
+          password : datos.clave ?? ''
+        })
+      })
+    ).subscribe({
+      next : () => {
+        alert ('¡Se creó e inició sesión correctamente!');
         this.formulario.reset();
         this.foto = null;
         this.paso = 1;
-        /* localStorage.setItem("accessToken",respuesta.sobreMi)
-        localStorage.removeItem("accessToken") */
       },
-      error: (e) => {
-        console.error('Error al registrar usuario', e);
+      error : () => {
+        alert ('Error durante su registro o inicio de sesión.');
       }
-    });
+    })
   }
 }

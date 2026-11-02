@@ -6,9 +6,7 @@ export interface UsuarioRegisterModel {
     email: string;
     clave: string;
     telefono: string;
-
     fechaNacimiento: string;
     sobreMi: string;
-    tipoImagen: string;
-    foto: string | null;
+    foto: File | null; // el backend ya obtiene todo de este archivo la tipo de imagen y eso
 }
