@@ -1,6 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UsuarioService } from '../../services/user';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-perfil-edicion',
@@ -11,6 +12,7 @@ import { UsuarioService } from '../../services/user';
 export class PerfilEdicion implements OnInit {
   private fb = inject(FormBuilder);
   private usuarioService = inject(UsuarioService);
+  private router = inject(Router);
 
   archivoSeleccionado : File | null = null;
 
@@ -91,6 +93,7 @@ export class PerfilEdicion implements OnInit {
         this.cargarDatosActuales();
         //limpiamos los archivos
         this.archivoSeleccionado = null;
+        this.router.navigate(['/perfil']);
       },
       error: () => {
         alert ('Ocurrió un error al actualizar el perfil.');

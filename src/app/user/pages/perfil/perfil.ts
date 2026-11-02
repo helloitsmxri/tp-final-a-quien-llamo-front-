@@ -56,7 +56,7 @@ export class Perfil implements OnInit{
     this.cargando = true;
 
     const uuid = this.route.snapshot.paramMap.get('uuid');
-    if (uuid){
+    if (uuid && uuid != 'editar'){
       this.esMiPerfil = false;
 
       this.usuarioService.getProfile(uuid).subscribe({
