@@ -1,5 +1,5 @@
 import { Component, ElementRef, forwardRef, inject, HostListener} from '@angular/core';
-import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Dia } from './model/Dia';
 
 @Component({
@@ -10,7 +10,7 @@ import { Dia } from './model/Dia';
   styleUrl: './calendario.css',
   providers:[{provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Calendario), multi:true}]
 })
-export class Calendario {
+export class Calendario implements ControlValueAccessor{
   private el = inject(ElementRef);
  
   meses = [

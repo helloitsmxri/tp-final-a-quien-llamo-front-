@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { UsuarioRegisterModel } from '../models/user-register-model';
 import { AuthLoginModel } from '../models/auth-login-model';
 import { AuthResponseModel } from '../models/auth-response-model';
+import { UsuarioRegisterResponseModel } from '../models/user-register-response-model';
 
 @Injectable({
   providedIn: 'root',
@@ -24,8 +25,8 @@ export class AuthService {
     constructor(private http: HttpClient) {}
 
     // CREATE: registrar un usuario
-      store(usuario: FormData): Observable<UsuarioRegisterModel> {
-          return this.http.post<UsuarioRegisterModel>(this.API_URL_REGISTER,usuario);
+      store(usuario: FormData): Observable<UsuarioRegisterResponseModel> {
+          return this.http.post<UsuarioRegisterResponseModel>(this.API_URL_REGISTER,usuario);
       }
 
     //Login
