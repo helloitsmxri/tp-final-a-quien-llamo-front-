@@ -1,7 +1,5 @@
-<!-- Sin <form> propio: en el registro vive dentro de otro formulario.
-     La clase "tarjeta" (fondo gris con sombra) solo se aplica cuando se usa suelto, en modo perfil. -->
 <div [formGroup]="form" class="portfolio" [class.tarjeta]="modo === 'perfil'">
-  <h3>Portfolio (opcional)</h3>
+  <h3>{{ modo === 'registro' ? (obligatorio ? 'Portfolio (obligatorio)' : 'Portfolio (opcional)') : 'Cargar portfolio' }}</h3>
 
   <label for="uuidEspecialidad">Especialidad</label>
   <select id="uuidEspecialidad" formControlName="uuidEspecialidad">
