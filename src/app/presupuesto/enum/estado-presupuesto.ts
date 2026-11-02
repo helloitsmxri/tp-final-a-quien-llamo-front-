@@ -1,1 +1,6 @@
-export enum EstadoPresupuesto {}
+export enum EstadoPresupuesto {
+    Pendiente,
+    Aceptado,
+    Rechazado,
+    Cancelado
+}
