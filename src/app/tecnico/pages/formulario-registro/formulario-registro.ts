@@ -98,7 +98,7 @@ export class FormularioRegistro {
       cuit: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
       descripcionTrabajo: ['', [Validators.required, Validators.minLength(10)]],
       // guarda el texto final de los proyectos ("Titulo — detalle", una linea por proyecto)
-      proyectos: ['', [Validators.minLength(MIN_TEXTO), Validators.maxLength(MAX_TEXTO)]],
+      proyectos: ['', [Validators.maxLength(MAX_TEXTO)]],
     },
     { 
       validators: clavesIguales 
@@ -239,7 +239,7 @@ export class FormularioRegistro {
     const c = this.formulario.controls.proyectos;
     if (!c.touched || !c.errors) return null;
     if (c.hasError('maxlength')) return `Los proyectos no pueden superar los ${MAX_TEXTO} caracteres en total.`;
-    return `Los proyectos deben tener al menos ${MIN_TEXTO} caracteres en total.`;
+    return null;
   }
 
   // ---------- qué documentación pide cada paso ----------
