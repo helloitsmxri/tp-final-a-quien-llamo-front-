@@ -47,7 +47,6 @@ export const routes: Routes = [
     {path:'ubicacion', component:DetalleUbicacion },
 
     // PRESUPUESTOS
-
     {path: 'mis-presupuestos', component: MisPresupuestos, canActivate: [authGuard]},
 
     // PAGOS

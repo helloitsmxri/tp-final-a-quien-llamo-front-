@@ -1,1 +1,319 @@
-<p>crear-presupuesto works!</p>
+
+<section class="crear-presupuesto" aria-labelledby="titulo-formulario">
+
+<header class="encabezado-formulario">
+  <div class="textos-encabezado">
+    <p class="sobre-titulo">NUEVO DOCUMENTO</p>
+
+    <h2 id="titulo-formulario">
+      Presupuesto del Proyecto
+    </h2>
+
+    <p class="descripcion-encabezado">
+      Completá los detalles del trabajo para enviarle una propuesta al cliente.
+    </p>
+  </div>
+
+  <button
+    type="button"
+    class="boton-cerrar"
+    aria-label="Cerrar formulario de presupuesto"
+    (click)="cerrarFormulario()"
+  >
+    <span aria-hidden="true">&times;</span>
+  </button>
+</header>
+
+  <form [formGroup]="formulario" (ngSubmit)="guardarPresupuesto()">
+
+    <!-- NOMBRE DEL PROYECTO -->
+    <section class="seccion-formulario" aria-labelledby="titulo-proyecto">
+
+      <h3 id="titulo-proyecto">Información del proyecto</h3>
+
+      <div class="campo">
+        <label for="nombreProyecto">Nombre del proyecto</label>
+
+        <input
+          id="nombreProyecto"
+          type="text"
+          formControlName="nombreProyecto"
+          placeholder="Ej. Renovación de cocina"
+          maxlength="80"
+          [attr.aria-invalid]="campoInvalido(formulario.get('nombreProyecto'))"
+          aria-describedby="error-nombreProyecto"
+        >
+
+        @if (mensajeError(formulario.get('nombreProyecto'))) {
+          <span class="mensaje-error" id="error-nombreProyecto">
+            {{ mensajeError(formulario.get('nombreProyecto')) }}
+          </span>
+        }
+      </div>
+
+    </section>
+
+    <!-- DETALLES DEL PRESUPUESTO -->
+    <section class="seccion-formulario" aria-labelledby="titulo-detalles">
+
+      <div class="encabezado-seccion">
+        <div>
+          <h3 id="titulo-detalles">Detalle de los trabajos</h3>
+          <p>Agregá cada trabajo o material por separado.</p>
+        </div>
+
+        <span class="contador-detalles">
+          {{ detalles.length }}
+          {{ detalles.length === 1 ? 'ítem' : 'ítems' }}
+        </span>
+      </div>
+
+      <div formArrayName="detalles" class="lista-detalles">
+
+        @for (detalle of controlesDetalles; track $index) {
+
+          <article
+            class="detalle-card"
+            [formGroupName]="$index"
+            [attr.aria-labelledby]="'titulo-detalle-' + $index"
+          >
+
+            <div class="detalle-encabezado">
+              <h4 [id]="'titulo-detalle-' + $index">
+                Ítem {{ $index + 1 }}
+              </h4>
+
+              @if (detalles.length > 1) {
+                <button
+                  type="button"
+                  class="boton-eliminar"
+                  [attr.aria-label]="'Eliminar ítem ' + ($index + 1)"
+                  (click)="eliminarDetalle($index)"
+                >
+                  <span aria-hidden="true">Eliminar</span>
+                </button>
+              }
+            </div>
+
+            <!-- DESCRIPCIÓN -->
+            <div class="campo">
+              <label [for]="'descripcion-' + $index">
+                Descripción del trabajo o material
+              </label>
+
+              <input
+                [id]="'descripcion-' + $index"
+                type="text"
+                formControlName="descripcion"
+                placeholder="Ej. Instalación de luminarias"
+                maxlength="150"
+                [attr.aria-invalid]="campoInvalido(obtenerControlDetalle($index, 'descripcion'))"
+                [attr.aria-describedby]="'error-descripcion-' + $index"
+              >
+
+              @if (mensajeError(obtenerControlDetalle($index, 'descripcion'))) {
+                <span
+                  class="mensaje-error"
+                  [id]="'error-descripcion-' + $index"
+                >
+                  {{ mensajeError(obtenerControlDetalle($index, 'descripcion')) }}
+                </span>
+              }
+            </div>
+
+            <!-- PRECIO Y CANTIDAD -->
+            <div class="campos-numericos">
+
+              <div class="campo">
+                <label [for]="'precio-' + $index">
+                  Precio unitario ($)
+                </label>
+
+                <input
+                  [id]="'precio-' + $index"
+                  type="number"
+                  formControlName="precioUnitario"
+                  min="0.01"
+                  step="0.01"
+                  [attr.aria-invalid]="campoInvalido(obtenerControlDetalle($index, 'precioUnitario'))"
+                  [attr.aria-describedby]="'error-precio-' + $index"
+                >
+
+                @if (mensajeError(obtenerControlDetalle($index, 'precioUnitario'))) {
+                  <span
+                    class="mensaje-error"
+                    [id]="'error-precio-' + $index"
+                  >
+                    {{ mensajeError(obtenerControlDetalle($index, 'precioUnitario')) }}
+                  </span>
+                }
+              </div>
+
+              <div class="campo">
+                <label [for]="'cantidad-' + $index">
+                  Cantidad
+                </label>
+
+                <input
+                  [id]="'cantidad-' + $index"
+                  type="number"
+                  formControlName="cantidad"
+                  min="1"
+                  step="1"
+                  [attr.aria-invalid]="campoInvalido(obtenerControlDetalle($index, 'cantidad'))"
+                  [attr.aria-describedby]="'error-cantidad-' + $index"
+                >
+
+                @if (mensajeError(obtenerControlDetalle($index, 'cantidad'))) {
+                  <span
+                    class="mensaje-error"
+                    [id]="'error-cantidad-' + $index"
+                  >
+                    {{ mensajeError(obtenerControlDetalle($index, 'cantidad')) }}
+                  </span>
+                }
+              </div>
+
+            </div>
+
+            <!-- TOTAL DEL ÍTEM -->
+            <div class="total-detalle">
+              <span>Total del ítem</span>
+              <strong>
+                {{ calcularTotalDetalle($index) | currency:'ARS':'symbol':'1.2-2' }}
+              </strong>
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+      <button
+        type="button"
+        class="boton-agregar"
+        (click)="agregarDetalles()"
+      >
+        <span aria-hidden="true">+</span>
+        Agregar otro ítem
+      </button>
+
+    </section>
+
+    <!-- OBSERVACIONES -->
+    <section class="seccion-formulario" aria-labelledby="titulo-observaciones">
+
+      <h3 id="titulo-observaciones">Observaciones</h3>
+
+      <div class="campo">
+        <label for="observaciones">
+          Información adicional
+          <span class="texto-opcional">(opcional)</span>
+        </label>
+
+        <textarea
+          id="observaciones"
+          formControlName="observaciones"
+          rows="4"
+          placeholder="Podés agregar aclaraciones, condiciones del trabajo o información importante para el cliente."
+        ></textarea>
+      </div>
+
+    </section>
+
+    <!-- DESCUENTO -->
+    <section class="seccion-formulario" aria-labelledby="titulo-descuento">
+
+      <h3 id="titulo-descuento">Descuento</h3>
+
+      <div class="campo">
+        <label for="descuentoPorcentaje">
+          Descuento aplicado (%)
+        </label>
+
+        <div class="campo-porcentaje">
+          <input
+            id="descuentoPorcentaje"
+            type="number"
+            formControlName="descuentoPorcentaje"
+            min="0"
+            max="100"
+            step="0.01"
+            [attr.aria-invalid]="campoInvalido(formulario.get('descuentoPorcentaje'))"
+            aria-describedby="ayuda-descuento error-descuento"
+          >
+
+          <span aria-hidden="true">%</span>
+        </div>
+
+        <span class="texto-ayuda" id="ayuda-descuento">
+          Si no corresponde aplicar un descuento, dejá el valor en 0.
+        </span>
+
+        @if (mensajeError(formulario.get('descuentoPorcentaje'))) {
+          <span class="mensaje-error" id="error-descuento">
+            {{ mensajeError(formulario.get('descuentoPorcentaje')) }}
+          </span>
+        }
+      </div>
+
+    </section>
+
+    <!-- RESUMEN -->
+    <section class="resumen-presupuesto" aria-labelledby="titulo-resumen">
+
+      <h3 id="titulo-resumen">Resumen del presupuesto</h3>
+
+      <div class="fila-resumen">
+        <span>Subtotal</span>
+        <span>{{ subTotal | currency:'ARS':'symbol':'1.2-2' }}</span>
+      </div>
+
+      <div class="fila-resumen descuento">
+        <span>Descuento</span>
+        <span>
+          -{{ montoDescuento | currency:'ARS':'symbol':'1.2-2' }}
+        </span>
+      </div>
+
+      <div class="fila-total">
+        <strong>Total final</strong>
+        <strong>{{ totalFinal | currency:'ARS':'symbol':'1.2-2' }}</strong>
+      </div>
+
+      <p class="texto-ayuda">
+        El total se actualizará automáticamente a medida que completes los ítems.
+      </p>
+
+    </section>
+
+    <!-- BOTONES -->
+    <footer class="acciones-formulario">
+
+      <button
+        type="button"
+        class="boton-secundario"
+        (click)="cerrarFormulario()"
+        [disabled]="enviando"
+      >
+        Cancelar
+      </button>
+
+      <button
+        type="submit"
+        class="boton-principal"
+        [disabled]="enviando"
+      >
+        @if (enviando) {
+          Enviando presupuesto...
+        } @else {
+          Enviar presupuesto
+        }
+      </button>
+
+    </footer>
+
+  </form>
+
+</section>
