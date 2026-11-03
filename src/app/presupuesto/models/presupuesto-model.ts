@@ -21,6 +21,7 @@ export interface PresupuestoModel {
     observaciones : string;
 
     detalles: PresupuestoDetalleModel[];
+    estado : EstadoPresupuesto;
 
     subtotal : number;
     descuentoPorcentaje : number;

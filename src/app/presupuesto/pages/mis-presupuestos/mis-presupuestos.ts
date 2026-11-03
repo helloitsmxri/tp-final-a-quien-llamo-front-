@@ -37,6 +37,7 @@ export class MisPresupuestos implements OnInit{
 
     this.cargando = true;
     this.error = false;
+    this.presupuestos = [];
 
     this.presupuestoService.obtenerMisPresupuestos(this.tipoSeleccionado)
       .subscribe({
@@ -82,4 +83,13 @@ export class MisPresupuestos implements OnInit{
     );
   }
 
+  // MENSAJE CUANDO NO HAY PRESUPUESTOS
+  get mensajeSinPresupuestos(): string {
+
+    if (this.tipoSeleccionado === 'CREADOS') {
+      return '¡No tenés presupuestos a tu nombre!';
+    }
+
+    return '¡Todavía no tenés presupuestos recibidos!';
+  }
 }
