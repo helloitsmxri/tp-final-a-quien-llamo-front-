@@ -48,7 +48,7 @@ export const routes: Routes = [
 
     // PRESUPUESTOS
 
-    {path: 'mis-presupuestos', component: MisPresupuestos, canActivate: [authGuard]}
+    {path: 'mis-presupuestos', component: MisPresupuestos, canActivate: [authGuard]},
 
     // PAGOS
     {path: 'pagos', component: FormPago,canActivate: [authGuard]},//los guard entre ellos no se choquen porque no entran 

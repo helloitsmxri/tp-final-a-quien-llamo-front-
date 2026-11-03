@@ -1,6 +1,6 @@
 export enum EstadoPresupuesto {
-    Pendiente,
-    Aceptado,
-    Rechazado,
-    Cancelado
+    Pendiente = 'Pendiente',
+    Aceptado = 'Aceptado',
+    Rechazado = 'Rechazado',
+    Cancelado = 'Cancelado'
 }

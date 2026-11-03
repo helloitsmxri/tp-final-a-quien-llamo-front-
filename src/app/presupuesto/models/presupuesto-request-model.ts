@@ -1,4 +1,8 @@
+import { PresupuestoDetalleRequestModel } from "./presupuesto-detalle-request";
+
 export interface PresupuestoRequestModel{
-    precioEstimado : number;
-    descripcionPresupuesto : string;
+nombreProyecto: string;
+  observaciones: string;
+  descuentoPorcentaje: number;
+  detalles: PresupuestoDetalleRequestModel[];
 }

@@ -1,1 +1,47 @@
-<p>mis-presupuestos works!</p>
+<section class="mis-presupuestos">
+  <h1>Mis Presupuestos</h1>
+
+  <div class="pestanas">
+    <button type="button" [class.activa]="tipoSeleccionado === 'CREADOS'" (click)="cambiarTipo('CREADOS')">Creados</button>
+    <button type="button" [class.activa]="tipoSeleccionado === 'RECIBIDOS'" (click)="cambiarTipo('RECIBIDOS')">Recibidos</button>
+  </div>
+
+  <div class="filtros">
+    <button type="button" [class.activo]="estadoSeleccionado === 'TODOS'" (click)="filtrarPorEstado('TODOS')">Todos</button>
+    <button type="button" [class.activo]="estadoSeleccionado === estados.Pendiente" (click)="filtrarPorEstado(estados.Pendiente)">Pendientes</button>
+    <button type="button" [class.activo]="estadoSeleccionado === estados.Aceptado" (click)="filtrarPorEstado(estados.Aceptado)">Aceptados</button>
+    <button type="button" [class.activo]="estadoSeleccionado === estados.Rechazado" (click)="filtrarPorEstado(estados.Rechazado)">Rechazados</button>
+    <button type="button" [class.activo]="estadoSeleccionado === estados.Cancelado" (click)="filtrarPorEstado(estados.Cancelado)">Cancelados</button>
+  </div>
+
+  @if (cargando) {
+    <p>Cargando presupuestos...</p>
+  } @else if (error) {
+    <p>No se pudieron cargar los presupuestos.</p>
+    <button type="button" (click)="cargarPresupuestos()"> Volver a intentar</button>
+  } @else {
+    @if (presupuestosFiltrados.length === 0) {
+      <p class="sin-presupuestos">No hay presupuestos para mostrar.</p>
+    } @else {
+      <div class="lista-presupuestos">
+        @for (presupuesto of presupuestosFiltrados; track presupuesto.uuid) {
+          <article class="presupuesto-card">
+            <div class="card-superior">
+              <span class="estado" [attr.data-estado]="presupuesto.estado">{{ presupuesto.estado }}</span>
+              <span class="fecha">{{presupuesto.fechaRealizado | date:'dd/MM/yyyy'}}</span>
+            </div>
+            <h2>
+              {{ presupuesto.descripcionPresupuesto }}
+            </h2>
+            @if (tipoSeleccionado === 'CREADOS') {
+              <p>Cliente: {{presupuesto.nombreUsuario}} {{presupuesto.apellidoUsuario}}</p>
+            } @else {
+              <p>Técnico: {{ presupuesto.nombreTecnico }}{{ presupuesto.apellidoTecnico }}</p>
+            }
+            <p class="precio">{{ presupuesto.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}</p>
+          </article>
+        }
+      </div>
+    }
+  }
+</section>
