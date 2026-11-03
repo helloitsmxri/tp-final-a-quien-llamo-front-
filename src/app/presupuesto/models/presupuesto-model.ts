@@ -22,6 +22,7 @@ export interface PresupuestoModel {
 
     detalles: PresupuestoDetalleModel[];
     estado : EstadoPresupuesto;
+    fechaRealizado: string;
 
     subtotal : number;
     descuentoPorcentaje : number;

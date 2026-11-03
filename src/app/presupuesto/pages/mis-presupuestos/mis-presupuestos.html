@@ -31,7 +31,7 @@
               <span class="fecha">{{presupuesto.fechaRealizado | date:'dd/MM/yyyy'}}</span>
             </div>
             <h2>
-              {{ presupuesto.descripcionPresupuesto }}
+              {{presupuesto.nombreProyecto}}
             </h2>
             @if (tipoSeleccionado === 'CREADOS') {
               <p>Cliente: {{presupuesto.nombreUsuario}} {{presupuesto.apellidoUsuario}}</p>
