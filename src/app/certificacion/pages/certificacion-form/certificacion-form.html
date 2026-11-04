@@ -1,6 +1,17 @@
 <div [formGroup]="formulario" [class.tarjeta]="modo === 'perfil'">
   <h3>{{ modo === 'registro' ? (obligatorio ? 'Título o certificación (obligatorio)' : 'Título o certificación (opcional)') : 'Cargar título o certificación' }}</h3>
 
+  <label for="uuidEspecialidad">Especialidad</label>
+  <select id="uuidEspecialidad" formControlName="uuidEspecialidad">
+    <option value="">Elegí una</option>
+    @for (e of especialidades; track e.uuid) {
+      <option [value]="e.uuid">{{ e.nombre }}</option>
+    }
+  </select>
+  @if (errorMensaje('uuidEspecialidad'); as msg) {
+    <small class="error">{{ msg }}</small>
+  }
+
   <label for="numMatricula">Número de matrícula</label>
   <input id="numMatricula" type="text" formControlName="numMatricula">
   @if (errorMensaje('numMatricula'); as msg) {

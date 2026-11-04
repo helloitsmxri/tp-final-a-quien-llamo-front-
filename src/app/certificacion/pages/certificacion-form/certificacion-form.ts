@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CertificacionService } from '../../services/certificacion';
 import { CertificacionDatos } from '../../models/certificacion-datos';
@@ -7,7 +7,7 @@ import { contieneLetras, matriculaValida } from '../../../utils/validadores-text
 import { Calendario } from '../../../components/calendario/calendario';
 
 // tiene que ir ANTES del decorador: entre @Component y la clase no puede haber nada
-type Campo = 'numMatricula' | 'enteOtorgador' | 'fechaVencimiento' | 'archivo';
+type Campo = 'uuidEspecialidad' | 'numMatricula' | 'enteOtorgador' | 'fechaVencimiento' | 'archivo';
 
 @Component({
   selector: 'app-certificacion-form',
@@ -15,13 +15,15 @@ type Campo = 'numMatricula' | 'enteOtorgador' | 'fechaVencimiento' | 'archivo';
   templateUrl: './certificacion-form.html',
   styleUrl: './certificacion-form.css',
 })
-export class CertificacionForm {
+export class CertificacionForm implements OnChanges {
   private fb = inject(FormBuilder);
   private servicio = inject(CertificacionService);
 
   @Input() modo: 'registro' | 'perfil' = 'perfil';
   @Input() obligatorio = false;
   @Input() uuidTecnico = '';
+  // La certificación respalda una especialidad del técnico: se elige entre estas
+  @Input() especialidades: { uuid: string; nombre: string }[] = [];
   @Output() creada = new EventEmitter<void>();
   @ViewChild('inputArchivo') inputArchivo?: ElementRef<HTMLInputElement>;
 
@@ -31,11 +33,25 @@ export class CertificacionForm {
   errorServidor: string | null = null;
 
   formulario = this.fb.group({
+    uuidEspecialidad: ['', Validators.required],
     numMatricula: ['', [Validators.required, Validators.maxLength(100), matriculaValida]],
     enteOtorgador: ['', [Validators.required, Validators.maxLength(100), contieneLetras]],
     fechaVencimiento: ['', [Validators.required, fechaFutura]],
     archivo: [null as File | null, [Validators.required, archivoValido]],
   });
+
+  // Si hay una sola especialidad, queda seleccionada; si la elegida ya no está en la lista, se limpia
+  ngOnChanges(cambios: SimpleChanges): void {
+    if (!cambios['especialidades']) return;
+    const control = this.formulario.controls.uuidEspecialidad;
+
+    if (control.value && !this.especialidades.some((e) => e.uuid === control.value)) {
+      control.setValue('');
+    }
+    if (this.especialidades.length === 1 && !control.value) {
+      control.setValue(this.especialidades[0].uuid);
+    }
+  }
 
   seleccionarArchivo(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -46,6 +62,7 @@ export class CertificacionForm {
 
   private estaVacio(): boolean {
     const v = this.formulario.getRawValue();
+    // la especialidad sola no cuenta: puede venir preseleccionada y el documento es opcional
     return !v.numMatricula && !v.enteOtorgador && !v.fechaVencimiento && !v.archivo;
   }
 
@@ -59,6 +76,7 @@ export class CertificacionForm {
     if (this.estaVacio() || this.formulario.invalid) return null;
     const v = this.formulario.getRawValue();
     return {
+      uuidEspecialidad: v.uuidEspecialidad ?? '',
       numMatricula: (v.numMatricula ?? '').trim(),
       enteOtorgador: (v.enteOtorgador ?? '').trim(),
       fechaVencimiento: v.fechaVencimiento ?? '',
@@ -79,7 +97,7 @@ export class CertificacionForm {
       next: () => {
         this.enviando = false;
         this.exito = true;
-        this.formulario.reset();
+        this.formulario.reset({ uuidEspecialidad: '' });
         if (this.inputArchivo) this.inputArchivo.nativeElement.value = '';
         this.creada.emit();
       },
