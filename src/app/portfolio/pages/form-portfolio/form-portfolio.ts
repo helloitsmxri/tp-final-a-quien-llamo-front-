@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PortfolioDatos } from '../../models/portfolio-datos';
 import { PortfolioService } from '../../services/portfolio';
 import { MAX_MB, archivoValido, enlaceOArchivo } from '../../../utils/validadores';
+import { contieneLetras } from '../../../utils/validadores-texto';
 
 @Component({
   selector: 'app-form-portfolio',
@@ -34,7 +35,7 @@ export class FormPortfolio implements OnChanges {
   form = this.fb.group(
     {
       uuidEspecialidad: ['', Validators.required],
-      notasAspirante: ['', [Validators.required, Validators.maxLength(5000)]],
+      notasAspirante: ['', [Validators.required, Validators.maxLength(5000), contieneLetras]],
       enlaceExterno: ['', [Validators.maxLength(1000), Validators.pattern(/^https?:\/\/\S+$/i)]],
       archivo: [null as File | null, archivoValido],
     },
@@ -119,6 +120,7 @@ export class FormPortfolio implements OnChanges {
     const c = this.form.controls[campo];
     if (!c.touched || !c.errors) return null;
     if (c.hasError('required')) return 'Este campo es obligatorio.';
+    if (c.hasError('sinLetras')) return 'Contanos con palabras, no puede ser solo números.';
     if (c.hasError('maxlength')) return 'El texto es demasiado largo.';
     if (c.hasError('pattern')) return 'Ingresá un link que empiece con http:// o https://';
     if (c.hasError('tipoInvalido')) return 'Solo se aceptan PDF, JPG o PNG.';
