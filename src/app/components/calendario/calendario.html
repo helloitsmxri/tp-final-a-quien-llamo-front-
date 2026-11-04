@@ -31,7 +31,7 @@
                     @for (a of anios; track a) {
                         <button type="button" class="anio"
                             [class.seleccionado]="a === anioSeleccionado"
-                            [disabled]="a > anioHoy"
+                            [disabled]="anioBloqueado(a)"
                             (click)="elegirAnio(a)">
                             {{ a }}
                         </button>
@@ -53,7 +53,7 @@
                         <button type="button" class="dia"
                             [class.otro-mes]="dia.otroMes"
                             [class.seleccionado]="dia.fecha === seleccionada"
-                            [disabled]="dia.futuro"
+                            [disabled]="diaBloqueado(dia)"
                             (click)="elegir(dia)">
                             {{ dia.numero }}
                         </button>
