@@ -5,6 +5,7 @@ import { ChatModel } from '../../models/chat-model';
 import { MensajeModel } from '../../../mensaje/models/mensaje-model';
 import { MensajeService } from '../../../mensaje/services/mensaje';
 import { AuthService } from '../../../auth/services/auth-service';
+import { UsuarioService } from '../../../user/services/user';
 
 @Component({
   selector: 'app-detalle-chat',
@@ -22,14 +23,11 @@ export class DetalleChat implements OnChanges, OnInit {
   archivoSeleccionado: File | null = null;
   currentUuidSender: string = '8d2d07c7-496b-43bb-be8b-21cf571ed578';
 
-  constructor(private mensajeService: MensajeService, private authService: AuthService) {}
+  constructor(private mensajeService: MensajeService, private authService: AuthService, private usuarioService:UsuarioService) {}
 
   //para utilizar el uuid de la persona que inicie sesión
   ngOnInit(): void {
-    const uuid = this.authService.getUuidUsuarioLogueado();
-    if (uuid && !uuid.includes('@')) {
-      this.currentUuidSender = uuid;
-    }
+    this.obtenerUuidEmisor();
   }
 
   // Se ejecuta cada vez que cambia el @Input() chat
@@ -37,6 +35,18 @@ export class DetalleChat implements OnChanges, OnInit {
     if (changes['chat'] && this.chat) {
       this.cargarMensajes(this.chat.uuidChat);
     }
+  }
+
+  private obtenerUuidEmisor(): void {
+    // Pedimos MI perfil para saber el UUID de quien envía
+    this.usuarioService.getMyProfile().subscribe({
+      next: (perfil) => {
+        if (perfil && perfil.uuid) {
+          this.currentUuidSender = perfil.uuid;
+        }
+      },
+      error: (err) => console.error('Error al obtener emisor:', err)
+    });
   }
 
   cargarMensajes(uuidChat: string): void {
