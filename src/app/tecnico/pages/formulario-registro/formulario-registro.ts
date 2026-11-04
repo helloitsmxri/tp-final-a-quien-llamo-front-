@@ -25,6 +25,7 @@ import {
   limpiarLinea,
   serializarProyectos,
 } from '../../../proyecto/utils/proyecto-texto';
+import { soloLetras, contieneLetras, validarEdad, TIPOS_IMAGEN, MAX_FOTO_MB } from '../../../utils/validadores-texto';
 
 const CLAVE= /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
@@ -85,18 +86,18 @@ export class FormularioRegistro {
      email: ['', [Validators.required, Validators.email]],
       clave: ['', [Validators.required, Validators.minLength(8), Validators.pattern(CLAVE)]],
       repetirClave: ['', [Validators.required]],
-      nombre: ['', [Validators.required, Validators.minLength(2)]],
-      apellido: ['', [Validators.required, Validators.minLength(2)]],
+      nombre: ['', [Validators.required, Validators.minLength(2), soloLetras]],
+      apellido: ['', [Validators.required, Validators.minLength(2), soloLetras]],
 
       // Paso 2: datos personales
       dni: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
-      fechaNacimiento: ['', [Validators.required]],
+      fechaNacimiento: ['', [Validators.required, validarEdad]],
       telefono: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
-      sobreMi: ['', [Validators.required]],
+      sobreMi: ['', [Validators.required, Validators.maxLength(500), contieneLetras]],
 
       // Paso 3: datos de tecnico
       cuit: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
-      descripcionTrabajo: ['', [Validators.required, Validators.minLength(10)]],
+      descripcionTrabajo: ['', [Validators.required, Validators.minLength(10), contieneLetras]],
       // guarda el texto final de los proyectos ("Titulo — detalle", una linea por proyecto)
       proyectos: ['', [Validators.maxLength(MAX_TEXTO)]],
     },
@@ -186,8 +187,8 @@ export class FormularioRegistro {
 
   // los dos campos para escribir un proyecto nuevo (no son parte del formulario principal)
   // igual que en el componente Proyecto: el titulo ya no es obligatorio al salir del campo
-  tituloProyecto = new FormControl('', [Validators.maxLength(100), sinSeparador]);
-  detalleProyecto = new FormControl('', [Validators.maxLength(200)]);
+  tituloProyecto = new FormControl('', [Validators.maxLength(100), sinSeparador, contieneLetras]);
+  detalleProyecto = new FormControl('', [Validators.maxLength(200), contieneLetras]);
 
   agregarProyecto(): void {
     this.tituloProyecto.markAsTouched();
@@ -232,6 +233,15 @@ export class FormularioRegistro {
     if (c.hasError('vacio')) return 'Escribí un título para agregar el proyecto.';
     if (c.hasError('maxlength')) return 'El título no debe superar los 100 caracteres.';
     if (c.hasError('separador')) return 'El título no puede contener " — ".';
+    if (c.hasError('sinLetras')) return 'El título tiene que incluir letras, no puede ser solo números.';
+    return '';
+  }
+
+  errorDetalleProyecto(): string {
+    const c = this.detalleProyecto;
+    if (!c.touched) return '';
+    if (c.hasError('maxlength')) return 'El detalle no debe superar los 200 caracteres.';
+    if (c.hasError('sinLetras')) return 'El detalle tiene que incluir letras, no puede ser solo números.';
     return '';
   }
 
@@ -242,7 +252,7 @@ export class FormularioRegistro {
     return null;
   }
 
-  // ---------- qué documentación pide cada paso ----------
+ 
   get totalPasos(): number {
     return 3 + this.pasosDocumentacion.length;
   }
@@ -263,6 +273,9 @@ export class FormularioRegistro {
     if (!c || !c.touched) return null;
 
     if (c.hasError('required')) return 'Este campo es obligatorio.';
+    if (c.hasError('soloLetras')) return 'Solo se permiten letras.';
+    if (c.hasError('sinLetras')) return 'Tiene que incluir letras, no puede ser solo números o símbolos.';
+    if (c.hasError('menorDeEdad')) return 'Tenés que ser mayor de 18 años para poder registrarte en la plataforma.';
 
     if (campo === 'repetirClave' && this.formulario.hasError('clavesDistintas')) {
       return 'Las contraseñas no coinciden.';
@@ -327,9 +340,28 @@ export class FormularioRegistro {
     }
   }
 
+  errorFoto: string | null = null;
+
   seleccionarFoto(event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.foto=input.files && input.files.length>0 ? input.files[0] : null;
+    const archivo = input.files?.[0] ?? null;
+    this.errorFoto = null;
+
+    if (!archivo) { this.foto = null; return; }
+
+    if (!TIPOS_IMAGEN.includes(archivo.type)) {
+      this.errorFoto = 'Solo se aceptan imágenes (JPG, PNG o WEBP).';
+      input.value = '';
+      this.foto = null;
+      return;
+    }
+    if (archivo.size > MAX_FOTO_MB * 1024 * 1024) {
+      this.errorFoto = `La imagen no puede superar los ${MAX_FOTO_MB} MB.`;
+      input.value = '';
+      this.foto = null;
+      return;
+    }
+    this.foto = archivo;
   }
 
   guardar(): void {
@@ -363,7 +395,7 @@ export class FormularioRegistro {
     fd.append('usuario.email', v.email ?? '');
     fd.append('usuario.clave', v.clave ?? '');
     fd.append('usuario.telefono', v.telefono ?? '');
-    fd.append('usuario.fechaNacimiento', this.formatearFecha(v.fechaNacimiento ?? ''));
+    fd.append('usuario.fechaNacimiento', v.fechaNacimiento ?? '');
     fd.append('usuario.sobreMi', v.sobreMi ?? '');
     if (this.foto) fd.append('usuario.foto', this.foto);
 
@@ -422,11 +454,6 @@ export class FormularioRegistro {
         this.avisoDocumentacion = 'Tu cuenta se creó, pero no pudimos terminar de configurarla (inicio de sesión o documentación). Iniciá sesión y cargá la documentación desde tu perfil.';
       },
     });
-  }
-
-  //el back espera dd/MM/yyyy; un <input type="date"> entrega yyyy-MM-dd
-  private formatearFecha(fecha: string): string {
-    return /^\d{4}-\d{2}-\d{2}$/.test(fecha) ? fecha.split('-').reverse().join('/') : fecha;
   }
 
   irALogin(): void {
