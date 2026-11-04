@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatModel } from '../../models/chat-model';
 import { ChatService } from '../../services/chat-service';
 import { AuthService } from '../../../auth/services/auth-service';
+import { UsuarioService } from '../../../user/services/user';
 
 @Component({
   selector: 'app-lista-chat',
@@ -14,26 +15,31 @@ import { AuthService } from '../../../auth/services/auth-service';
 export class ListaChat implements OnInit{
   chats: ChatModel[] = [];
   chatSeleccionado: ChatModel | null = null;
-  currentUuidUsuario: string = '8d2d07c7-496b-43bb-be8b-21cf571ed578';
+  currentUuidUsuario: string = '';
+  currentIdUsuario: number = 0;
   filtroBusqueda: string = '';
 
   // Evento para avisarle al padre (ChatView) qué chat se seleccionó
   @Output() chatSeleccionadoEvent = new EventEmitter<ChatModel>();
 
-  constructor(private chatService: ChatService, private authService:AuthService) {}
+  constructor(private chatService: ChatService, private authService:AuthService, private usuarioService:UsuarioService) {}
+ngOnInit(): void {
+    this.cargarUsuarioYChats();
+  }
 
-  ngOnInit(): void {
-
-    //obtenemos el uuid del usuario logueado dinámicamente.
-    const uuid = this.authService.getUuidUsuarioLogueado();
-    
-    if (uuid && !uuid.includes('@')) {
-      this.currentUuidUsuario = uuid;
-      this.cargarChats();
-    } else {
-      console.warn('No hay un usuario autenticado para cargar sus chats.');
-    }
-
+cargarUsuarioYChats(): void {
+    this.usuarioService.getMyProfile().subscribe({
+      next: (perfil: any) => {
+        if (perfil) {
+          this.currentUuidUsuario = perfil.uuid;
+          this.currentIdUsuario = perfil.id; 
+          this.cargarChats();
+        }
+      },
+      error: (err) => {
+        console.error('No se pudo obtener la información del usuario logueado.', err);
+      }
+    });
   }
 
   cargarChats(): void {
@@ -52,32 +58,27 @@ export class ListaChat implements OnInit{
   }
 
   // Método temporal para iniciar un chat de prueba con un idTecnico existente en BD
-iniciarChatDePrueba(): void {
-  
-  const requestBody = {
-    idUsuario: 2,
-    idTecnico: 1   
-  };
-
-  console.log('Enviando DTO al backend:', requestBody);
-
-  this.chatService.iniciarChat(requestBody).subscribe({
-    next: (chatCreado) => {
-      alert('¡Chat creado con éxito!');
-      if (chatCreado) {
-        this.chats.push(chatCreado);
-        this.seleccionarChat(chatCreado);
-      }
-      
-      this.cargarChats();
-    },
-    
-    error: (err) => {
-      console.error('Error al iniciar el chat:', err);
-      alert('Revisá que los IDs 1 y 2 existan en tu base de datos MySQL.');
+iniciarChatDePrueba(idTecnicoSeleccionado: number): void {
+    if (!this.currentUuidUsuario) {
+      alert('No se pudo recuperar los datos del usuario autenticado.');
+      return;
     }
-  });
-}
+
+    this.chatService.iniciarChat(this.currentIdUsuario, idTecnicoSeleccionado).subscribe({
+      next: (chatCreado) => {
+        alert('¡Chat creado con éxito!');
+        if (chatCreado) {
+          this.chats.push(chatCreado);
+          this.seleccionarChat(chatCreado);
+        }
+        this.cargarChats();
+      },
+      error: (err) => {
+        console.error('Error al iniciar el chat:', err);
+      }
+    });
+  }
+  
   seleccionarChat(chat: ChatModel): void {
     this.chatSeleccionado = chat;
     this.chatSeleccionadoEvent.emit(chat); // Dispara el evento hacia ChatView
