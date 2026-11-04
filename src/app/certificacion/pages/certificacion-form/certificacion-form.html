@@ -14,7 +14,7 @@
   }
 
   <label for="fechaVencimiento">Fecha de vencimiento</label>
-  <input id="fechaVencimiento" type="date" formControlName="fechaVencimiento">
+  <app-calendario modo="futuro" formControlName="fechaVencimiento"></app-calendario>
   @if (errorMensaje('fechaVencimiento'); as msg) {
     <small class="error">{{ msg }}</small>
   }
