@@ -49,6 +49,7 @@ type PasoDocumentacion = {
   obligatorio: boolean;
   especialidad: EspecialidadElegida | null;           // null en los pasos opcionales
   opcionesPortfolio: { uuid: string; nombre: string }[]; // lo que se ofrece en el desplegable del portfolio
+  opcionesCertificacion: { uuid: string; nombre: string }[]; // lo que se ofrece en el desplegable de la certificación
 };
 
 @Component({
@@ -125,8 +126,8 @@ export class FormularioRegistro {
   especialidadesElegidas: EspecialidadElegida[] = [];
   pasosDocumentacion: PasoDocumentacion[] = [
     // mientras no eligio especialidades: los dos pasos opcionales
-    { clave: 'certificacion-opcional', tipo: 'certificacion', obligatorio: false, especialidad: null, opcionesPortfolio: [] },
-    { clave: 'portfolio-opcional', tipo: 'portfolio', obligatorio: false, especialidad: null, opcionesPortfolio: [] },
+    { clave: 'certificacion-opcional', tipo: 'certificacion', obligatorio: false, especialidad: null, opcionesPortfolio: [], opcionesCertificacion: [] },
+    { clave: 'portfolio-opcional', tipo: 'portfolio', obligatorio: false, especialidad: null, opcionesPortfolio: [], opcionesCertificacion: [] },
   ];
 
   // con varios rubros, las especialidades disponibles son las de todos, sin repetir
@@ -155,22 +156,27 @@ export class FormularioRegistro {
       .filter(e => e.tipoValidacion === TipoValidacion.Certificado)
       .forEach(e => pasos.push({
         clave: `certificacion-${e.uuid}`, tipo: 'certificacion', obligatorio: true, especialidad: e, opcionesPortfolio: [],
+        opcionesCertificacion: [{ uuid: e.uuid, nombre: e.nombre }],
       }));
 
     this.especialidadesElegidas
       .filter(e => e.tipoValidacion === TipoValidacion.Portfolio)
       .forEach(e => pasos.push({
         clave: `portfolio-${e.uuid}`, tipo: 'portfolio', obligatorio: true, especialidad: e,
-        opcionesPortfolio: [{ uuid: e.uuid, nombre: e.nombre }],
+        opcionesPortfolio: [{ uuid: e.uuid, nombre: e.nombre }], opcionesCertificacion: [],
       }));
 
     // ninguna especialidad exige nada: se ofrecen los dos, opcionales
     if (pasos.length === 0) {
       pasos.push(
-        { clave: 'certificacion-opcional', tipo: 'certificacion', obligatorio: false, especialidad: null, opcionesPortfolio: [] },
+        {
+          clave: 'certificacion-opcional', tipo: 'certificacion', obligatorio: false, especialidad: null, opcionesPortfolio: [],
+          opcionesCertificacion: this.especialidadesElegidas.map(e => ({ uuid: e.uuid, nombre: e.nombre })),
+        },
         {
           clave: 'portfolio-opcional', tipo: 'portfolio', obligatorio: false, especialidad: null,
           opcionesPortfolio: this.especialidadesElegidas.map(e => ({ uuid: e.uuid, nombre: e.nombre })),
+          opcionesCertificacion: [],
         },
       );
     }
