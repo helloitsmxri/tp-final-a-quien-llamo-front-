@@ -3,13 +3,15 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CertificacionService } from '../../services/certificacion';
 import { CertificacionDatos } from '../../models/certificacion-datos';
 import { MAX_MB, archivoValido, fechaFutura } from '../../../utils/validadores';
+import { contieneLetras, matriculaValida } from '../../../utils/validadores-texto';
+import { Calendario } from '../../../components/calendario/calendario';
 
 // tiene que ir ANTES del decorador: entre @Component y la clase no puede haber nada
 type Campo = 'numMatricula' | 'enteOtorgador' | 'fechaVencimiento' | 'archivo';
 
 @Component({
   selector: 'app-certificacion-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Calendario],
   templateUrl: './certificacion-form.html',
   styleUrl: './certificacion-form.css',
 })
@@ -29,8 +31,8 @@ export class CertificacionForm {
   errorServidor: string | null = null;
 
   formulario = this.fb.group({
-    numMatricula: ['', [Validators.required, Validators.maxLength(100)]],
-    enteOtorgador: ['', [Validators.required, Validators.maxLength(100)]],
+    numMatricula: ['', [Validators.required, Validators.maxLength(100), matriculaValida]],
+    enteOtorgador: ['', [Validators.required, Validators.maxLength(100), contieneLetras]],
     fechaVencimiento: ['', [Validators.required, fechaFutura]],
     archivo: [null as File | null, [Validators.required, archivoValido]],
   });
@@ -93,6 +95,8 @@ export class CertificacionForm {
     if (!c.touched || !c.errors) return null;
     if (c.hasError('required')) return campo === 'archivo' ? 'Adjuntá el archivo.' : 'Este campo es obligatorio.';
     if (c.hasError('maxlength')) return 'No puede superar los 100 caracteres.';
+    if (c.hasError('matricula')) return 'La matrícula solo puede tener letras, números y . - / y debe incluir al menos un número.';
+    if (c.hasError('sinLetras')) return 'El ente otorgador tiene que incluir letras, no puede ser solo números.';
     if (c.hasError('fechaPasada')) return 'La fecha de vencimiento tiene que ser posterior a hoy.';
     if (c.hasError('tipoInvalido')) return 'Solo se aceptan PDF, JPG o PNG.';
     if (c.hasError('tamanioExcedido')) return `El archivo no puede pesar más de ${this.maxMb} MB.`;
