@@ -7,7 +7,7 @@ import { MensajeModel } from '../models/mensaje-model';
 @Injectable({ providedIn: 'root' })
 export class MensajeService {
 
-    private readonly API_URL = 'http://localhost:8080/api/mensajes';
+    private readonly API_URL = 'http://localhost:8080/aquienllamo/mensajes';
 
     mensajes: MensajeModel[] = [];
     mensaje!: MensajeModel;
@@ -16,7 +16,7 @@ export class MensajeService {
 
   // READ: obtener todos los mensajes
     getAll(): Observable<MensajeModel[]> {
-        return this.http.get<MensajeModel[]>(this.API_URL);
+        return this.http.get<MensajeModel[]>(`${this.API_URL}/listar`);
     }
 
 
