@@ -2,6 +2,11 @@
   <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Inserte un nombre aquí para buscar" />
 </div>
 
+<!-- Botón de prueba temporal para iniciar chat -->
+<div style="padding: 10px; text-align: center;">
+  <button type="button" (click)="iniciarChatDePrueba()">➕ Probar Nuevo Chat</button>
+</div>
+
 <div class="lista-chats">
   @for (chat of chatsFiltrados; track chat.uuidChat) {
     <div 

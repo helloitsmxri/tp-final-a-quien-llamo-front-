@@ -14,7 +14,7 @@ import { AuthService } from '../../../auth/services/auth-service';
 export class ListaChat implements OnInit{
   chats: ChatModel[] = [];
   chatSeleccionado: ChatModel | null = null;
-  currentUuidUsuario: string = 'uuid-del-usuario-actual';
+  currentUuidUsuario: string = '8d2d07c7-496b-43bb-be8b-21cf571ed578';
   filtroBusqueda: string = '';
 
   // Evento para avisarle al padre (ChatView) qué chat se seleccionó
@@ -27,7 +27,7 @@ export class ListaChat implements OnInit{
     //obtenemos el uuid del usuario logueado dinámicamente.
     const uuid = this.authService.getUuidUsuarioLogueado();
     
-    if (uuid) {
+    if (uuid && !uuid.includes('@')) {
       this.currentUuidUsuario = uuid;
       this.cargarChats();
     } else {
@@ -41,6 +41,7 @@ export class ListaChat implements OnInit{
 
     this.chatService.getByUsuario(this.currentUuidUsuario).subscribe({
       next: (data) => {
+        console.log('Chats recibidos del backend:', data);
         this.chats = data;
         if (this.chats.length > 0) {
           this.seleccionarChat(this.chats[0]); // Selecciona el primero por defecto
@@ -50,6 +51,33 @@ export class ListaChat implements OnInit{
     });
   }
 
+  // Método temporal para iniciar un chat de prueba con un idTecnico existente en BD
+iniciarChatDePrueba(): void {
+  
+  const requestBody = {
+    idUsuario: 2,
+    idTecnico: 1   
+  };
+
+  console.log('Enviando DTO al backend:', requestBody);
+
+  this.chatService.iniciarChat(requestBody).subscribe({
+    next: (chatCreado) => {
+      alert('¡Chat creado con éxito!');
+      if (chatCreado) {
+        this.chats.push(chatCreado);
+        this.seleccionarChat(chatCreado);
+      }
+      
+      this.cargarChats();
+    },
+    
+    error: (err) => {
+      console.error('Error al iniciar el chat:', err);
+      alert('Revisá que los IDs 1 y 2 existan en tu base de datos MySQL.');
+    }
+  });
+}
   seleccionarChat(chat: ChatModel): void {
     this.chatSeleccionado = chat;
     this.chatSeleccionadoEvent.emit(chat); // Dispara el evento hacia ChatView
