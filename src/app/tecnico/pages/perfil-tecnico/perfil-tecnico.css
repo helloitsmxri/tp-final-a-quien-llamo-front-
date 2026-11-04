@@ -174,7 +174,7 @@
 /* ---------- detalle (proyectos, estudios, etc.) ---------- */
 .detail-columns {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 0.8fr 1.2fr;
   gap: 20px;
 }
 

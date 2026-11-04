@@ -58,23 +58,15 @@
               </ul>
             </div>
 
-            <app-calendario />
+            
           </div>
 
           <div class="col-right">
-            <h3>Estudios</h3>
-            <ul class="styled-list">
-              @for (e of estudios; track $index) {
-                <li>{{ e.titulo }} — <strong>{{ e.detalle }}</strong></li>
-              }
-            </ul>
+            <h3>Certificaciones</h3>
+            <app-detalle-certificacion [uuidTecnico]="tecnico.uuid" />
 
-            <h3>Certificaciones &amp; Portfolio</h3>
-            <ul class="styled-list">
-              @for (c of certificaciones; track $index) {
-                <li>{{ c.titulo }}@if (c.detalle) { — <strong>{{ c.detalle }}</strong>}</li>
-              }
-            </ul>
+            <h3>Portfolio</h3>
+            <app-detalle-portfolio [uuidTecnico]="tecnico.uuid" />
           </div>
 
         </div>
