@@ -49,7 +49,7 @@
 
       @if (menuUsuarioAbierto()) {
         <nav class="desplegable-usuario" id="menu-usuario" aria-label="Menú de usuario">
-          <a routerLink="/mi-perfil" (click)="cerrarMenuUsuario()">Mi perfil
+          <a [routerLink]="authService.esTecnico() ? '/mi-perfil-tecnico' : '/mi-perfil'" (click)="cerrarMenuUsuario()">Mi perfil
           </a>
           <a routerLink="/chats" (click)="cerrarMenuUsuario()">Mis mensajes
           </a>
