@@ -12,21 +12,22 @@
     Encontrá expertos confiables para cualquier necesidad en tu hogar o negocio.
   </p>
 
-  <form class="buscador" role="search">
-    <button type="submit" class="boton-busqueda">Buscar</button>
+  <form class="buscador" role="search" (ngSubmit)="buscar()">
+  <button type="submit" class="boton-busqueda">Buscar</button>
 
-    <label class="campo">
-      <img src="íconos/iconos-home/lupa.png" alt="" class="icono-campo">
-      <input type="text" placeholder="Especialidad, palabra clave...">
-    </label>
+  <label class="campo">
+    <img src="íconos/iconos-home/lupa.png" alt="" class="icono-campo">
+    <input type="text" name="especialidad" [(ngModel)]="especialidad"
+           placeholder="Especialidad, palabra clave...">
+  </label>
 
-    <span class="divisor" aria-hidden="true"></span>
+  <span class="divisor" aria-hidden="true"></span>
 
-    <label class="campo">
-      <img src="íconos/iconos-home/ubicacion.png" alt="" class="icono-campo">
-      <input type="text" placeholder="Ciudad">
-    </label>
-  </form>
+  <label class="campo">
+    <img src="íconos/iconos-home/ubicacion.png" alt="" class="icono-campo">
+    <input type="text" name="ciudad" [(ngModel)]="ciudad" placeholder="Ciudad">
+  </label>
+</form>
 
   <ul class="tarjetas">
     <li class="tarjeta">

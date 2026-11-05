@@ -6,6 +6,7 @@ import { GoogleMapsModel } from '../../models/GoogleMapsModel';
 import { UbicacionService } from '../../services/ubicacion-service';
 import * as L from 'leaflet';
 import { AuthService } from '../../../auth/services/auth-service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -42,7 +43,9 @@ export class DetalleUbicacion implements OnInit, AfterViewInit{
   private map!: L.Map;
   private marker!: L.Marker;
 
-  constructor(private ubicacionService: UbicacionService, private authService:AuthService) {}
+  constructor(private ubicacionService: UbicacionService,
+    private authService:AuthService,
+    private route:ActivatedRoute) {}
 
   ngOnInit(): void {
 
@@ -59,6 +62,12 @@ export class DetalleUbicacion implements OnInit, AfterViewInit{
 
   ngAfterViewInit(): void {
     this.initMap();
+
+    const busqueda = this.route.snapshot.queryParamMap.get('busqueda');
+  if (busqueda) {
+    this.busquedaDireccion = busqueda;
+    this.buscarEnMaps();
+  }
   }
 
   /* Inicializamos el mapa centrado por defento en Argentina, probar si anda bien */
