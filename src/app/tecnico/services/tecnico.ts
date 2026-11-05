@@ -25,6 +25,11 @@ export class TecnicoService {
      return this.http.get<PerfilTecnicoModel>(`${this.url}/${uuid}`);
     }
 
+     // MI perfil de técnico (el back me identifica por el token)
+    getMiPerfil(): Observable<PerfilTecnicoModel> {
+     return this.http.get<PerfilTecnicoModel>(`${this.url}/mi-perfil`);
+    }
+
     // CREATE: crear un técnico
     guardarTecnico(tecnico: Partial<TecnicoModel>): Observable<TecnicoModel> {
     return this.http.post<TecnicoModel>(

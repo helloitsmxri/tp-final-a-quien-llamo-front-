@@ -2,10 +2,12 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { TecnicoService } from '../../services/tecnico';
+import { UsuarioService } from '../../../user/services/user';
 import { RatingService } from '../../../rating/services/rating';
 import { PerfilTecnicoModel } from './models/PerfilTecnicoModel';
-import { Calendario } from '../../../components/calendario/calendario';
 import { RatingResponse } from '../../../rating/models/rating-response';
+import { DetalleCertificacion } from '../../../certificacion/pages/detalle-certificacion/detalle-certificacion';
+import { DetallePortfolio } from '../../../portfolio/pages/detalle-portfolio/detalle-portfolio';
 
 interface ItemDetalle {
   titulo: string;
@@ -14,13 +16,14 @@ interface ItemDetalle {
 
 @Component({
   selector: 'app-perfil-tecnico',
-  imports: [Calendario],
+  imports: [DetalleCertificacion, DetallePortfolio],
   templateUrl: './perfil-tecnico.html',
   styleUrl: './perfil-tecnico.css',
 })
 export class PerfilTecnico implements OnInit {
 
   private servicio = inject(TecnicoService);
+  private usuarioService = inject(UsuarioService);
   private ratingService = inject(RatingService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -36,39 +39,32 @@ export class PerfilTecnico implements OnInit {
   resenas: RatingResponse[] = [];
   promedio = 0;
 
-  // Datos de ejemplo para estudios
-  estudios: ItemDetalle[] = [
-    {
-      titulo: 'Master in Landscape Architecture',
-      detalle: 'Harvard Graduate School of Design',
-    },
-    {
-      titulo: 'MSc in Interior and Spatial Design',
-      detalle: 'Politecnico di Milano',
-    },
-  ];
-
-  // Datos de ejemplo para certificaciones
-  certificaciones: ItemDetalle[] = [
-    {
-      titulo: 'LEED Accredited Professional',
-      detalle: 'Interior Design & Construction',
-    },
-    {
-      titulo: 'Certified Sustainable Landscape Designer',
-      detalle: '',
-    },
-    {
-      titulo: 'International Landscape Design Award',
-      detalle: '2022',
-    },
-  ];
-
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');
 
-    if (!uuid || uuid === 't1') {
+    // /perfil-tecnico/t1 sigue sirviendo para probar el diseño con datos de ejemplo
+    if (uuid === 't1') {
       this.cargarMock();
+      return;
+    }
+
+    // sin uuid en la URL = ruta /mi-perfil-tecnico: cargo MI perfil (el back me identifica por el token)
+    if (!uuid) {
+      this.servicio.getMiPerfil().subscribe({
+        next: (data: PerfilTecnicoModel) => {
+          this.tecnico = data;
+          this.procesarProyectos();
+          // las reseñas se piden con el uuid del USUARIO (no del técnico), así q lo saco de mi-perfil
+          this.usuarioService.getMyProfile().subscribe({
+            next: (u) => this.cargarResenas(u.uuid),
+            error: () => (this.resenas = []),
+          });
+        },
+        error: (error: any) => {
+          console.error('Error al cargar mi perfil de técnico:', error.status, error.error);
+          this.errorCarga = true;
+        },
+      });
       return;
     }
 
@@ -80,7 +76,6 @@ export class PerfilTecnico implements OnInit {
       },
       error: (error: any) => {
         console.error('Error al cargar el perfil:', error);
-        console.error('URL solicitada:', error.url);
         console.error('Estado HTTP:', error.status);
         console.error('Respuesta del servidor:', error.error);
 

@@ -149,7 +149,9 @@
           <p class="aviso">Tus especialidades no requieren documentación, pero podés sumar un título o certificación para ganar confianza (opcional).</p>
         }
 
-        <app-certificacion-form modo="registro" [obligatorio]="p.obligatorio" />
+        <app-certificacion-form modo="registro"
+                                [especialidades]="p.opcionesCertificacion"
+                                [obligatorio]="p.obligatorio" />
       } @else {
         @if (p.obligatorio) {
           <p class="aviso">Para ofrecer {{ p.especialidad?.nombre }} tenés que cargar un portfolio (PDF o link). Un administrador lo va a verificar.</p>
