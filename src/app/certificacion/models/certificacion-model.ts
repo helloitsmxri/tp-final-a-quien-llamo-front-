@@ -5,6 +5,8 @@ export interface CertificacionModel {
   uuid: string;
   nombreTecnico: string;
   apellidoTecnico: string;
+  uuidEspecialidad: string | null;
+  nombreEspecialidad: string | null;
   numMatricula: string;
   enteOtorgador: string;
   fechaVencimiento: string;

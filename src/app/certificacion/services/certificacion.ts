@@ -1,4 +1,3 @@
-
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -59,6 +58,7 @@ export class CertificacionService {
   //no setear Content-Type a mano: el navegador agrega el boundary del multipart solo.
   private aFormData(datos: CertificacionDatos): FormData {
     const fd = new FormData();
+    fd.append('uuidEspecialidad', datos.uuidEspecialidad);
     fd.append('numMatricula', datos.numMatricula);
     fd.append('enteOtorgador', datos.enteOtorgador);
     fd.append('fechaVencimiento', datos.fechaVencimiento); // yyyy-MM-dd

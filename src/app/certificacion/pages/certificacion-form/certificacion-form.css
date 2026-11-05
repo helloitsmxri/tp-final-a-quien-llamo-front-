@@ -25,7 +25,8 @@ label {
 }
 
 input[type="text"],
-input[type="date"] {
+input[type="date"],
+select {
   display: block;
   width: 100%;
   min-width: 0;
@@ -51,13 +52,15 @@ input[type="file"] {
   border-radius: 8px;
 }
 
-input:focus {
+input:focus,
+select:focus {
   outline: none;
   border-color: #7d5ff0;
   box-shadow: 0 0 0 3px rgba(125, 95, 240, 0.2);
 }
 
-input.ng-touched.ng-invalid {
+input.ng-touched.ng-invalid,
+select.ng-touched.ng-invalid {
   border-color: #b00020;
 }
 

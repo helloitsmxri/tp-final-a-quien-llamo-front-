@@ -1,10 +1,11 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject, Input } from '@angular/core';
 import { CertificacionModel } from '../../models/certificacion-model';
 import { CertificacionService } from '../../services/certificacion';
 import { EstadoVerificacion } from '../../enum/estado-verificacion';
 
 @Component({
-  imports: [],
+  imports: [DatePipe],
   selector: 'app-detalle-certificacion',
   styleUrl: './detalle-certificacion.css',
   templateUrl: './detalle-certificacion.html',
