@@ -5,6 +5,8 @@ import { ChatModel } from '../../models/chat-model';
 import { ChatService } from '../../services/chat-service';
 import { AuthService } from '../../../auth/services/auth-service';
 import { UsuarioService } from '../../../user/services/user';
+import { TecnicoModel } from '../../../tecnico/models/tecnico-model';
+import { TecnicoService } from '../../../tecnico/services/tecnico';
 
 @Component({
   selector: 'app-lista-chat',
@@ -14,84 +16,90 @@ import { UsuarioService } from '../../../user/services/user';
 })
 export class ListaChat implements OnInit{
   chats: ChatModel[] = [];
+  tecnicos: TecnicoModel[] = [];
   chatSeleccionado: ChatModel | null = null;
-  currentUuidUsuario: string = '';
-  currentIdUsuario: number = 0;
   filtroBusqueda: string = '';
+
+  private uuidUsuario = '';
+  private idUsuario=0;
 
   // Evento para avisarle al padre (ChatView) qué chat se seleccionó
   @Output() chatSeleccionadoEvent = new EventEmitter<ChatModel>();
 
-  constructor(private chatService: ChatService, private authService:AuthService, private usuarioService:UsuarioService) {}
-ngOnInit(): void {
-    this.cargarUsuarioYChats();
-  }
+  constructor(private chatService: ChatService, 
+    private usuarioService:UsuarioService,
+  private tecnicoService:TecnicoService) {}
 
-cargarUsuarioYChats(): void {
+ngOnInit(): void {
     this.usuarioService.getMyProfile().subscribe({
       next: (perfil: any) => {
-        if (perfil) {
-          this.currentUuidUsuario = perfil.uuid;
-          this.currentIdUsuario = perfil.id; 
-          this.cargarChats();
-        }
+        this.uuidUsuario = perfil.uuid;
+         this.uuidUsuario = perfil.uuid;
+        this.idUsuario = perfil.id;
+        this.cargarChats();
       },
-      error: (err) => {
-        console.error('No se pudo obtener la información del usuario logueado.', err);
-      }
+      error: (err) => console.error('No se pudo obtener el usuario logueado.', err),
+    });
+
+    this.tecnicoService.getTecnicos().subscribe({
+      next: (data) => (this.tecnicos = data),
+      error: (err) => console.error('Error al cargar técnicos:', err),
     });
   }
 
   cargarChats(): void {
-    if (!this.currentUuidUsuario) return; 
-
-    this.chatService.getByUsuario(this.currentUuidUsuario).subscribe({
+    this.chatService.getByUsuario(this.uuidUsuario).subscribe({
       next: (data) => {
-        console.log('Chats recibidos del backend:', data);
         this.chats = data;
-        if (this.chats.length > 0) {
-          this.seleccionarChat(this.chats[0]); // Selecciona el primero por defecto
+        if (!this.chatSeleccionado && data.length > 0) {
+          this.seleccionarChat(data[0]);
         }
       },
-      error: (err) => console.error('Error al cargar chats:', err)
+      error: (err) => console.error('Error al cargar chats:', err),
     });
   }
 
-  // Método temporal para iniciar un chat de prueba con un idTecnico existente en BD
-iniciarChatDePrueba(idTecnicoSeleccionado: number): void {
-    if (!this.currentUuidUsuario) {
-      alert('No se pudo recuperar los datos del usuario autenticado.');
+  seleccionarChat(chat: ChatModel): void {
+    this.chatSeleccionado = chat;
+    this.chatSeleccionadoEvent.emit(chat);
+  }
+
+  // Click en un técnico: abre el chat si existe, si no lo crea
+  abrirChatCon(tecnico: TecnicoModel): void {
+    const existente = this.chats.find((c) => c.idTecnico === tecnico.idTecnico);
+    if (existente) {
+      this.seleccionarChat(existente);
+      this.filtroBusqueda = '';
       return;
     }
 
-    this.chatService.iniciarChat(this.currentIdUsuario, idTecnicoSeleccionado).subscribe({
+    this.chatService.iniciarChat(this.idUsuario, tecnico.idTecnico).subscribe({
       next: (chatCreado) => {
-        alert('¡Chat creado con éxito!');
-        if (chatCreado) {
-          this.chats.push(chatCreado);
-          this.seleccionarChat(chatCreado);
-        }
-        this.cargarChats();
+        this.chats.unshift(chatCreado);
+        this.seleccionarChat(chatCreado);
+        this.filtroBusqueda = '';
       },
-      error: (err) => {
-        console.error('Error al iniciar el chat:', err);
-      }
+      error: (err) => console.error('Error al iniciar el chat:', err),
     });
   }
-  
-  seleccionarChat(chat: ChatModel): void {
-    this.chatSeleccionado = chat;
-    this.chatSeleccionadoEvent.emit(chat); // Dispara el evento hacia ChatView
-  }
-  
-  get chatsFiltrados(): ChatModel[] {
-  if (!this.filtroBusqueda.trim()) {
-    return this.chats;
-  }
-  return this.chats.filter(c => 
-    c.nombreTecnico?.toLowerCase().includes(this.filtroBusqueda.toLowerCase()) ||
-    c.nombreUsuario?.toLowerCase().includes(this.filtroBusqueda.toLowerCase())
-  );
-}
 
+  get chatsFiltrados(): ChatModel[] {
+    const f = this.filtroBusqueda.trim().toLowerCase();
+    if (!f) return this.chats;
+    return this.chats.filter((c) =>
+      (c.nombreTecnico ?? '').toLowerCase().includes(f) ||
+      (c.nombreUsuario ?? '').toLowerCase().includes(f),
+    );
+  }
+
+  // Técnicos que coinciden con la búsqueda y con los que todavía no hay chat
+  get tecnicosFiltrados(): TecnicoModel[] {
+    const f = this.filtroBusqueda.trim().toLowerCase();
+    if (!f) return [];
+    return this.tecnicos.filter(
+      (t) =>
+        t.usuario.nombre.toLowerCase().includes(f) &&
+        !this.chats.some((c) => c.idTecnico === t.idTecnico),
+    );
+  }
 }
