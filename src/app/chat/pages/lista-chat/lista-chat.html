@@ -1,27 +1,36 @@
 <div class="search-box">
-  <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Inserte un nombre aquí para buscar" />
-</div>
-
-<!-- Botón de prueba temporal para iniciar chat -->
-<div style="padding: 10px; text-align: center;">
-  <button type="button" (click)="iniciarChatDePrueba()">➕ Probar Nuevo Chat</button>
+  <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Buscar conversaciones o técnicos" />
 </div>
 
 <div class="lista-chats">
   @for (chat of chatsFiltrados; track chat.uuidChat) {
-    <div 
-      class="item-chat" 
-      [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
-      (click)="seleccionarChat(chat)"
-    >
+    <div class="item-chat"
+         [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
+         (click)="seleccionarChat(chat)">
       <div class="avatar-chat">
-        <img [src]="'https://ui-avatars.com/api/?name=' + (chat.nombreTecnico || 'Usuario')" alt="Avatar" />
+        <img [src]="'https://ui-avatars.com/api/?name=' + (chat.nombreTecnico || chat.nombreUsuario)" alt="Avatar" />
       </div>
       <div class="info-chat">
-        <span class="nombre">{{ chat.nombreTecnico || 'Contacto' }}</span>
+        <span class="nombre">{{ chat.nombreTecnico || chat.nombreUsuario }}</span>
       </div>
     </div>
   } @empty {
-    <p class="sin-chats">No tenés conversaciones activas.</p>
+    @if (!filtroBusqueda.trim()) {
+      <p class="sin-chats">No tenés conversaciones. Buscá un técnico para empezar.</p>
+    }
+  }
+
+  @if (tecnicosFiltrados.length > 0) {
+    <p class="seccion-titulo">Técnicos</p>
+    @for (t of tecnicosFiltrados; track t.idTecnico) {
+      <div class="item-chat" (click)="abrirChatCon(t)">
+        <div class="avatar-chat">
+          <img [src]="'https://ui-avatars.com/api/?name=' + t.usuario.nombre" alt="Avatar" />
+        </div>
+        <div class="info-chat">
+          <span class="nombre">{{ t.usuario.nombre }}</span>
+        </div>
+      </div>
+    }
   }
 </div>
