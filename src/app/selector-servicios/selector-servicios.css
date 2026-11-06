@@ -1,0 +1,133 @@
+:host { 
+  display: block; 
+  margin-top: 16px; 
+}
+
+.selector { 
+  display: flex; 
+  flex-direction: 
+  column; gap: 16px; 
+}
+
+h4 { 
+  margin: 0 0 2px; 
+  color: #5b3fd6; 
+  font-size: 1rem; 
+}
+
+.ayuda {
+   margin: 0 0 8px; 
+   color: #625d70; 
+   font-size: 0.8rem; 
+}
+
+.estado { 
+  text-align: center; 
+  color: #625d70; 
+  font-size: 0.9rem; 
+}
+
+.estado.error { 
+  color: #b3261e; 
+}
+
+.chips { 
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 8px; 
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1.5px solid #d6cdf3;
+  border-radius: 999px;
+  background: #fff;
+  color: #343044;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+.chip:hover { 
+  border-color: #7d5ff0; 
+}
+
+.chip:active { 
+  transform: scale(0.97); 
+}
+
+.chip:focus-visible { 
+  outline: 3px solid #7d5ff0; 
+  outline-offset: 2px; 
+}
+
+.chip.activo {
+  background: linear-gradient(90deg, #7d5ff0, #a58cf5);
+  border-color: transparent;
+  color: #fff;
+}
+.chip.activo::before { 
+  content: "✓"; 
+  font-weight: 700; 
+}
+
+.chip-hab { 
+  font-size: 0.8rem; 
+  padding: 5px 12px; 
+}
+
+.chip-hab.activo { 
+  background: #5b3fd6; 
+}
+
+.contador {
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #5b3fd6;
+  color: #fff;
+  font-size: 0.72rem;
+  line-height: 20px;
+  text-align: center;
+}
+
+.tarjeta {
+  padding: 14px;
+  border: 1px solid #e5e0f2;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(90, 70, 160, 0.08);
+  animation: aparecer 0.2s ease-out;
+}
+
+.habilidades {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #d6cdf3;
+  animation: aparecer 0.2s ease-out;
+}
+
+.habilidades .ayuda { 
+  margin-bottom: 6px; 
+}
+
+.resumen { 
+  margin: 0; text-align: 
+  center; color: #5b3fd6; 
+  font-size: 0.85rem; 
+  font-weight: 600; 
+}
+
+@keyframes aparecer {
+  from { 
+    opacity: 0; 
+    transform: translateY(-4px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: none; 
+  }
+}

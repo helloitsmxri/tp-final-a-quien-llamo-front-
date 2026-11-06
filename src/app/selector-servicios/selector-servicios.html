@@ -1,0 +1,69 @@
+@if (cargando) {
+  <p class="estado">Cargando rubros…</p>
+} @else if (falloCarga) {
+  <p class="estado error">No se pudieron cargar los rubros. Probá recargar la página.</p>
+} @else {
+  <div class="selector">
+
+    <div class="bloque">
+      <h4>1. ¿En qué rubros trabajás?</h4>
+      <p class="ayuda">Podés elegir más de uno.</p>
+      <div class="chips">
+        @for (r of rubros; track r.uuidRubro) {
+          <button type="button" class="chip"
+                  [class.activo]="rubrosSel.has(r.uuidRubro)"
+                  [attr.aria-pressed]="rubrosSel.has(r.uuidRubro)"
+                  (click)="toggleRubro(r.uuidRubro)">
+            {{ r.nombreRubro }}
+            @if (cantidadElegidas(r) > 0) { 
+              <span class="contador">{{ cantidadElegidas(r) }}</span> 
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    @for (r of rubrosElegidos; track r.uuidRubro) {
+      <div class="tarjeta">
+        <h4>{{ r.nombreRubro }}</h4>
+        <p class="ayuda">Elegí tus especialidades</p>
+
+        <div class="chips">
+          @for (e of especialidadesDe(r); track e.uuid) {
+            <button type="button" class="chip chip-esp"
+                    [class.activo]="especialidadesSel.has(e.uuid)"
+                    [attr.aria-pressed]="especialidadesSel.has(e.uuid)"
+                    (click)="toggleEspecialidad(e.uuid)">
+              {{ e.nombreEspecialidad }}
+            </button>
+          }
+        </div>
+
+        @for (e of especialidadesDe(r); track e.uuid) {
+          @if (especialidadesSel.has(e.uuid) && habilidadesDe(e).length) {
+            <div class="habilidades">
+              <p class="ayuda">Habilidades en <strong>{{ e.nombreEspecialidad }}</strong></p>
+              <div class="chips">
+                @for (h of habilidadesDe(e); track h.uuid) {
+                  <button type="button" class="chip chip-hab"
+                          [class.activo]="habilidadesSel.has(h.uuid)"
+                          [attr.aria-pressed]="habilidadesSel.has(h.uuid)"
+                          (click)="toggleHabilidad(h.uuid)">
+                    {{ h.nombreHabilidad }}
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        }
+      </div>
+    }
+
+    @if (rubrosSel.size) {
+      <p class="resumen">
+        {{ especialidadesSel.size }} {{ especialidadesSel.size === 1 ? 'especialidad' : 'especialidades' }} ·
+        {{ habilidadesSel.size }} {{ habilidadesSel.size === 1 ? 'habilidad' : 'habilidades' }}
+      </p>
+    }
+  </div>
+}
