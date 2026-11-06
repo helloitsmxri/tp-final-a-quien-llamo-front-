@@ -60,4 +60,19 @@ export class PortfolioList {
   tieneArchivo(p: PortfolioUsuarioModel): boolean {
     return !!p.tipoArchivo && p.tipoArchivo !== 'enlace';
   }
+
+  abrirArchivo(p: PortfolioUsuarioModel): void {
+  if (!p.archivoAdjunto) return;
+
+  const bytes = Uint8Array.from(
+    atob(p.archivoAdjunto),
+    (ch) => ch.charCodeAt(0)
+  );
+
+  const url = URL.createObjectURL(
+    new Blob([bytes], { type: p.tipoArchivo || 'application/octet-stream' })
+  );
+
+  window.open(url, '_blank');
+}
 }

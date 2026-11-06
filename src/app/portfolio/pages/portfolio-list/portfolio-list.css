@@ -128,7 +128,8 @@ small.error {
   border-radius: 8px;
 }
 
-a.boton {
+a.boton,
+button.boton {
   display: inline-block;
   margin-top: 18px;
   padding: 8px 20px;
@@ -146,7 +147,8 @@ a.boton {
   transition: background 0.2s, color 0.2s, transform 0.2s;
 }
 
-a.boton:hover {
+a.boton:hover,
+button.boton:hover {
   color: #fff;
   background: linear-gradient(90deg, #5b3fd6, #a58cff);
   transform: translateY(-2px);
@@ -175,4 +177,14 @@ a.boton:hover {
     display: block;
     width: 100%;
   }
+}
+
+button.boton {
+  font-family: inherit;
+}
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
