@@ -1,43 +1,23 @@
-@if (cargando) { <p>Cargando...</p> }
-@if (error) { <p class="error">{{ error }}</p> }
-@if (!cargando && !error && certificaciones.length === 0) {
-<p>Todavía no cargaste títulos ni certificaciones.</p>
+
+@if (cargando) {
+  <p>Cargando...</p>
 }
 
-<ul>
-  @for (c of certificaciones; track c.uuid) {
-  <li>
-    @if (c.titulo) {
-    <strong class="titulo">{{ c.titulo }}</strong>
-    }
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
 
-    <dl class="datos">
-      <div>
-        <dt>Especialidad</dt>
-        <dd>{{ c.nombreEspecialidad }}</dd>
-      </div>
-      <div>
-        <dt>Otorgado por</dt>
-        <dd>{{ c.enteOtorgador }}</dd>
-      </div>
-      <div>
-        <dt>Matrícula</dt>
-        <dd>{{ c.numMatricula }}</dd>
-      </div>
-      <div>
-        <dt>Vence</dt>
-        <dd>{{ c.fechaVencimiento | date:'dd/MM/yyyy' }}</dd>
-      </div>
-      <div>
-        <dt>Estado</dt>
-        <dd><span [class]="'estado-' + c.estadoVerificacion.toLowerCase()">{{ c.estadoVerificacion }}</span></dd>
-      </div>
-    </dl>
-
-    @if (c.estadoVerificacion === Estado.Rechazado && c.notasAdmin) {
-    <small class="error">Motivo: {{ c.notasAdmin }}</small>
+@if (!cargando && !error && certificaciones.length > 0) {
+  <ul>
+    @for (c of certificaciones; track c.uuid) {
+      <li>
+        <strong
+          class="titulo"
+          [class.aprobado]="c.estadoVerificacion === Estado.Aprobado"
+          [class.no-aprobado]="c.estadoVerificacion !== Estado.Aprobado">
+          {{ c.titulo }}
+        </strong>
+      </li>
     }
-    <button type="button" (click)="abrir(c)">Ver archivo</button>
-  </li>
-  }
-</ul>
+  </ul>
+}
