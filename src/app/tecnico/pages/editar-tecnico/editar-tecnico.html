@@ -1,4 +1,3 @@
-
 <div class="contenedor">
 
   <a routerLink="/mi-perfil-tecnico" class="volver">
@@ -6,308 +5,238 @@
   </a>
 
   @if (errorCarga) {
-    <p class="estado error">
-      No se pudo cargar tu perfil.
-    </p>
+  <p class="estado error">
+    No se pudo cargar tu perfil.
+  </p>
   }
 
   @else if (!perfil) {
-    <p class="estado">
-      Cargando...
-    </p>
+  <p class="estado">
+    Cargando...
+  </p>
   }
 
   @else if (fase === 'datos') {
 
-    <section class="card">
+  <section class="card">
 
-      <h2>Editar mi perfil</h2>
+    <h2>Editar mi perfil</h2>
 
-      <!-- Indicador de pasos -->
-      <div class="pasos">
-        <span [class.activo]="pasoEdicion === 1">
-          1. Datos del perfil
-        </span>
+    <!-- Indicador de pasos -->
+    <div class="pasos">
+      <span [class.activo]="pasoEdicion === 1">
+        1. Datos del perfil
+      </span>
 
-        <span [class.activo]="pasoEdicion === 2">
-          2. Servicios
-        </span>
+      <span [class.activo]="pasoEdicion === 2">
+        2. Servicios
+      </span>
+    </div>
+
+    <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+      <!-- PASO 1 -->
+      @if (pasoEdicion === 1) {
+
+      <h3>Datos personales</h3>
+
+      <!-- Foto -->
+      <div class="foto-perfil">
+
+        @if (fotoPreview) {
+        <img [src]="fotoPreview" alt="Foto de perfil" class="foto-preview">
+        }
+
+        @else {
+        <p>Sin foto de perfil</p>
+        }
+
+        <label for="foto">
+          Cambiar foto de perfil
+        </label>
+
+        <input id="foto" type="file" accept="image/*" (change)="onFotoSeleccionada($event)">
+
+        @if (errorFoto) {
+        <small class="error">
+          {{ errorFoto }}
+        </small>
+        }
+
       </div>
 
-      <form
-        [formGroup]="formulario"
-        (ngSubmit)="guardar()"
-      >
+      <!-- Nombre -->
+      <label for="nombre">Nombre</label>
 
-        <!-- PASO 1 -->
-        @if (pasoEdicion === 1) {
+      <input id="nombre" type="text" formControlName="nombre">
 
-          <h3>Datos personales</h3>
+      @if (errorMensaje('nombre'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
 
-          <!-- Foto -->
-          <div class="foto-perfil">
+      <!-- Apellido -->
+      <label for="apellido">Apellido</label>
 
-            @if (fotoPreview) {
-              <img
-                [src]="fotoPreview"
-                alt="Foto de perfil"
-                class="foto-preview"
-              >
-            }
+      <input id="apellido" type="text" formControlName="apellido">
 
-            @else {
-              <p>Sin foto de perfil</p>
-            }
+      @if (errorMensaje('apellido'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
 
-            <label for="foto">
-              Cambiar foto de perfil
-            </label>
+      <!-- Teléfono -->
+      <label for="telefono">Teléfono</label>
 
-            <input
-              id="foto"
-              type="file"
-              accept="image/*"
-              (change)="onFotoSeleccionada($event)"
-            >
+      <input id="telefono" type="text" formControlName="telefono">
 
-            @if (errorFoto) {
-              <small class="error">
-                {{ errorFoto }}
-              </small>
-            }
+      @if (errorMensaje('telefono'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
 
-          </div>
+      <!-- Sobre mí -->
+      <label for="sobreMi">Sobre mí</label>
 
-          <!-- Nombre -->
-          <label for="nombre">Nombre</label>
+      <textarea id="sobreMi" rows="4" formControlName="sobreMi" placeholder="Contanos un poco sobre vos..."></textarea>
 
-          <input
-            id="nombre"
-            type="text"
-            formControlName="nombre"
-          >
+      <h3>Datos profesionales</h3>
 
-          @if (errorMensaje('nombre'); as msg) {
-            <small class="error">{{ msg }}</small>
-          }
+      <!-- CUIT -->
+      <label for="cuit">CUIT</label>
 
-          <!-- Apellido -->
-          <label for="apellido">Apellido</label>
+      <input id="cuit" type="text" formControlName="cuit" inputmode="numeric">
 
-          <input
-            id="apellido"
-            type="text"
-            formControlName="apellido"
-          >
+      @if (errorMensaje('cuit'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
 
-          @if (errorMensaje('apellido'); as msg) {
-            <small class="error">{{ msg }}</small>
-          }
+      <!-- Descripción -->
+      <label for="descripcionTrabajo">
+        Descripción de tu trabajo
+      </label>
 
-          <!-- Teléfono -->
-          <label for="telefono">Teléfono</label>
+      <textarea id="descripcionTrabajo" rows="4" formControlName="descripcionTrabajo"></textarea>
 
-          <input
-            id="telefono"
-            type="text"
-            formControlName="telefono"
-          >
+      @if (errorMensaje('descripcionTrabajo'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
 
-          @if (errorMensaje('telefono'); as msg) {
-            <small class="error">{{ msg }}</small>
-          }
+      @if (errorServidor) {
+      <p class="estado error">
+        {{ errorServidor }}
+      </p>
+      }
 
-          <!-- Sobre mí -->
-          <label for="sobreMi">Sobre mí</label>
+      <!-- Acciones del paso 1 -->
+      <div class="acciones">
 
-          <textarea
-            id="sobreMi"
-            rows="4"
-            formControlName="sobreMi"
-            placeholder="Contanos un poco sobre vos..."
-          ></textarea>
+        <a routerLink="/mi-perfil-tecnico" class="boton boton-sec">
+          Cancelar
+        </a>
 
-          <h3>Datos profesionales</h3>
+        <button type="button" class="boton" (click)="continuarEdicion()">
+          Siguiente
+        </button>
 
-          <!-- CUIT -->
-          <label for="cuit">CUIT</label>
+      </div>
+      }
 
-          <input
-            id="cuit"
-            type="text"
-            formControlName="cuit"
-            inputmode="numeric"
-          >
+      <!-- PASO 2 -->
+      @if (pasoEdicion === 2) {
 
-          @if (errorMensaje('cuit'); as msg) {
-            <small class="error">{{ msg }}</small>
-          }
+      <h3>Rubros, especialidades y habilidades</h3>
 
-          <!-- Descripción -->
-          <label for="descripcionTrabajo">
-            Descripción de tu trabajo
-          </label>
+      <p>
+        Seleccioná los rubros y servicios que ofrecés.
+      </p>
 
-          <textarea
-            id="descripcionTrabajo"
-            rows="4"
-            formControlName="descripcionTrabajo"
-          ></textarea>
+      <app-selector-servicios [especialidadesIniciales]="perfil.especialidades"
+        [habilidadesIniciales]="perfil.habilidades" (especialidadesSeleccionadas)="onEspecialidades($event)"
+        (habilidadesSeleccionadas)="onHabilidades($event)" />
 
-          @if (errorMensaje('descripcionTrabajo'); as msg) {
-            <small class="error">{{ msg }}</small>
-          }
+      @if (errorSeleccion) {
+      <small class="error">
+        {{ errorSeleccion }}
+      </small>
+      }
 
-          @if (errorServidor) {
-            <p class="estado error">
-              {{ errorServidor }}
-            </p>
-          }
+      @if (errorServidor) {
+      <p class="estado error">
+        {{ errorServidor }}
+      </p>
+      }
 
-          <!-- Acciones del paso 1 -->
-          <div class="acciones">
+      <!-- Acciones del paso 2 -->
+      <div class="acciones">
 
-            <a
-              routerLink="/mi-perfil-tecnico"
-              class="boton boton-sec"
-            >
-              Cancelar
-            </a>
+        <button type="button" class="boton boton-sec" (click)="pasoEdicion = 1">
+          Anterior
+        </button>
 
-            <button
-              type="button"
-              class="boton"
-              (click)="continuarEdicion()"
-            >
-              Siguiente
-            </button>
+        <button type="submit" class="boton" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
 
-          </div>
-        }
+      </div>
+      }
 
-        <!-- PASO 2 -->
-        @if (pasoEdicion === 2) {
+    </form>
 
-          <h3>Rubros, especialidades y habilidades</h3>
-
-          <p>
-            Seleccioná los rubros y servicios que ofrecés.
-          </p>
-
-          <app-selector-servicios
-            [especialidadesIniciales]="perfil.especialidades"
-            [habilidadesIniciales]="perfil.habilidades"
-            (especialidadesSeleccionadas)="onEspecialidades($event)"
-            (habilidadesSeleccionadas)="onHabilidades($event)"
-          />
-
-          @if (errorSeleccion) {
-            <small class="error">
-              {{ errorSeleccion }}
-            </small>
-          }
-
-          @if (errorServidor) {
-            <p class="estado error">
-              {{ errorServidor }}
-            </p>
-          }
-
-          <!-- Acciones del paso 2 -->
-          <div class="acciones">
-
-            <button
-              type="button"
-              class="boton boton-sec"
-              (click)="pasoEdicion = 1"
-            >
-              Anterior
-            </button>
-
-            <button
-              type="submit"
-              class="boton"
-              [disabled]="guardando"
-            >
-              {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
-            </button>
-
-          </div>
-        }
-
-      </form>
-
-    </section>
+  </section>
   }
 
   <!-- DOCUMENTACIÓN DE ESPECIALIDADES NUEVAS -->
   @else {
 
-    <section class="card">
+  <section class="card">
 
-      <h2>Tus cambios se guardaron</h2>
+    <h2>Tus cambios se guardaron</h2>
 
-      <p class="nota">
-        Las especialidades nuevas piden documentación para ser
-        verificadas. Podés cargarla ahora o más tarde con el botón +
-        de tu perfil.
+    <p class="nota">
+      Las especialidades nuevas piden documentación para ser
+      verificadas. Podés cargarla ahora o más tarde con el botón +
+      de tu perfil.
+    </p>
+
+    @for (p of pendientes; track p.especialidad.uuid) {
+
+    <div class="pendiente">
+
+      @if (hechas.has(p.especialidad.uuid)) {
+
+      <p class="ok">
+        ✓ {{ p.especialidad.nombreEspecialidad }}:
+        documentación cargada
       </p>
 
-      @for (p of pendientes; track p.especialidad.uuid) {
-
-        <div class="pendiente">
-
-          @if (hechas.has(p.especialidad.uuid)) {
-
-            <p class="ok">
-              ✓ {{ p.especialidad.nombreEspecialidad }}:
-              documentación cargada
-            </p>
-
-          }
-
-          @else if (
-            p.especialidad.tipoValidacion === Tipo.Certificado
-          ) {
-
-            <app-certificacion-form
-              modo="perfil"
-              [obligatorio]="true"
-              [uuidTecnico]="perfil.uuid"
-              [especialidades]="p.opciones"
-              (creada)="marcarHecha(p.especialidad.uuid)"
-            />
-
-          }
-
-          @else {
-
-            <app-form-portfolio
-              modo="perfil"
-              [obligatorio]="true"
-              [uuidTecnico]="perfil.uuid"
-              [especialidades]="p.opciones"
-              (creada)="marcarHecha(p.especialidad.uuid)"
-            />
-
-          }
-
-        </div>
       }
 
-      <div class="acciones">
+      @else if (
+      p.especialidad.tipoValidacion === Tipo.Certificado
+      ) {
 
-        <button
-          type="button"
-          class="boton"
-          (click)="terminar()"
-        >
-          {{ faltan ? 'Cargarla más tarde' : 'Listo' }}
-        </button>
+      <app-certificacion-form modo="perfil" [obligatorio]="true" [uuidTecnico]="perfil.uuid"
+        [especialidades]="p.opciones" (creada)="marcarHecha(p.especialidad.uuid)" />
 
-      </div>
+      }
 
-    </section>
+      @else {
+
+      <app-form-portfolio modo="perfil" [obligatorio]="true" [uuidTecnico]="perfil.uuid" [especialidades]="p.opciones"
+        (creada)="marcarHecha(p.especialidad.uuid)" />
+
+      }
+
+    </div>
+    }
+
+    @if (!faltan) {
+    <div class="acciones">
+      <button type="button" class="boton" (click)="terminar()">
+        Listo
+      </button>
+    </div>
+    }
+
+  </section>
   }
 
 </div>

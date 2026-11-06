@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TecnicoService } from '../../services/tecnico';
 import { UsuarioService } from '../../../user/services/user';
 import { RatingService } from '../../../rating/services/rating';
-import { PerfilTecnicoModel } from './models/PerfilTecnicoModel';
+import { PerfilTecnicoModel } from '../../models/PerfilTecnicoModel';
 import { RatingResponse } from '../../../rating/models/rating-response';
 import { DetalleCertificacion } from '../../../certificacion/pages/detalle-certificacion/detalle-certificacion';
 import { DetallePortfolio } from '../../../portfolio/pages/detalle-portfolio/detalle-portfolio';
@@ -16,7 +16,7 @@ interface ItemDetalle {
 
 @Component({
   selector: 'app-perfil-tecnico',
-  imports: [DetalleCertificacion, DetallePortfolio],
+  imports: [DetalleCertificacion, DetallePortfolio, RouterLink],
   templateUrl: './perfil-tecnico.html',
   styleUrl: './perfil-tecnico.css',
 })
