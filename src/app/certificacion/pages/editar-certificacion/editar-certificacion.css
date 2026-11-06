@@ -1,0 +1,166 @@
+:host {
+  display: block;
+  font-family: "Creato Display", Arial, sans-serif;
+  color: #3b2a7a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.formulario-edicion {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 28px;
+  background: #f1f1f1;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(90, 70, 160, 0.25);
+}
+
+h3 {
+  margin: 0 0 20px;
+  font-size: 1.6rem;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  display: block;
+  margin: 14px 0 4px;
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #7d5ff0;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #3b2a7a;
+  background: #fff;
+  border: 1px solid #d6cdf3;
+  border-radius: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+  outline: 2px solid #7d5ff0;
+  outline-offset: 1px;
+}
+
+input:disabled {
+  background: #e9e6f0;
+  color: #777;
+  cursor: not-allowed;
+}
+
+input[type="file"] {
+  cursor: pointer;
+}
+
+small.error {
+  display: block;
+  margin-top: 6px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  color: #b00020;
+  background: #fdecea;
+  border-radius: 8px;
+}
+
+.ayuda {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: #5440b5;
+}
+
+.error {
+  color: #b00020;
+}
+
+.exito {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  font-weight: 600;
+  color: #2e9e5b;
+  background: #e8f5ee;
+  border-radius: 10px;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.acciones button {
+  display: inline-block;
+  min-width: 130px;
+  padding: 9px 24px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 50px;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.btn-guardar {
+  color: #fff;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  box-shadow: 0 4px 10px rgba(90, 70, 160, 0.35);
+}
+
+.btn-cancelar {
+  color: #5b3fd6;
+  background: transparent;
+  border: 1px solid #5b3fd6 !important;
+  box-shadow: none;
+}
+
+.btn-guardar:hover:not(:disabled),
+.btn-cancelar:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn-guardar:hover:not(:disabled) {
+  box-shadow: 0 6px 14px rgba(90, 70, 160, 0.4);
+}
+
+.btn-cancelar:hover:not(:disabled) {
+  background: rgba(125, 95, 240, 0.1);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 550px) {
+  .formulario-edicion {
+    padding: 20px;
+  }
+
+  .acciones {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .acciones button {
+    width: 100%;
+  }
+}
