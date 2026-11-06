@@ -1,0 +1,238 @@
+
+:host {
+  display: block;
+  font-family: "Creato Display", Arial, sans-serif;
+  color: #3b2a7a;
+}
+
+.editar-portfolio {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+.editar-portfolio,
+.editar-portfolio * {
+  box-sizing: border-box;
+}
+
+.cabecera {
+  margin-bottom: 20px;
+}
+
+.cabecera h2 {
+  margin: 0 0 8px;
+  font-size: 1.6rem;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.cabecera p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6d609c;
+}
+
+form {
+  padding: 28px;
+  background: #f1f1f1;
+  border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(90, 70, 160, 0.25);
+}
+
+.campo {
+  margin-bottom: 20px;
+}
+
+.campo label {
+  display: block;
+  margin: 14px 0 6px;
+  font-size: 0.72rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #7d5ff0;
+}
+
+.campo input,
+.campo textarea {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #3b2a7a;
+  background: #fff;
+  border: 1px solid #d6cdf3;
+  border-radius: 10px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campo input:focus,
+.campo textarea:focus {
+  outline: none;
+  border-color: #7d5ff0;
+  box-shadow: 0 0 0 3px rgba(125, 95, 240, 0.15);
+}
+
+.campo textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.campo input[type="file"] {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.campo input[type="file"]::file-selector-button {
+  margin-right: 12px;
+  padding: 8px 14px;
+  font-family: inherit;
+  font-weight: 600;
+  color: #5b3fd6;
+  background: #eee9ff;
+  border: 1px solid #d6cdf3;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.campo input[type="file"]::file-selector-button:hover {
+  color: #fff;
+  background: #7d5ff0;
+}
+
+small.error {
+  display: block;
+  margin-top: 6px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  color: #b00020;
+  background: #fdecea;
+  border-radius: 8px;
+}
+
+.ayuda {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.78rem;
+  color: #776c9b;
+}
+
+.archivo-actual,
+.archivo-seleccionado {
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: #5440b5;
+  background: rgba(125, 95, 240, 0.1);
+  border-radius: 8px;
+}
+
+.archivo-seleccionado {
+  font-weight: 600;
+  background: #e8f5ee;
+  color: #2e8050;
+}
+
+.mensaje {
+  padding: 12px;
+  font-size: 0.9rem;
+  text-align: center;
+  background: rgba(125, 95, 240, 0.12);
+  border-radius: 10px;
+}
+
+.mensaje.error {
+  color: #b00020;
+  background: #fdecea;
+}
+
+.exito {
+  margin: 16px 0;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2e9e5b;
+  background: #e8f5ee;
+  border-radius: 10px;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+.boton {
+  display: inline-block;
+  padding: 10px 24px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  box-shadow: 0 4px 10px rgba(90, 70, 160, 0.35);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.boton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 15px rgba(90, 70, 160, 0.4);
+  filter: brightness(1.06);
+}
+
+.boton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 3px 7px rgba(90, 70, 160, 0.3);
+}
+
+.boton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.boton-secundario {
+  color: #5b3fd6;
+  background: transparent;
+  border: 1px solid #5b3fd6;
+  box-shadow: none;
+}
+
+.boton-secundario:hover:not(:disabled) {
+  color: #fff;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+}
+
+@media (max-width: 520px) {
+  .editar-portfolio {
+    padding: 18px 14px 36px;
+  }
+
+  form {
+    padding: 22px 18px;
+  }
+
+  .acciones {
+    flex-direction: column-reverse;
+  }
+
+  .boton {
+    width: 100%;
+  }
+}
