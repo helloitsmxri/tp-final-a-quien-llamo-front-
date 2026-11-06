@@ -7,7 +7,7 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProyectoService } from './services/proyecto-service';
 import { SEPARADOR } from './utils/proyecto-texto';
 import { ProyectoModel } from './models/ProyectoModel';
@@ -29,6 +29,7 @@ export class Proyecto implements OnInit {
   private service = inject(ProyectoService);
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
+  private router = inject(Router);
 
   //uuid del tecnico por @Input y si no viene lo saca de la ruta (perfil-tecnico/:uuid/proyectos)
   @Input() uuid: string | null = null;
@@ -181,4 +182,8 @@ export class Proyecto implements OnInit {
     }
     return e instanceof Error ? e.message : porDefecto;
   }
+
+  volverAlPerfil(): void {
+  this.router.navigate(['/perfil-tecnico', this.uuidTecnico]);
+}
 }

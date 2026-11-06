@@ -119,15 +119,9 @@
 
     @if (errorProyectos(); as msg) { <small class="error">{{ msg }}</small> }
 
-        <app-detalle-rubro
-      (rubrosSeleccionados)="onRubros($event)" />
-      
-    <app-detalle-especialidad
-      [nombresPermitidos]="especialidadesDelRubro"
-      (especialidadesSeleccionadas)="onEspecialidades($event)" />
-
-    <app-detalle-habilidad
-      [nombresEspecialidades]="nombresEspecialidades"
+          <app-selector-servicios
+      (rubrosSeleccionados)="onRubros($event)"
+      (especialidadesSeleccionadas)="onEspecialidades($event)"
       (habilidadesSeleccionadas)="onHabilidades($event)" />
 
     @if (errorSeleccion) { 

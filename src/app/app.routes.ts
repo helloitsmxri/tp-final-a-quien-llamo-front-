@@ -17,6 +17,7 @@ import { authGuard } from './auth/guards/authGuard';
 import { PerfilEdicion } from './user/pages/perfil-edicion/perfil-edicion';
 import { Perfil } from './user/pages/perfil/perfil';
 import { MisPresupuestos } from './presupuesto/pages/mis-presupuestos/mis-presupuestos';
+import { EditarTecnico } from './tecnico/pages/editar-tecnico/editar-tecnico';
 
 export const routes: Routes = [
 
@@ -34,6 +35,7 @@ export const routes: Routes = [
     {path: 'perfil-tecnico/:uuid', component: PerfilTecnico, canActivate: [authGuard]},
     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico', component: PerfilTecnico, canActivate: [authGuard]},
+    {path: 'mi-perfil-tecnico/editar', component: EditarTecnico, canActivate: [authGuard]},
     
     // USUARIO
     {path: 'perfil-edicion', component: PerfilEdicion, canActivate: [authGuard]},

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TecnicoModel } from '../models/tecnico-model';
 import { PerfilTecnico } from '../pages/perfil-tecnico/perfil-tecnico';
-import { PerfilTecnicoModel } from '../pages/perfil-tecnico/models/PerfilTecnicoModel';
+import { PerfilTecnicoModel } from '../models/PerfilTecnicoModel';
 
 @Injectable({ providedIn: 'root' })
 export class TecnicoService {
@@ -22,7 +22,7 @@ export class TecnicoService {
     }
 
     getPerfil(uuid: string): Observable<PerfilTecnicoModel> {
-     return this.http.get<PerfilTecnicoModel>(`${this.url}/${uuid}`);
+      return this.http.get<PerfilTecnicoModel>(`${this.url}/perfil/${uuid}`);
     }
 
      // MI perfil de técnico (el back me identifica por el token)
@@ -55,5 +55,13 @@ export class TecnicoService {
     return this.http.delete<void>(
         `${this.url}/${uuid}`
         );
+    }
+
+   // UPDATE: actualizar perfil completo del técnico
+    actualizarPerfilTecnico(uuid: string, datos: FormData): Observable<PerfilTecnicoModel> {
+       return this.http.put<PerfilTecnicoModel>(
+        `${this.url}/actualizar-perfil/${uuid}`,
+        datos
+    );
     }
 }

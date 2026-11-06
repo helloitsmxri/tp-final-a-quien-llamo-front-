@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, forkJoin, map, switchMap, throwError } from 'rxjs';
 
 import { TecnicoService } from '../../tecnico/services/tecnico';
-import { PerfilTecnicoModel } from '../../tecnico/pages/perfil-tecnico/models/PerfilTecnicoModel';
+import { PerfilTecnicoModel } from '../../tecnico/models/PerfilTecnicoModel';
 import { HabilidadService } from '../../habilidad/services/habilidad';
 import { EspecialidadService } from '../../especialidad/services/especialidad';
 import { ProyectoModel } from '../models/ProyectoModel';
@@ -72,58 +72,83 @@ export class ProyectoService {
     );
   }
 
-  private guardar(uuidTecnico: string, perfil: PerfilTecnicoModel, lista: ProyectoModel[]): Observable<ProyectoModel[]> {
-    const texto = serializarProyectos(lista);
-    if (texto.length < MIN_TEXTO) {
-      return throwError(
-        () =>
-          new Error(
-            `Los proyectos deben tener al menos ${MIN_TEXTO} caracteres en total. ` +
-              'No se puede dejar la lista vacía.',
-          ),
-      );
-    }
-    if (texto.length > MAX_TEXTO) {
-      return throwError(
-        () => new Error(`Superaste el máximo de ${MAX_TEXTO} caracteres entre todos los proyectos.`),
-      );
-    }
+private guardar(
+  uuidTecnico: string,
+  perfil: PerfilTecnicoModel,
+  lista: ProyectoModel[]
+): Observable<ProyectoModel[]> {
 
-    //el PUT del back exige uuids de habilidades y especialidades, pero el GET del perfil
-    //solo devuelve nombres: los traducimos con los catalogos (GET publicos).
-    return forkJoin({ habilidades: this.habilidadService.getAll(), especialidades: this.especialidadService.getAll(),
-    }).pipe(
-      switchMap(({ habilidades, especialidades }) => {
-        const uuidHabilidades = perfil.habilidades.map(
-          (n) => habilidades.find((h) => h.nombreHabilidad === n)?.uuid,
-        );
-        const uuidEspecialidades = perfil.especialidades.map(
-          (n) => especialidades.find((e) => e.nombreEspecialidad === n)?.uuid,
-        );
+  const texto = serializarProyectos(lista);
 
-        //si algún nombre no se encuentra no seguimos: el PUT reemplaza las listas completas
-        //y se perderían habilidades/especialidades del tecnico sin avisar.
-        if (uuidHabilidades.includes(undefined) || uuidEspecialidades.includes(undefined)) {
-          return throwError(
-            () =>
-              new Error(
-                'No se pudieron identificar las habilidades o especialidades del perfil. ' +
-                  'No se guardó nada.',
-              ),
-          );
-        }
-
-        return this.http.put<PerfilTecnicoModel>(`${this.url}/actualizar-perfil/${uuidTecnico}`, {
-          cuit: perfil.cuit,
-          descripcionTrabajo: perfil.descripcionTrabajo,
-          proyectos: texto,
-          uuidHabilidades,
-          uuidEspecialidades,
-        });
-      }),
-      map((respuesta) => parsearProyectos(respuesta.proyectos)),
-    );
+  if (texto.length < MIN_TEXTO) {
+    return throwError(() => new Error(
+      `Los proyectos deben tener al menos ${MIN_TEXTO} caracteres en total. No se puede dejar la lista vacía.`
+    ));
   }
+
+  if (texto.length > MAX_TEXTO) {
+    return throwError(() => new Error(
+      `Superaste el máximo de ${MAX_TEXTO} caracteres entre todos los proyectos.`
+    ));
+  }
+
+  return forkJoin({
+    habilidades: this.habilidadService.getAll(),
+    especialidades: this.especialidadService.getAll(),
+  }).pipe(
+    switchMap(({ habilidades, especialidades }) => {
+
+      const uuidHabilidades = perfil.habilidades.map(
+        nombre => habilidades.find(
+          h => h.nombreHabilidad === nombre
+        )?.uuid
+      );
+
+      const uuidEspecialidades = perfil.especialidades.map(
+        nombre => especialidades.find(
+          e => e.nombreEspecialidad === nombre
+        )?.uuid
+      );
+
+      if (
+        uuidHabilidades.includes(undefined) ||
+        uuidEspecialidades.includes(undefined)
+      ) {
+        return throwError(() => new Error(
+          'No se pudieron identificar las habilidades o especialidades del perfil. No se guardó nada.'
+        ));
+      }
+
+      const datos = new FormData();
+
+      // Datos personales: se conservan como están.
+      datos.append('nombre', perfil.nombre);
+      datos.append('apellido', perfil.apellido);
+      datos.append('telefono', perfil.telefono);
+      datos.append('sobreMi', perfil.sobreMi);
+
+      // Datos profesionales.
+      datos.append('cuit', perfil.cuit);
+      datos.append('descripcionTrabajo', perfil.descripcionTrabajo);
+      datos.append('proyectos', texto);
+
+      // Se conservan las habilidades y especialidades.
+      uuidHabilidades.forEach(uuid => {
+        if (uuid) datos.append('uuidHabilidades', uuid);
+      });
+
+      uuidEspecialidades.forEach(uuid => {
+        if (uuid) datos.append('uuidEspecialidades', uuid);
+      });
+
+      return this.http.put<PerfilTecnicoModel>(
+        `${this.url}/actualizar-perfil/${uuidTecnico}`,
+        datos
+      );
+    }),
+    map(respuesta => parsearProyectos(respuesta.proyectos))
+  );
+}
 
   private limpiar(p: ProyectoModel): ProyectoModel {
     return { titulo: limpiarLinea(p.titulo), detalle: limpiarLinea(p.detalle) };
