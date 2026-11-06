@@ -19,6 +19,7 @@ import { Perfil } from './user/pages/perfil/perfil';
 import { MisPresupuestos } from './presupuesto/pages/mis-presupuestos/mis-presupuestos';
 import { EditarTecnico } from './tecnico/pages/editar-tecnico/editar-tecnico';
 import { CertificacionList } from './certificacion/pages/certificacion-list/certificacion-list';
+import { PortfolioList } from './portfolio/pages/portfolio-list/portfolio-list';
 
 export const routes: Routes = [
 
@@ -39,6 +40,7 @@ export const routes: Routes = [
     {path: 'mi-perfil-tecnico/editar', component: EditarTecnico, canActivate: [authGuard]},
      //certificacion
     {path: 'mis-certificaciones', component: CertificacionList, canActivate: [authGuard]},
+    {path: 'mis-portfolios', component: PortfolioList, canActivate: [authGuard]},
     
     // USUARIO
     {path: 'perfil-edicion', component: PerfilEdicion, canActivate: [authGuard]},
