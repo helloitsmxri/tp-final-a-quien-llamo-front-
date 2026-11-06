@@ -70,6 +70,7 @@
   flex-direction: column;
   align-items: center;
   flex-shrink: 0;
+  gap: 12px;
 }
 
 .profile-img {
@@ -86,18 +87,32 @@
 }
 
 .btn-hire {
-  position: relative;
-  margin-top: -16px;
+  display: inline-block;
+  position: static;
+  margin-top: 0;
   padding: 8px 20px;
   font-family: inherit;
   font-size: 0.85rem;
   font-weight: bold;
+  text-decoration: none;
   color: white;
   cursor: pointer;
   border: none;
   border-radius: 50px;
   background: linear-gradient(90deg, #5b3fd6, #a58cff);
   box-shadow: 0 4px 10px rgba(90, 70, 160, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+
+
+.btn-hire:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 12px rgba(90, 70, 160, 0.38);
+}
+
+.btn-hire:active {
+  transform: translateY(0) scale(0.97);
 }
 
 .profile-info {
@@ -105,23 +120,30 @@
   min-width: 0;
 }
 
+/* nombre + estrellas siempre en la misma línea */
 .name-rating {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
 }
 
 .name-rating h2 {
   margin: 0;
+  min-width: 0;
   font-size: 2rem;
   line-height: 1.1;
 }
 
-.stars {
-  font-size: 1.2rem;
+.name-rating .stars {
+  font-size: 1.1rem;
   letter-spacing: 2px;
+}
+
+.stars {
+  flex-shrink: 0;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
   color: #f5b301;
   white-space: nowrap;
 }
@@ -171,7 +193,7 @@
   margin-bottom: 0;
 }
 
-/* ---------- detalle (proyectos, estudios, etc.) ---------- */
+/* ---------- detalle (proyectos, certificaciones, portfolio) ---------- */
 .detail-columns {
   display: grid;
   grid-template-columns: 0.8fr 1.2fr;
@@ -193,6 +215,34 @@
 
 .col-right h3:not(:first-child) {
   margin-top: 22px;
+}
+
+/* título de Proyectos + lápiz */
+.titulo-con-lapiz {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.titulo-con-lapiz .title-box {
+  margin: 0;
+}
+
+.btn-lapiz {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: #5b3fd6;
+  border: 1px solid #5b3fd6;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.btn-lapiz:hover {
+  background: rgba(91, 63, 214, 0.1);
 }
 
 /* lista de proyectos con scroll violeta */
@@ -232,12 +282,6 @@
 
 .styled-list strong {
   color: #3b2a7a;
-}
-
-/* el componente de calendario ocupa su propia línea */
-app-calendario {
-  display: block;
-  margin-top: 16px;
 }
 
 /* ---------- reseñas ---------- */
@@ -340,6 +384,7 @@ app-calendario {
     justify-content: center;
   }
 }
+
 .review-card.clicable {
   cursor: pointer;
   transition: transform 0.15s;
