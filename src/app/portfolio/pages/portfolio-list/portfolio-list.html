@@ -1,3 +1,4 @@
+
 <section class="portfolios">
   <h2>Mis portfolios</h2>
 
@@ -61,6 +62,19 @@
               >
                 Ver link
               </a>
+            }
+
+            @if (
+              p.estadoVerificacion === Estado.Pendiente ||
+              p.estadoVerificacion === Estado.Rechazado
+            ) {
+              <button
+                type="button"
+                class="boton"
+                (click)="editar(p)"
+              >
+                Editar
+              </button>
             }
           </div>
         </li>

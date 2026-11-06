@@ -1,9 +1,11 @@
+
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
+
 import { PortfolioUsuarioModel } from '../../models/portfolio-usuario';
 import { TecnicoService } from '../../../tecnico/services/tecnico';
 import { PortfolioService } from '../../services/portfolio';
 import { EstadoVerificacion } from '../../enum/estado-verificacion';
-
 
 @Component({
   selector: 'app-portfolio-list',
@@ -14,6 +16,7 @@ import { EstadoVerificacion } from '../../enum/estado-verificacion';
 export class PortfolioList {
   private tecnicoService = inject(TecnicoService);
   private servicio = inject(PortfolioService);
+  private router = inject(Router);
 
   readonly Estado = EstadoVerificacion;
 
@@ -57,22 +60,32 @@ export class PortfolioList {
     });
   }
 
+  editar(p: PortfolioUsuarioModel): void {
+    if (p.estadoVerificacion === EstadoVerificacion.Aprobado) {
+      return;
+    }
+
+    this.router.navigate(['/mis-portfolios/editar', p.uuid]);
+  }
+
   tieneArchivo(p: PortfolioUsuarioModel): boolean {
     return !!p.tipoArchivo && p.tipoArchivo !== 'enlace';
   }
 
   abrirArchivo(p: PortfolioUsuarioModel): void {
-  if (!p.archivoAdjunto) return;
+    if (!p.archivoAdjunto) return;
 
-  const bytes = Uint8Array.from(
-    atob(p.archivoAdjunto),
-    (ch) => ch.charCodeAt(0)
-  );
+    const bytes = Uint8Array.from(
+      atob(p.archivoAdjunto),
+      (ch) => ch.charCodeAt(0)
+    );
 
-  const url = URL.createObjectURL(
-    new Blob([bytes], { type: p.tipoArchivo || 'application/octet-stream' })
-  );
+    const url = URL.createObjectURL(
+      new Blob([bytes], {
+        type: p.tipoArchivo || 'application/octet-stream'
+      })
+    );
 
-  window.open(url, '_blank');
-}
+    window.open(url, '_blank');
+  }
 }
