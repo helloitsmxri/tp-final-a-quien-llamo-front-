@@ -18,6 +18,7 @@ import { PerfilEdicion } from './user/pages/perfil-edicion/perfil-edicion';
 import { Perfil } from './user/pages/perfil/perfil';
 import { MisPresupuestos } from './presupuesto/pages/mis-presupuestos/mis-presupuestos';
 import { EditarTecnico } from './tecnico/pages/editar-tecnico/editar-tecnico';
+import { CertificacionList } from './certificacion/pages/certificacion-list/certificacion-list';
 
 export const routes: Routes = [
 
@@ -36,6 +37,8 @@ export const routes: Routes = [
     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico', component: PerfilTecnico, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico/editar', component: EditarTecnico, canActivate: [authGuard]},
+     //certificacion
+    {path: 'mis-certificaciones', component: CertificacionList, canActivate: [authGuard]},
     
     // USUARIO
     {path: 'perfil-edicion', component: PerfilEdicion, canActivate: [authGuard]},
@@ -61,7 +64,6 @@ export const routes: Routes = [
     {path: 'pagos/cliente/:uuid', component: ListPago },
     {path: 'pagos/tecnico/:uuid', component: ListPago },
     {path: 'pagos/mercado-pago/:orderId', component: DetallePago },
-
 
     // INICIO DE SESIÓN (PÚBLICO)
 
