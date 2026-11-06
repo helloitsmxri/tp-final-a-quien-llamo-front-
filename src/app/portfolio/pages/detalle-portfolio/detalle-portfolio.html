@@ -1,34 +1,60 @@
-@if (cargando) { <p>Cargando...</p> }
-@if (error) { <p class="error">{{ error }}</p> }
+
+@if (cargando) {
+  <p>Cargando...</p>
+}
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+
 @if (!cargando && !error && portfolios.length === 0) {
   <p>Todavía no cargaste portfolios.</p>
 }
 
-<ul>
-  @for (p of portfolios; track p.uuid) {
-    <li>
-      <strong class="titulo">{{ p.nombreEspecialidad }}</strong>
+@if (!cargando && !error && portfolios.length > 0) {
+  <ul>
+    @for (p of portfolios; track p.uuid) {
+      <li>
+        <strong class="titulo">{{ p.titulo }}</strong>
 
-      <dl class="datos">
-        <div>
-          <dt>Estado</dt>
-          <dd><span [class]="'estado-' + p.estadoVerificacion.toLowerCase()">{{ p.estadoVerificacion }}</span></dd>
-        </div>
-        @if (tieneArchivo(p)) {
+        <dl class="datos">
           <div>
-            <dt>Archivo</dt>
-            <dd>Incluye archivo adjunto</dd>
+            <dt>Especialidad</dt>
+            <dd>{{ p.nombreEspecialidad }}</dd>
           </div>
+
+          <div>
+            <dt>Estado</dt>
+            <dd>
+              <span [class]="'estado-' + p.estadoVerificacion.toLowerCase()">
+                {{ p.estadoVerificacion }}
+              </span>
+            </dd>
+          </div>
+
+          @if (tieneArchivo(p)) {
+            <div>
+              <dt>Archivo</dt>
+              <dd>Incluye archivo adjunto</dd>
+            </div>
+          }
+        </dl>
+
+        @if (p.estadoVerificacion === Estado.Rechazado && p.notasAdmin) {
+          <small class="error">Motivo: {{ p.notasAdmin }}</small>
         }
-      </dl>
 
-      @if (p.estadoVerificacion === Estado.Rechazado && p.notasAdmin) {
-        <small class="error">Motivo: {{ p.notasAdmin }}</small>
-      }
-
-      @if (p.enlaceExterno) {
-        <a class="boton" [href]="p.enlaceExterno" target="_blank" rel="noopener noreferrer">Ver link</a>
-      }
-    </li>
-  }
-</ul>
+        @if (p.enlaceExterno) {
+          <a
+            class="boton"
+            [href]="p.enlaceExterno"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver link
+          </a>
+        }
+      </li>
+    }
+  </ul>
+}

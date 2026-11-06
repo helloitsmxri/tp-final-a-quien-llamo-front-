@@ -23,6 +23,7 @@ export class PortfolioService {
 
   private async armarPayload(d: PortfolioDatos) {
     return {
+      titulo: d.titulo,
       uuidEspecialidad: d.uuidEspecialidad,
       notasAspirante: d.notasAspirante,
       enlaceExterno: d.enlaceExterno,
