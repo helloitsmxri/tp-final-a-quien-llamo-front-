@@ -15,6 +15,7 @@ import { CertificacionForm } from '../../../certificacion/pages/certificacion-fo
 import { FormPortfolio } from '../../../portfolio/pages/form-portfolio/form-portfolio';
 import { forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { AuthService } from '../../../auth/services/auth-service';
+import { SelectorServicios } from '../../../selector-servicios/selector-servicios';
 import { Calendario } from '../../../components/calendario/calendario';
 import { TipoValidacion } from '../../../especialidad/enum/tipo-validacion';
 import { ProyectoModel } from '../../../proyecto/models/ProyectoModel';
@@ -54,7 +55,7 @@ type PasoDocumentacion = {
 
 @Component({
   selector: 'app-formulario-registro',
-  imports: [ReactiveFormsModule, DetalleRubro, DetalleEspecialidad, DetalleHabilidad, Calendario, CertificacionForm, FormPortfolio],
+  imports: [ReactiveFormsModule, SelectorServicios, Calendario, CertificacionForm, FormPortfolio],
   templateUrl: './formulario-registro.html',
   styleUrl: './formulario-registro.css',
 })
