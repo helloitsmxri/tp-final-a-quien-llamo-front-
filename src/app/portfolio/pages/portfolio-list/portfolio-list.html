@@ -33,29 +33,36 @@
                 </span>
               </dd>
             </div>
-
-            @if (tieneArchivo(p)) {
-              <div>
-                <dt>Archivo</dt>
-                <dd>Incluye archivo adjunto</dd>
-              </div>
-            }
           </dl>
 
           @if (p.estadoVerificacion === Estado.Rechazado && p.notasAdmin) {
-            <small class="error">Motivo: {{ p.notasAdmin }}</small>
+            <small class="error">
+              Motivo: {{ p.notasAdmin }}
+            </small>
           }
 
-          @if (p.enlaceExterno) {
-            <a
-              class="boton"
-              [href]="p.enlaceExterno"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Ver link
-            </a>
-          }
+          <div class="acciones">
+            @if (p.archivoAdjunto) {
+              <button
+                type="button"
+                class="boton"
+                (click)="abrirArchivo(p)"
+              >
+                Ver archivo
+              </button>
+            }
+
+            @if (p.enlaceExterno) {
+              <a
+                class="boton"
+                [href]="p.enlaceExterno"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver link
+              </a>
+            }
+          </div>
         </li>
       }
     </ul>
