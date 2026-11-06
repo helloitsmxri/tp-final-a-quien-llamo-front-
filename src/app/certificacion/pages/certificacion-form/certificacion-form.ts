@@ -7,7 +7,7 @@ import { contieneLetras, matriculaValida } from '../../../utils/validadores-text
 import { Calendario } from '../../../components/calendario/calendario';
 
 // tiene que ir ANTES del decorador: entre @Component y la clase no puede haber nada
-type Campo = 'uuidEspecialidad' | 'numMatricula' | 'enteOtorgador' | 'fechaVencimiento' | 'archivo';
+type Campo = 'titulo' | 'uuidEspecialidad' | 'numMatricula' | 'enteOtorgador' | 'fechaVencimiento' | 'archivo';
 
 @Component({
   selector: 'app-certificacion-form',
@@ -33,6 +33,7 @@ export class CertificacionForm implements OnChanges {
   errorServidor: string | null = null;
 
   formulario = this.fb.group({
+    titulo: ['', [Validators.required, Validators.maxLength(150)]],
     uuidEspecialidad: ['', Validators.required],
     numMatricula: ['', [Validators.required, Validators.maxLength(100), matriculaValida]],
     enteOtorgador: ['', [Validators.required, Validators.maxLength(100), contieneLetras]],
@@ -63,7 +64,7 @@ export class CertificacionForm implements OnChanges {
   private estaVacio(): boolean {
     const v = this.formulario.getRawValue();
     // la especialidad sola no cuenta: puede venir preseleccionada y el documento es opcional
-    return !v.numMatricula && !v.enteOtorgador && !v.fechaVencimiento && !v.archivo;
+    return !v.titulo && !v.numMatricula && !v.enteOtorgador && !v.fechaVencimiento && !v.archivo;
   }
 
   validar(): boolean {
@@ -76,6 +77,7 @@ export class CertificacionForm implements OnChanges {
     if (this.estaVacio() || this.formulario.invalid) return null;
     const v = this.formulario.getRawValue();
     return {
+      titulo: (v.titulo ?? '').trim(),
       uuidEspecialidad: v.uuidEspecialidad ?? '',
       numMatricula: (v.numMatricula ?? '').trim(),
       enteOtorgador: (v.enteOtorgador ?? '').trim(),
@@ -118,6 +120,11 @@ export class CertificacionForm implements OnChanges {
     if (c.hasError('fechaPasada')) return 'La fecha de vencimiento tiene que ser posterior a hoy.';
     if (c.hasError('tipoInvalido')) return 'Solo se aceptan PDF, JPG o PNG.';
     if (c.hasError('tamanioExcedido')) return `El archivo no puede pesar más de ${this.maxMb} MB.`;
+    if (c.hasError('maxlength')) {
+    return campo === 'titulo'
+    ? 'El título no puede superar los 150 caracteres.'
+    : 'No puede superar los 100 caracteres.';
+    }
     return null;
   }
 }
