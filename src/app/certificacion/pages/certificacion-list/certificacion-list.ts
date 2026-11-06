@@ -4,10 +4,11 @@ import { TecnicoService } from '../../../tecnico/services/tecnico';
 import { CertificacionService } from '../../services/certificacion';
 import { CertificacionModel } from '../../models/certificacion-model';
 import { EstadoVerificacion } from '../../enum/estado-verificacion';
+import { EditarCertificacion } from '../editar-certificacion/editar-certificacion';
 
 @Component({
   selector: 'app-certificacion-list',
-  imports: [DatePipe],
+  imports: [DatePipe, EditarCertificacion],
   templateUrl: './certificacion-list.html',
   styleUrl: './certificacion-list.css',
 })
@@ -20,6 +21,9 @@ export class CertificacionList implements OnInit {
   certificaciones: CertificacionModel[] = [];
   cargando = false;
   error: string | null = null;
+
+  certificacionEditar: CertificacionModel | null = null;
+  especialidades: { uuid: string; nombre: string }[] = [];
 
   ngOnInit(): void {
     this.cargarCertificaciones();
@@ -56,4 +60,19 @@ export class CertificacionList implements OnInit {
     const url = URL.createObjectURL(new Blob([bytes], { type: c.tipoImagen }));
     window.open(url, '_blank');
   }
+
+  editar(c: CertificacionModel): void {
+  if (c.estadoVerificacion === EstadoVerificacion.Aprobado) return;
+
+  this.certificacionEditar = c;
+}
+
+cancelarEdicion(): void {
+  this.certificacionEditar = null;
+}
+
+edicionGuardada(): void {
+  this.certificacionEditar = null;
+  this.cargarCertificaciones();
+}
 }
