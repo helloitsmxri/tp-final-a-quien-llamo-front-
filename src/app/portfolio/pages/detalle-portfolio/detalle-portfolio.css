@@ -1,10 +1,13 @@
+
 :host {
   display: block;
   font-family: "Creato Display", Arial, sans-serif;
   color: #3b2a7a;
 }
 
-:host * { box-sizing: border-box; }
+:host * {
+  box-sizing: border-box;
+}
 
 p {
   margin: 16px 0;
@@ -15,64 +18,54 @@ p {
   border-radius: 8px;
 }
 
-p.error { color: #b00020; background: #fdecea; }
+p.error {
+  color: #b00020;
+  background: #fdecea;
+}
 
 ul {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 340px);
+  gap: 16px;
+  justify-content: start;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 li {
-  padding: 14px 16px;
+  width: 340px;
+  min-width: 0;
+  padding: 18px;
   font-size: 0.85rem;
   line-height: 1.4;
   background: #f1f1f1;
-  border-radius: 14px;
-  box-shadow: 0 6px 18px rgba(90, 70, 160, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(90, 70, 160, 0.2);
 }
 
-li strong { font-size: 1rem; color: #5b3fd6; }
-
-/* título: la especialidad */
-li .titulo { display: block; margin-bottom: 8px; }
-
-/* estado */
-li span {
-  display: inline-block;
-  padding: 1px 10px;
-  font-size: 0.62rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #fff;
-  background: linear-gradient(90deg, #5b3fd6, #a58cff);
-  border-radius: 999px;
+li .titulo {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+  color: #5b3fd6;
 }
 
-li span.estado-pendiente { background: #e0a100; }
-li span.estado-aprobado { background: #2e9e5b; }
-li span.estado-rechazado { background: #b00020; }
-
-/* datos: en 2 columnas, etiqueta arriba y valor abajo */
 .datos {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px 14px;
+  gap: 14px 24px;
   margin: 0;
 }
 
 .datos > div {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .datos dt {
-  font-size: 0.62rem;
+  font-size: 0.68rem;
   font-weight: bold;
   letter-spacing: 1px;
   text-transform: uppercase;
@@ -81,18 +74,43 @@ li span.estado-rechazado { background: #b00020; }
 
 .datos dd {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.4;
   color: #3b2a7a;
   overflow-wrap: anywhere;
 }
 
+.datos span {
+  display: inline-block;
+  width: fit-content;
+  padding: 3px 12px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  border-radius: 999px;
+}
+
+.datos span.estado-pendiente {
+  background: #e0a100;
+}
+
+.datos span.estado-aprobado {
+  background: #2e9e5b;
+}
+
+.datos span.estado-rechazado {
+  background: #b00020;
+}
+
 small.error {
   display: block;
-  margin-top: 8px;
-  padding: 8px 12px;
-  font-size: 0.8rem;
+  margin-top: 14px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
   color: #b00020;
   background: #fdecea;
   border-radius: 8px;
@@ -100,10 +118,10 @@ small.error {
 
 a.boton {
   display: inline-block;
-  margin-top: 10px;
-  padding: 5px 16px;
+  margin-top: 18px;
+  padding: 8px 20px;
   font-family: inherit;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
   line-height: 1.4;
   text-align: center;
@@ -113,11 +131,32 @@ a.boton {
   border: 1px solid #5b3fd6;
   border-radius: 50px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
 }
 
-a.boton:hover { background: rgba(91, 63, 214, 0.08); }
+a.boton:hover {
+  color: #fff;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  transform: translateY(-2px);
+}
 
-@media (max-width: 480px) {
-  a.boton { display: block; width: 100%; }
+@media (max-width: 600px) {
+  ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  li {
+    width: 100%;
+    padding: 18px;
+  }
+
+  .datos {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  a.boton {
+    display: block;
+    width: 100%;
+  }
 }
