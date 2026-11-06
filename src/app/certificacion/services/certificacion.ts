@@ -58,6 +58,7 @@ export class CertificacionService {
   //no setear Content-Type a mano: el navegador agrega el boundary del multipart solo.
   private aFormData(datos: CertificacionDatos): FormData {
     const fd = new FormData();
+    fd.append('titulo', datos.titulo);
     fd.append('uuidEspecialidad', datos.uuidEspecialidad);
     fd.append('numMatricula', datos.numMatricula);
     fd.append('enteOtorgador', datos.enteOtorgador);
