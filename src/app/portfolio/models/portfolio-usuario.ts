@@ -1,8 +1,9 @@
-import { EstadoVerificacion } from '../enum/estado-verificacion';
+import { EstadoVerificacion } from "../enum/estado-verificacion";
 
 export interface PortfolioUsuarioModel {
   uuid: string;
   titulo: string;
+  uuidEspecialidad: string;
   nombreEspecialidad: string;
   notasAspirante: string | null;
   enlaceExterno: string | null;
