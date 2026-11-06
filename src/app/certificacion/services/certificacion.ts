@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { CertificacionModel } from '../models/certificacion-model';
 import { CertificacionDatos } from '../models/certificacion-datos';
 import { EstadoVerificacion } from '../enum/estado-verificacion';
+import { CertificacionEdicionDatos } from '../models/certificacion-edicion-datos';
 
 @Injectable({ providedIn: 'root' })
 export class CertificacionService {
@@ -37,7 +38,7 @@ export class CertificacionService {
   }
  
   //PUT /actualizar/{uuid}: el back reescribe matricula, ente y vencimiento; el archivo es opcional
-  actualizar(uuid: string, datos: CertificacionDatos): Observable<CertificacionModel> {
+  modificar(uuid: string, datos: CertificacionDatos): Observable<CertificacionModel> {
     return this.http.put<CertificacionModel>(`${this.url}/actualizar/${uuid}`, this.aFormData(datos));
   }
  
@@ -66,4 +67,24 @@ export class CertificacionService {
     fd.append('imagenCertificado', datos.archivo);
     return fd;
   }
+
+  actualizar(uuid: string, datos: CertificacionEdicionDatos): Observable<CertificacionModel> {
+    return this.http.put<CertificacionModel>(`${this.url}/actualizar/${uuid}`, this.aFormDataEdicion(datos));
+  }
+
+  private aFormDataEdicion(datos: CertificacionEdicionDatos): FormData {
+  const fd = new FormData();
+  fd.append('titulo', datos.titulo);
+  fd.append('uuidEspecialidad', datos.uuidEspecialidad);
+  fd.append('numMatricula', datos.numMatricula);
+  fd.append('enteOtorgador', datos.enteOtorgador);
+  fd.append('fechaVencimiento', datos.fechaVencimiento);
+
+  if (datos.archivo) {
+    fd.append('imagenCertificado', datos.archivo);
+  }
+
+  return fd;
 }
+}
+
