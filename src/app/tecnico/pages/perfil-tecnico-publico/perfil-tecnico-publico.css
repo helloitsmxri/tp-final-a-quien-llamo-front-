@@ -1,0 +1,44 @@
+.contacto {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(125, 95, 240, 0.25);
+}
+
+.contacto-titulo {
+  width: 100%;
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #3b2a7a;
+}
+
+.contacto-link {
+  padding: 8px 18px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: #5b3fd6;
+  border: 1px solid #5b3fd6;
+  border-radius: 50px;
+  transition: background 0.2s;
+}
+
+.contacto-link:hover {
+  background: rgba(91, 63, 214, 0.1);
+}
+
+.contacto-vacio {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #5440b5;
+}
+
+.sin-datos {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #5b3fd6;
+}
