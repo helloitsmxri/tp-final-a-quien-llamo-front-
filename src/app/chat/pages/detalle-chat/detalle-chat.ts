@@ -8,6 +8,7 @@ import { MensajeService } from '../../../mensaje/services/mensaje';
 import { UsuarioService } from '../../../user/services/user';
 import { WebSocketService } from '../../services/web-socket-service';
 
+const BACKEND = 'http://localhost:8080';
 @Component({
   selector: 'app-detalle-chat',
   imports: [CommonModule, FormsModule],
@@ -59,6 +60,13 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   esMio(m: MensajeModel): boolean {
     return !!this.miUuid && m.uuidSender === this.miUuid;
   }
+
+  // Convierte la ruta del archivo (/uploads/...) en una URL completa hacia el backend
+urlArchivo(url: string | null | undefined): string {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  return BACKEND + (url.startsWith('/') ? url : '/' + url);
+}
 
   // Nombre de la OTRA persona del chat
   get nombreOtro(): string {

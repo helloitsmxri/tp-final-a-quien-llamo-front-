@@ -19,10 +19,10 @@
             <p class="texto-msg">{{ msg.mensaje }}</p>
           }
           @if (msg.archivoUrl && msg.tipoArchivo === 'imagen') {
-            <img [src]="msg.archivoUrl" alt="Imagen adjunta" class="img-preview" />
+            <img [src]="urlArchivo(msg.archivoUrl)" alt="Imagen adjunta" class="img-preview" />
           }
           @if (msg.archivoUrl && msg.tipoArchivo === 'pdf') {
-            <a [href]="msg.archivoUrl" target="_blank" rel="noopener noreferrer" class="pdf-link">
+            <a [href]="urlArchivo(msg.archivoUrl)" target="_blank" rel="noopener noreferrer" class="pdf-link">
               📄 Ver documento PDF
             </a>
           }
