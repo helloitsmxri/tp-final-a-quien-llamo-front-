@@ -21,6 +21,7 @@ import { CertificacionList } from './certificacion/pages/certificacion-list/cert
 import { PortfolioList } from './portfolio/pages/portfolio-list/portfolio-list';
 import { EditarPortfolio } from './portfolio/pages/editar-portfolio/editar-portfolio';
 import { EditarCertificacion } from './certificacion/pages/editar-certificacion/editar-certificacion';
+import { PerfilTecnicoPublico } from './tecnico/pages/perfil-tecnico-publico/perfil-tecnico-publico';
 
 export const routes: Routes = [
 
@@ -35,7 +36,7 @@ export const routes: Routes = [
 
     // PERFILES (AUTHGUARD)
     // TÉCNICO
-    {path: 'perfil-tecnico/:uuid', component: PerfilTecnico, canActivate: [authGuard]},
+    {path: 'perfil-tecnico/:uuid', component: PerfilTecnicoPublico, canActivate: [authGuard]},
     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico', component: PerfilTecnico, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico/editar', component: EditarTecnico, canActivate: [authGuard]},

@@ -41,13 +41,6 @@ export class PerfilTecnico implements OnInit {
 
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');
-
-    // /perfil-tecnico/t1 sigue sirviendo para probar el diseño con datos de ejemplo
-    if (uuid === 't1') {
-      this.cargarMock();
-      return;
-    }
-
     // sin uuid en la URL = ruta /mi-perfil-tecnico: cargo MI perfil (el back me identifica por el token)
     if (!uuid) {
       this.servicio.getMiPerfil().subscribe({
@@ -72,7 +65,7 @@ export class PerfilTecnico implements OnInit {
       next: (data: PerfilTecnicoModel) => {
         this.tecnico = data;
         this.procesarProyectos();
-        this.cargarResenas(uuid); // TODO: cambiar por data.uuidUsuario cuando el back lo agregue
+       this.cargarResenas(data.uuidUsuario);
       },
       error: (error: any) => {
         console.error('Error al cargar el perfil:', error);
@@ -163,68 +156,6 @@ export class PerfilTecnico implements OnInit {
           detalle: linea.slice(separador + 3),
         };
       });
-  }
-
-  // Datos ficticios para probar el diseño sin UUID
-  private cargarMock(): void {
-    this.tecnico = {
-      uuid: 't1',
-      nombre: 'Jane',
-      apellido: 'Doe',
-      email: 'jane@mail.com',
-      telefono: '2235550000',
-      sobreMi:
-        'Si querés que tus hogares hagan que tu casa, comercio u oficina, ya sabés con quién trabajar.',
-      fotoBase64: null,
-      tipoImagen: null,
-      cuit: '20384920499',
-      descripcionTrabajo:
-        '¡Hola! Me llamo Jane y me dedico al paisajismo y al diseño de interiores. He trabajado en proyectos alrededor del mundo y recibí el premio Gran Diseño en 2020.',
-      proyectos:
-        'Casa Aurelia — Buenos Aires, Argentina (Interior + landscaping)\n' +
-        'Luna Mare Restaurant — Barcelona, España (Interior design)\n' +
-        'The Olive House — Tulum, México',
-      habilidades: [
-        'Diseño residencial',
-        'Diseño hotelero',
-        'Jardines sostenibles',
-      ],
-      especialidades: [
-        'Paisajista',
-        'Diseñadora de Interiores',
-      ],
-    };
-
-    this.procesarProyectos();
-
-this.resenas = [
-  {
-    uuidCalificacion: 'calificacion-1',
-    uuidRemitente: '123',
-    nombreRemitente: 'María',
-    apellidoRemitente: 'López',
-    nombreDestinatario: 'Juan',
-    valoracion: 5,
-    descripcion: 'Excelente trabajo.',
-    tipoFoto: null,
-    foto: null,
-    caracteristicas: ['Puntual', 'Responsable']
-  },
-  {
-    uuidCalificacion: 'calificacion-2',
-    uuidRemitente: 'u2',
-    nombreRemitente: 'Ludmila',
-    apellidoRemitente: 'Domínguez',
-    nombreDestinatario: 'Jane Doe',
-    valoracion: 5,
-    descripcion: 'Muy conforme con el resultado.',
-    tipoFoto: null,
-    foto: null,
-    caracteristicas: ['Pulcra', 'Clara', 'Ordenada']
-  }
-];
-
-    this.promedio = this.calcularPromedio(this.resenas);
   }
   
   verPerfilUsuario(uuid: string): void {
