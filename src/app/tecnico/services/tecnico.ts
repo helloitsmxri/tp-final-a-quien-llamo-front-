@@ -6,6 +6,12 @@ import { TecnicoModel } from '../models/tecnico-model';
 import { PerfilTecnico } from '../pages/perfil-tecnico/perfil-tecnico';
 import { PerfilTecnicoModel } from '../models/PerfilTecnicoModel';
 
+//lo q se muestra publicamente de una certificacion o un portfolio: solo el título
+export interface ItemPublico {
+  uuid: string;
+  titulo: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class TecnicoService {
 
@@ -64,4 +70,14 @@ export class TecnicoService {
         datos
     );
     }
+
+    //solo certificaciones aprobadas del tecnico
+    getCertificaciones(uuidTecnico: string): Observable<ItemPublico[]> {
+      return this.http.get<ItemPublico[]>(`http://localhost:8080/aquienllamo/certificaciones/publico/tecnico/${uuidTecnico}`);
+    }
+
+   //solo portfolios aprobados del tecnico
+  getPortfolios(uuidTecnico: string): Observable<ItemPublico[]> {
+   return this.http.get<ItemPublico[]>(`http://localhost:8080/aquienllamo/portafolios/usuario/publico/tecnico/${uuidTecnico}`);
+  }
 }
