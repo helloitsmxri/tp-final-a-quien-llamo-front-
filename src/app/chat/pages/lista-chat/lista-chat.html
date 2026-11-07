@@ -3,34 +3,39 @@
 </div>
 
 <div class="lista-chats">
-  @for (chat of chatsFiltrados; track chat.uuidChat) {
-    <div class="item-chat"
-         [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
-         (click)="seleccionarChat(chat)">
-      <div class="avatar-chat">
-        <img [src]="'https://ui-avatars.com/api/?name=' + (chat.nombreTecnico || chat.nombreUsuario)" alt="Avatar" />
+
+  @if (chatsFiltrados.length > 0) {
+    <p class="seccion-titulo">Conversaciones</p>
+    @for (chat of chatsFiltrados; track chat.uuidChat) {
+      <div
+        class="item-chat"
+        [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
+        (click)="seleccionarChat(chat)"
+      >
+        <div class="avatar-chat">
+          <img [src]="avatar(nombreChat(chat))" alt="Avatar" />
+        </div>
+        <div class="info-chat">
+          <span class="nombre">{{ nombreChat(chat) }}</span>
+        </div>
       </div>
-      <div class="info-chat">
-        <span class="nombre">{{ chat.nombreTecnico || chat.nombreUsuario }}</span>
-      </div>
-    </div>
-  } @empty {
-    @if (!filtroBusqueda.trim()) {
-      <p class="sin-chats">No tenés conversaciones. Buscá un técnico para empezar.</p>
     }
+  } @else if (!filtroBusqueda.trim()) {
+    <p class="sin-chats">Todavía no tenés conversaciones. Elegí un técnico para empezar.</p>
   }
 
   @if (tecnicosFiltrados.length > 0) {
     <p class="seccion-titulo">Técnicos</p>
-    @for (t of tecnicosFiltrados; track t.idTecnico) {
+    @for (t of tecnicosFiltrados; track t.uuid) {
       <div class="item-chat" (click)="abrirChatCon(t)">
         <div class="avatar-chat">
-          <img [src]="'https://ui-avatars.com/api/?name=' + t.usuario.nombre" alt="Avatar" />
+          <img [src]="avatar(t.nombre)" alt="Avatar" />
         </div>
         <div class="info-chat">
-          <span class="nombre">{{ t.usuario.nombre }}</span>
+          <span class="nombre">{{ t.nombre }}</span>
         </div>
       </div>
     }
   }
+
 </div>
