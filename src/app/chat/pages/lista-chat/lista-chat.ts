@@ -1,19 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ChatModel } from '../../models/chat-model';
 import { ChatService } from '../../services/chat-service';
 import { UsuarioService } from '../../../user/services/user';
-import { TecnicoService } from '../../../tecnico/services/tecnico';
-
-// Así llega cada técnico desde GET /aquienllamo/tecnicos (TecnicoDTOResponse, es plano)
-interface TecnicoLista {
-  uuid: string;
-  nombre: string;
-  uuidUsuario?: string; // solo si lo agregás al backend (opcional, ver "Siguientes pasos")
-}
 
 @Component({
   selector: 'app-lista-chat',
@@ -23,11 +16,13 @@ interface TecnicoLista {
 })
 export class ListaChat implements OnInit {
   chats: ChatModel[] = [];
-  tecnicos: TecnicoLista[] = [];
   chatSeleccionado: ChatModel | null = null;
   filtroBusqueda = '';
 
   private miUuid = '';
+
+  // Chats que abrí en esta sesión y todavía no tienen ningún mensaje
+  private chatsSinMensajes = new Set<string>();
 
   // Avisa al padre (ChatView) qué chat se seleccionó
   @Output() chatSeleccionadoEvent = new EventEmitter<ChatModel>();
@@ -35,7 +30,7 @@ export class ListaChat implements OnInit {
   constructor(
     private chatService: ChatService,
     private usuarioService: UsuarioService,
-    private tecnicoService: TecnicoService,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit(): void {
@@ -47,27 +42,16 @@ export class ListaChat implements OnInit {
           return of([] as ChatModel[]);
         }),
       ),
-      tecnicos: this.tecnicoService.getTecnicos().pipe(
-        catchError((err) => {
-          console.error('Error al cargar técnicos:', err);
-          return of([] as any[]);
-        }),
-      ),
     }).subscribe({
-      next: ({ perfil, chats, tecnicos }) => {
+      next: ({ perfil, chats }) => {
         this.miUuid = (perfil as any).uuid;
         this.chats = chats;
 
-        console.log('Mis chats:', chats);
-        console.log('Técnicos:', tecnicos);
-
-        this.tecnicos = (tecnicos as any[]).map((t) => ({
-          uuid: t.uuid,
-          uuidUsuario: t.uuidUsuario,
-          nombre: `${t.nombre ?? ''} ${t.apellido ?? ''}`.trim() || 'Técnico',
-        }));
-
-        if (this.chats.length > 0) {
+        // Si venimos del botón "Contactame" (/chats?tecnico=UUID), abrimos ese chat
+        const uuidTecnico = this.route.snapshot.queryParamMap.get('tecnico');
+        if (uuidTecnico) {
+          this.abrirChatCon(uuidTecnico);
+        } else if (this.chats.length > 0) {
           this.seleccionarChat(this.chats[0]);
         }
       },
@@ -90,29 +74,47 @@ export class ListaChat implements OnInit {
   }
 
   seleccionarChat(chat: ChatModel): void {
+    // Si me voy de un chat que sigue vacío, lo saco de la lista
+    const anterior = this.chatSeleccionado;
+    if (
+      anterior &&
+      anterior.uuidChat !== chat.uuidChat &&
+      this.chatsSinMensajes.has(anterior.uuidChat)
+    ) {
+      this.chats = this.chats.filter((c) => c.uuidChat !== anterior.uuidChat);
+      this.chatsSinMensajes.delete(anterior.uuidChat);
+    }
+
     this.chatSeleccionado = chat;
     this.chatSeleccionadoEvent.emit(chat);
   }
 
-  // Click en un técnico: abre el chat si ya existe, si no lo crea
-  abrirChatCon(tecnico: TecnicoLista): void {
+  // Lo llama ChatView cuando aparece un mensaje en un chat: ya no está vacío
+  marcarConMensajes(uuidChat: string): void {
+    this.chatsSinMensajes.delete(uuidChat);
+  }
+
+  // Abre mi chat con un técnico; si todavía no existe, lo crea
+  private abrirChatCon(uuidTecnico: string): void {
     const existente = this.chats.find(
-      (c) => c.uuidTecnico === tecnico.uuid && this.soyElCliente(c),
+      (c) => c.uuidTecnico === uuidTecnico && this.soyElCliente(c),
     );
     if (existente) {
       this.seleccionarChat(existente);
-      this.filtroBusqueda = '';
       return;
     }
 
-    this.chatService.iniciarChat(tecnico.uuid).subscribe({
+    this.chatService.iniciarChat(uuidTecnico).subscribe({
       next: (chatCreado) => {
-        console.log('Chat creado:', chatCreado);
+        // No estaba en mi lista, o sea que no tiene mensajes todavía
+        this.chatsSinMensajes.add(chatCreado.uuidChat);
         this.chats = [chatCreado, ...this.chats];
         this.seleccionarChat(chatCreado);
-        this.filtroBusqueda = '';
       },
-      error: (err) => console.error('Error al iniciar el chat:', err),
+      error: (err) => {
+        console.error('Error al iniciar el chat:', err);
+        if (this.chats.length > 0) this.seleccionarChat(this.chats[0]);
+      },
     });
   }
 
@@ -120,16 +122,5 @@ export class ListaChat implements OnInit {
     const f = this.filtroBusqueda.trim().toLowerCase();
     if (!f) return this.chats;
     return this.chats.filter((c) => this.nombreChat(c).toLowerCase().includes(f));
-  }
-
-  // Técnicos con los que todavía no tengo chat (y que no soy yo)
-  get tecnicosFiltrados(): TecnicoLista[] {
-    const f = this.filtroBusqueda.trim().toLowerCase();
-    return this.tecnicos.filter(
-      (t) =>
-        t.uuidUsuario !== this.miUuid &&
-        !this.chats.some((c) => c.uuidTecnico === t.uuid && this.soyElCliente(c)) &&
-        (!f || t.nombre.toLowerCase().includes(f)),
-    );
   }
 }

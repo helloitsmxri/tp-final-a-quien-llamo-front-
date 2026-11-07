@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ChatModel } from '../../models/chat-model';
@@ -16,6 +16,10 @@ import { WebSocketService } from '../../services/web-socket-service';
 })
 export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   @Input() chat: ChatModel | null = null;
+
+  // Avisa cada vez que aparece un mensaje en este chat (enviado o recibido)
+  @Output() mensajeNuevo = new EventEmitter<string>();
+
   @ViewChild('areaMensajes') private areaMensajesContainer!: ElementRef;
 
   mensajes: MensajeModel[] = [];
@@ -78,6 +82,7 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   private agregarMensaje(m: MensajeModel): void {
     if (this.mensajes.some((x) => x.uuidMensaje === m.uuidMensaje)) return;
     this.mensajes.push(m);
+    this.mensajeNuevo.emit(m.uuidChat);
     this.scrollToBottom();
   }
 

@@ -1,5 +1,5 @@
 <div class="search-box">
-  <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Buscar conversaciones o técnicos" />
+  <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Buscar conversaciones" />
 </div>
 
 <div class="lista-chats">
@@ -20,22 +20,14 @@
         </div>
       </div>
     }
-  } @else if (!filtroBusqueda.trim()) {
-    <p class="sin-chats">Todavía no tenés conversaciones. Elegí un técnico para empezar.</p>
-  }
-
-  @if (tecnicosFiltrados.length > 0) {
-    <p class="seccion-titulo">Técnicos</p>
-    @for (t of tecnicosFiltrados; track t.uuid) {
-      <div class="item-chat" (click)="abrirChatCon(t)">
-        <div class="avatar-chat">
-          <img [src]="avatar(t.nombre)" alt="Avatar" />
-        </div>
-        <div class="info-chat">
-          <span class="nombre">{{ t.nombre }}</span>
-        </div>
-      </div>
-    }
+  } @else {
+    <p class="sin-chats">
+      @if (filtroBusqueda.trim()) {
+        No hay conversaciones que coincidan.
+      } @else {
+        Todavía no tenés conversaciones. Contactá a un técnico desde su perfil para empezar.
+      }
+    </p>
   }
 
 </div>
