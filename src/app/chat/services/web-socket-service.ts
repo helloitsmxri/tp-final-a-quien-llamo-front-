@@ -1,76 +1,56 @@
-import { Injectable } from '@angular/core';
-import { Client, Message } from '@stomp/stompjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { MensajeModel } from '../../mensaje/models/mensaje-model';
-import { Observable, Subject } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class WebSocketService {
-  
-  private stompClient!: Client;
+@Injectable({ providedIn: 'root' })
+export class WebSocketService implements OnDestroy {
+  private client: Client | null = null;
+  private conectado$ = new BehaviorSubject<boolean>(false);
 
-  constructor() {
-    this.initWebSocket();
-  }
+  // Se conecta una sola vez
+  conectar(): void {
+    if (this.client?.active) return;
 
-  // Inicializamos la conexión STOMP sobre WebSocket
-  private initWebSocket(): void {
-    const token = localStorage.getItem('accessToken') || '';
-
-    this.stompClient = new Client({
-      brokerURL: 'ws://localhost:8080/ws', // URL del WebSocket en Spring Boot
-      connectHeaders: {
-        Authorization: `Bearer ${token}`
-      },
-      debug: (msg) => console.log('[STOMP Debug]:', msg),
+    this.client = new Client({
+      brokerURL: 'ws://localhost:8080/ws',
       reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000
+      beforeConnect: () => {
+        this.client!.connectHeaders = {
+          Authorization: `Bearer ${localStorage.getItem('accessToken') || ''}`,
+        };
+      },
     });
 
-    this.stompClient.onConnect = () => {
-      console.log('✅ Conectado exitosamente al WebSocket');
-    };
-
-    this.stompClient.onStompError = (frame) => {
-      console.error('❌ Error STOMP:', frame.headers['message'], frame.body);
-    };
-
-    this.stompClient.activate();
+    this.client.onConnect = () => this.conectado$.next(true);
+    this.client.onWebSocketClose = () => this.conectado$.next(false);
+    this.client.onStompError = (f) => console.error('Error STOMP:', f.headers['message'], f.body);
+    this.client.activate();
   }
 
-  // Permite suscribirse a las novedades de un chat específico
-  suscribirseAlChat(uuidChat: string): Observable<MensajeModel> {
-    const canalSubject = new Subject<MensajeModel>();
+  // Emite cada mensaje nuevo del chat. Al desuscribirte, deja de escuchar.
+  escucharChat(uuidChat: string): Observable<MensajeModel> {
+    this.conectar();
 
-    const registrarSuscripcion = () => {
-      this.stompClient.subscribe(`/topic/chat/${uuidChat}`, (message: Message) => {
-        const nuevoMensaje: MensajeModel = JSON.parse(message.body);
-        canalSubject.next(nuevoMensaje);
+    return new Observable<MensajeModel>((observer) => {
+      let sub: StompSubscription | undefined;
+
+      // Se re-suscribe sola cada vez que la conexión se (re)establece
+      const conexion = this.conectado$.subscribe((ok) => {
+        if (!ok) return;
+        sub = this.client!.subscribe(`/topic/chat/${uuidChat}`, (msg: IMessage) =>
+          observer.next(JSON.parse(msg.body) as MensajeModel),
+        );
       });
-    };
 
-    if (this.stompClient.connected) {
-      registrarSuscripcion();
-    } else {
-      this.stompClient.onConnect = () => {
-        registrarSuscripcion();
+      return () => {
+        conexion.unsubscribe();
+        try { sub?.unsubscribe(); } catch {}
       };
-    }
-
-    return canalSubject.asObservable();
+    });
   }
 
-  // Emitir un mensaje en tiempo real hacia los demás conectados
-  enviarMensajeWebSocket(uuidChat: string, mensaje: MensajeModel): void {
-    if (this.stompClient && this.stompClient.connected) {
-      this.stompClient.publish({
-        destination: `/app/chat/${uuidChat}`,
-        body: JSON.stringify(mensaje)
-      });
-    } else {
-      console.warn('El WebSocket no está conectado aún.');
-    }
+  ngOnDestroy(): void {
+    this.client?.deactivate();
   }
 }
