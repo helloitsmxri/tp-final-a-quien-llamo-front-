@@ -1,5 +1,6 @@
   export interface PerfilTecnicoModel{
     uuid: string;
+    uuidUsuario: string;
     nombre: string;
     apellido: string;
     email: string;
