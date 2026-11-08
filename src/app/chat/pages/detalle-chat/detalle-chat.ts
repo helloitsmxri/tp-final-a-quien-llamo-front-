@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, NgZone, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ChatModel } from '../../models/chat-model';
@@ -8,6 +8,7 @@ import { MensajeService } from '../../../mensaje/services/mensaje';
 import { UsuarioService } from '../../../user/services/user';
 import { WebSocketService } from '../../services/web-socket-service';
 
+const BACKEND = 'http://localhost:8080';
 @Component({
   selector: 'app-detalle-chat',
   imports: [CommonModule, FormsModule],
@@ -16,6 +17,10 @@ import { WebSocketService } from '../../services/web-socket-service';
 })
 export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   @Input() chat: ChatModel | null = null;
+
+  // Avisa cada vez que aparece un mensaje en este chat (enviado o recibido)
+  @Output() mensajeNuevo = new EventEmitter<string>();
+
   @ViewChild('areaMensajes') private areaMensajesContainer!: ElementRef;
 
   mensajes: MensajeModel[] = [];
@@ -56,6 +61,13 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     return !!this.miUuid && m.uuidSender === this.miUuid;
   }
 
+  // Convierte la ruta del archivo (/uploads/...) en una URL completa hacia el backend
+urlArchivo(url: string | null | undefined): string {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  return BACKEND + (url.startsWith('/') ? url : '/' + url);
+}
+
   // Nombre de la OTRA persona del chat
   get nombreOtro(): string {
     if (!this.chat) return 'Contacto';
@@ -78,6 +90,7 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   private agregarMensaje(m: MensajeModel): void {
     if (this.mensajes.some((x) => x.uuidMensaje === m.uuidMensaje)) return;
     this.mensajes.push(m);
+    this.mensajeNuevo.emit(m.uuidChat);
     this.scrollToBottom();
   }
 

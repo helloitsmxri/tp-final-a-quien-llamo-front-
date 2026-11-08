@@ -13,7 +13,10 @@
   <!-- Panel Derecho (Detalle del Chat) -->
   <main class="panel-chat-activo">
     @if (chatSeleccionado) {
-      <app-detalle-chat [chat]="chatSeleccionado"></app-detalle-chat>
+      <app-detalle-chat
+        [chat]="chatSeleccionado"
+        (mensajeNuevo)="alMensajeNuevo($event)"
+      ></app-detalle-chat>
     } @else {
       <div class="sin-chat-seleccionado">
         <p>Seleccione una conversación</p>
