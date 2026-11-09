@@ -360,3 +360,27 @@
   display: flex;
   justify-content: center;
 }
+
+.tarjeta-calificacion {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  z-index: 2;
+  max-width: 100px;
+}
+
+.stars-img {
+  display: block;
+  width: 75px;
+  max-width: 75px;
+  height: auto;
+  object-fit: contain;
+}
+
+.sin-calificacion {
+  font-size: 0.75rem;
+  color: #7d5ff0;
+}

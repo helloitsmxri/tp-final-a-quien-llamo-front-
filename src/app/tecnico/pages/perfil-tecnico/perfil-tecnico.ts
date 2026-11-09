@@ -1,3 +1,4 @@
+
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -39,15 +40,31 @@ export class PerfilTecnico implements OnInit {
   resenas: RatingResponse[] = [];
   promedio = 0;
 
+  // Imágenes de las estrellas según la valoración
+  private imagenesEstrellas: { [key: number]: string } = {
+    0.5: 'media-estrella',
+    1: 'una-estrella',
+    1.5: 'una-estrella-y-media',
+    2: 'dos-estrellas',
+    2.5: 'dos-estrellas-y-media',
+    3: 'tres-estrellas',
+    3.5: 'tres-estrellas-y-media',
+    4: 'cuatro-estrellas',
+    4.5: 'cuatro-estrellas-y-media',
+    5: 'cinco-estrellas'
+  };
+
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');
-    // sin uuid en la URL = ruta /mi-perfil-tecnico: cargo MI perfil (el back me identifica por el token)
+
+    // Sin uuid en la URL = cargo MI perfil
     if (!uuid) {
       this.servicio.getMiPerfil().subscribe({
         next: (data: PerfilTecnicoModel) => {
           this.tecnico = data;
           this.procesarProyectos();
-          // las reseñas se piden con el uuid del USUARIO (no del técnico), así q lo saco de mi-perfil
+
+          // Obtengo el uuid del usuario para cargar sus reseñas
           this.usuarioService.getMyProfile().subscribe({
             next: (u) => this.cargarResenas(u.uuid),
             error: () => (this.resenas = []),
@@ -65,7 +82,7 @@ export class PerfilTecnico implements OnInit {
       next: (data: PerfilTecnicoModel) => {
         this.tecnico = data;
         this.procesarProyectos();
-       this.cargarResenas(data.uuidUsuario);
+        this.cargarResenas(data.uuidUsuario);
       },
       error: (error: any) => {
         console.error('Error al cargar el perfil:', error);
@@ -98,11 +115,18 @@ export class PerfilTecnico implements OnInit {
     return (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
   }
 
-  // Representación de las estrellas
-  estrellas(valor: number): string {
-    const cantidad = Math.max(0, Math.min(5, Math.round(valor)));
+  // Obtener imagen de estrellas según la valoración
+  imagenEstrellas(valor: number): string | null {
+    if (valor <= 0) {
+      return null;
+    }
 
-    return '★'.repeat(cantidad) + '☆'.repeat(5 - cantidad);
+    const redondeado = Math.min(
+      5,
+      Math.max(0.5, Math.round(valor * 2) / 2)
+    );
+
+    return `/ilustraciones/rating/${this.imagenesEstrellas[redondeado]}.png`;
   }
 
   // Cargar las reseñas que recibió el usuario
@@ -126,7 +150,7 @@ export class PerfilTecnico implements OnInit {
       : 0;
   }
 
-  // Iniciales de quien escribió la reseña (el back todavía no manda su foto)
+  // Iniciales de quien escribió la reseña
   inicialesDe(nombre: string): string {
     return nombre
       .split(' ')
@@ -137,7 +161,7 @@ export class PerfilTecnico implements OnInit {
       .toUpperCase();
   }
 
-  // Procesar proyectos separados por saltos de línea.
+  // Procesar proyectos separados por saltos de línea
   // Formato esperado: "Nombre — detalle"
   private procesarProyectos(): void {
     this.proyectosLista = (this.tecnico?.proyectos ?? '')
@@ -157,11 +181,12 @@ export class PerfilTecnico implements OnInit {
         };
       });
   }
-  
+
   verPerfilUsuario(uuid: string): void {
-  if (!uuid) {
-    return;
+    if (!uuid) {
+      return;
     }
-    this.router.navigate(['/usuario', uuid]); // ajustar a la ruta real del perfil de usuario
+
+    this.router.navigate(['/usuario', uuid]);
   }
 }

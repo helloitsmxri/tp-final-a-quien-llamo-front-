@@ -398,3 +398,25 @@
   outline: 3px solid rgba(125, 95, 240, 0.5);
   outline-offset: 2px;
 }
+/* ---------- calificaciones del perfil ---------- */
+.name-rating .stars-img {
+  display: block;
+  width: 90px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.sin-calificacion {
+  font-size: 0.85rem;
+  color: #766a9e;
+}
+
+/* ---------- calificaciones de las reseñas ---------- */
+.review-header .stars-img {
+  display: block;
+  width: 70px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
