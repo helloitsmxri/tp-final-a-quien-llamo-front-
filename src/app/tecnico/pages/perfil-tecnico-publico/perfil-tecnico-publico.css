@@ -42,3 +42,11 @@
   font-size: 0.72rem;
   color: #5b3fd6;
 }
+
+.avatar-vacio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  line-height: 1;
+}

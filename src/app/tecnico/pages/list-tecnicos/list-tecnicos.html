@@ -1,0 +1,135 @@
+<section class="listado-tecnicos">
+
+  <header class="encabezado">
+    <h2>Encontrá tu técnico</h2>
+    <p>Buscá profesionales según el servicio que necesitás.</p>
+  </header>
+
+  <div class="buscador">
+    <svg class="icono-busqueda" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </svg>
+
+    <input type="text" [(ngModel)]="textoBusqueda" placeholder="Buscar por nombre, rubro o especialidad..."
+      aria-label="Buscar técnicos" />
+  </div>
+
+  @if (rubros.length) {
+  <div class="filtros">
+
+    <div class="campo-select">
+      <select [ngModel]="rubroElegido?.uuidRubro ?? ''" (ngModelChange)="elegirRubroPorUuid($event)"
+        [class.con-valor]="!!rubroElegido" aria-label="Filtrar por rubro">
+        <option value="">Todos los rubros</option>
+        @for (rubro of rubros; track rubro.uuidRubro) {
+        <option [value]="rubro.uuidRubro">{{ rubro.nombreRubro }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="campo-select">
+      <select [ngModel]="especialidadElegida ?? ''" (ngModelChange)="elegirEspecialidad($event)"
+        [class.con-valor]="!!especialidadElegida" aria-label="Filtrar por especialidad">
+        <option value="">Todas las especialidades</option>
+        @for (especialidad of especialidadesDisponibles; track especialidad) {
+        <option [value]="especialidad">{{ especialidad }}</option>
+        }
+      </select>
+    </div>
+
+  </div>
+  }
+
+  @if (cargando) {
+  <p class="mensaje">Cargando técnicos...</p>
+  }
+
+  @if (error) {
+  <div class="aviso-error">
+    <p>{{ error }}</p>
+    <button type="button" class="btn-secundario" (click)="cargarTecnicos()">Reintentar</button>
+  </div>
+  }
+
+  @if (!cargando && !error) {
+
+  <div class="fila-resultados">
+    <p class="resultados">
+      <strong>{{ tecnicosFiltrados.length }}</strong>
+      {{ tecnicosFiltrados.length === 1 ? 'profesional encontrado' : 'profesionales encontrados' }}
+    </p>
+
+    @if (hayFiltros) {
+    <button type="button" class="btn-limpiar" (click)="limpiarFiltros()">Limpiar filtros</button>
+    }
+  </div>
+
+  @if (tecnicosFiltrados.length > 0) {
+
+  <div class="contenedor-tarjetas">
+
+    @for (tecnico of tecnicosFiltrados; track tecnico.uuid) {
+
+    <article class="tarjeta-tecnico">
+
+      <div class="tarjeta-calificacion">
+        @if (imagenEstrellasDe(tecnico); as imagenEstrellas) {
+        <img [src]="imagenEstrellas" alt="" aria-hidden="true" class="stars-img">
+        } @else {
+        <span class="sin-calificacion">Sin calificaciones</span>
+        }
+      </div>
+
+      <div class="foto">
+        @if (obtenerFoto(tecnico); as foto) {
+        <img [src]="foto" [alt]="'Foto de ' + tecnico.nombre" />
+        } @else {
+        <div class="foto-predeterminada">
+          {{ tecnico.nombre.charAt(0) }}{{ tecnico.apellido.charAt(0) }}
+        </div>
+        }
+      </div>
+
+      <h3>{{ tecnico.nombre }} {{ tecnico.apellido }}</h3>
+
+      @if (tecnico.especialidades?.length) {
+      <div class="bloque">
+        <span class="etiqueta-bloque">Especialidades</span>
+        <div class="pills">
+          @for (especialidad of tecnico.especialidades?.slice(0, 3) ?? []; track especialidad) {
+          <span class="pill">{{ especialidad }}</span>
+          }
+          @if (tecnico.especialidades.length > 3) {
+          <span class="pill pill-mas">+{{ tecnico.especialidades.length - 3 }}</span>
+          }
+        </div>
+      </div>
+      }
+
+      <button type="button" class="btn-perfil" (click)="verPerfil(tecnico.uuid)"
+        [attr.aria-label]="'Ver perfil de ' + tecnico.nombre + ' ' + tecnico.apellido">
+        Ver perfil
+      </button>
+
+    </article>
+
+    }
+
+  </div>
+
+  } @else {
+  <p class="mensaje">
+    No encontramos técnicos que coincidan con tu búsqueda.
+  </p>
+  @if (hayFiltros) {
+  <div class="centrado">
+    <button type="button" class="btn-secundario" (click)="limpiarFiltros()">Quitar filtros</button>
+  </div>
+  }
+  }
+
+  }
+
+</section>
