@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { TecnicoModel } from '../models/tecnico-model';
 import { PerfilTecnico } from '../pages/perfil-tecnico/perfil-tecnico';
 import { PerfilTecnicoModel } from '../models/PerfilTecnicoModel';
+import { TecnicoListadoModel } from '../models/TecnicoListado';
 
 //lo q se muestra publicamente de una certificacion o un portfolio: solo el título
 export interface ItemPublico {
@@ -25,6 +26,10 @@ export class TecnicoService {
     // READ: obtener todos los técnicos
     getTecnicos(): Observable<TecnicoModel[]> {
         return this.http.get<TecnicoModel[]>(this.url);
+    }
+
+    getTecnicosListado(): Observable<TecnicoListadoModel[]> {
+     return this.http.get<TecnicoListadoModel[]>(this.url);
     }
 
     getPerfil(uuid: string): Observable<PerfilTecnicoModel> {
