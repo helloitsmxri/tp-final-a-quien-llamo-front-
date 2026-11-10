@@ -1,8 +1,7 @@
-
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TecnicoListadoModel } from '../../models/TecnicoListado';
 import { TecnicoService } from '../../services/tecnico';
 import { RubroService } from '../../../rubro/services/rubro';
@@ -21,6 +20,7 @@ export class ListTecnicos implements OnInit {
   private tecnicoService = inject(TecnicoService);
   private rubroService = inject(RubroService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   tecnicos: TecnicoListadoModel[] = [];
   textoBusqueda = '';
@@ -29,10 +29,19 @@ export class ListTecnicos implements OnInit {
   rubroElegido: RubroModel | null = null;
   especialidadElegida: string | null = null;
 
+  // rubro que viene en la URL (?rubro=Hogar), por ejemplo desde el menu de Categorias
+  private rubroPedido: string | null = null;
+
   cargando = false;
   error = '';
 
   ngOnInit(): void {
+    // si ya está en el listado y toca otra categoría, el componente se reutiliza
+    this.route.queryParamMap.subscribe(params => {
+      this.rubroPedido = params.get('rubro');
+      this.aplicarRubroPedido();
+    });
+
     this.cargarTecnicos();
     this.cargarRubros();
   }
@@ -56,9 +65,24 @@ export class ListTecnicos implements OnInit {
 
   private cargarRubros(): void {
     this.rubroService.getRubros().subscribe({
-      next: (datos: RubroModel[]) => (this.rubros = datos),
+      next: (datos: RubroModel[]) => {
+        this.rubros = datos;
+        this.aplicarRubroPedido(); // los rubros llegan después de leer la URL
+      },
       error: (err: any) => console.error('Error al cargar rubros:', err),
     });
+  }
+
+  // elige el rubro que pidió la URL.
+  private aplicarRubroPedido(): void {
+    if (!this.rubroPedido || !this.rubros.length) return;
+
+    const buscado = this.normalizar(this.rubroPedido);
+    const rubro =
+      this.rubros.find(r => this.normalizar(r.nombreRubro) === buscado) ??
+      this.rubros.find(r => this.normalizar(r.nombreRubro).includes(buscado));
+
+    this.elegirRubro(rubro ?? null);
   }
 
   elegirRubroPorUuid(uuid: string): void {
@@ -91,6 +115,10 @@ export class ListTecnicos implements OnInit {
     this.textoBusqueda = '';
     this.rubroElegido = null;
     this.especialidadElegida = null;
+    this.rubroPedido = null;
+
+    // saca ?rubro= de la URL para que no se vuelva a aplicar al recargar
+    this.router.navigate([], { relativeTo: this.route, queryParams: {}, replaceUrl: true });
   }
 
   get hayFiltros(): boolean {
