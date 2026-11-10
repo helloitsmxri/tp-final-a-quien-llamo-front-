@@ -108,8 +108,9 @@
       <!-- [style.grid-area]="c.ruta" le dice a cada tarjeta en qué lugar de la grilla va (el nombre coincide con el del CSS) -->
       <li [style.grid-area]="c.ruta">
 
-        <!-- toda la tarjeta es un link, así se puede hacer clic en cualquier parte del dibujo -->
-        <a class="tarjeta" [routerLink]="['/categorias', c.ruta]">
+        <!-- toda la tarjeta es un link, así se puede hacer clic en cualquier parte del dibujo.
+            Lleva al listado de técnicos filtrado por ese rubro: /tecnicos?rubro=Hogar -->
+        <a class="tarjeta" [routerLink]="['/tecnicos']" [queryParams]="{ rubro: c.nombre }">
           <span class="tarjeta__nombre">{{ c.nombre }}</span>
           <!-- loading="lazy" = no descarga la imagen hasta q hace falta, así no pesa tanto en celulares -->
           <img class="tarjeta__img" [src]="c.imagen" alt="" loading="lazy">
