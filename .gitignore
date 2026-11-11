@@ -43,3 +43,4 @@ __screenshots__/
 Thumbs.db
 
 google-maps.config.ts
+src/app/config/google-maps.config.ts
