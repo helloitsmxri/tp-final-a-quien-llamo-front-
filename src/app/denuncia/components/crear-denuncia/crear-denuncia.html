@@ -1,1 +1,52 @@
-<p>crear-denuncia works!</p>
+<section class="denuncia-container" aria-labelledby="titulo-denuncia">
+    <div class="denuncia-card">
+        <h2 id="titulo-denuncia">¿Querés realizar una denuncia?</h2>
+        <p class="descripcion">Contanos qué sucedió. Nuestro equipo revisará la información que le proporciones.</p>
+
+        @if (!mostrarConfirmacion) {
+
+        <form class="formulario" [formGroup]="formulario" (ngSubmit)="confirmarEnvio()">
+
+            <div class="campo">
+                <label for="motivoDenuncia">Motivo de la denuncia</label>
+                <textarea id="motivoDenuncia" formControlName="motivoDenuncia" placeholder="Describí el motivo de tu denuncia..." rows="5" aria-required="true"></textarea>
+            </div>
+
+            <div class="campo">
+                <label for="foto">Adjuntar evidencia (opcional)</label>
+                <input id="foto" type="file" accept="image/*" (change)="seleccionarFoto($event)" aria-describedby="ayuda-foto">
+                <small id="ayuda-foto">Podés adjuntar una imagen como evidencia de la denuncia.</small>
+            </div>
+
+            @if (fotoSeleccionada) {
+                <div class="archivo-seleccionado">
+                    <span>Archivo seleccionado: {{ fotoSeleccionada.name }}</span>
+                    <button type="button" class="boton-quitar" (click)="quitarFoto()" aria-label="Quitar archivo adjunto">Quitar</button>
+                </div>
+            }
+
+            <div class="acciones">
+                <button type="button" class="boton-cancelar" (click)="cancelarFormulario()">Cancelar</button>
+                <button type="submit" class="boton-enviar">Enviar denuncia</button>
+            </div>
+
+        </form>
+
+    } @else {
+
+        <div class="confirmacion" role="group" aria-labelledby="titulo-confirmacion" aria-describedby="texto-confirmacion">
+            <h3 id="titulo-confirmacion">¿Estás seguro?</h3>
+            <p id="texto-confirmacion">¿Estás seguro de que querés realizar esta acción? Una vez enviada, la denuncia será recibida por nuestro equipo.</p>
+
+            <div class="acciones">
+                <button type="button" class="boton-cancelar" (click)="cancelarConfirmacion()">Volver</button>
+                <button type="button" class="boton-enviar" [disabled]="enviando" (click)="enviarDenuncia()">
+                    {{ enviando ? 'Enviando...' : 'Sí, enviar denuncia' }}
+                </button>
+            </div>
+        </div>
+
+    }
+    </div>
+
+</section>

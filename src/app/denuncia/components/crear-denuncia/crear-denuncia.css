@@ -1,0 +1,217 @@
+
+.denuncia-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+    padding: 40px 20px;
+    font-family: "Creato Display", Arial, sans-serif;
+    color: #333;
+}
+
+.denuncia-card {
+    width: 100%;
+    max-width: 560px;
+    padding: 40px 36px;
+    background: #f1f1f1;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(90, 70, 160, 0.25);
+    box-sizing: border-box;
+}
+
+.denuncia-card,
+.denuncia-card * {
+    box-sizing: border-box;
+}
+
+/* TÍTULO CON DEGRADÉ VIOLETA */
+.denuncia-card h2 {
+    margin: 0 0 8px;
+    font-size: 2.4rem;
+    line-height: 1.1;
+    background: linear-gradient(90deg, #5b3fd6, #805fe0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.denuncia-card > p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #444;
+}
+
+/* FORMULARIO */
+.formulario {
+    margin-top: 28px;
+    text-align: left;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+/* ETIQUETAS */
+.campo label {
+    display: block;
+    margin: 8px 0 0;
+    font-size: 0.75rem;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #333;
+}
+
+/* CAMPOS DE TEXTO */
+.campo textarea,
+.campo input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #333;
+    background: #fff;
+    border: 1px solid #777;
+    border-radius: 8px;
+}
+
+.campo textarea {
+    resize: vertical;
+    min-height: 130px;
+    line-height: 1.5;
+}
+
+.campo input[type="file"] {
+    padding: 9px;
+    font-size: 0.9rem;
+}
+
+.campo small {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #444;
+}
+
+/* FOCO VISIBLE PARA TECLADO */
+.campo textarea:focus-visible,
+.campo input:focus-visible,
+.denuncia-card button:focus-visible {
+    outline: 3px solid #5b3fd6;
+    outline-offset: 3px;
+}
+
+/* ARCHIVO SELECCIONADO */
+.archivo-seleccionado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+    margin-top: 8px;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow-wrap: anywhere;
+}
+
+/* BOTONES */
+.acciones {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.denuncia-card button {
+    min-height: 44px;
+    padding: 12px 28px;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: 600;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(90deg, #5b3fd6, #805fe0);
+    cursor: pointer;
+}
+
+.denuncia-card button:hover:not(:disabled) {
+    background: linear-gradient(90deg, #4930b5, #6948ca);
+}
+
+.denuncia-card button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* BOTÓN SECUNDARIO */
+.denuncia-card button.boton-cancelar,
+.denuncia-card button.boton-quitar {
+    color: #4b32b4;
+    background: transparent;
+    border: 1px solid #5b3fd6;
+}
+
+.denuncia-card button.boton-cancelar:hover,
+.denuncia-card button.boton-quitar:hover {
+    background: #e7e1fa;
+}
+
+/* CONFIRMACIÓN */
+.confirmacion {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.confirmacion h3 {
+    margin: 0 0 12px;
+    font-size: 1.5rem;
+    color: #4930a8;
+}
+
+.confirmacion p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #444;
+}
+
+/* ADAPTACIÓN A CELULARES */
+@media (max-width: 480px) {
+    .denuncia-container {
+        padding: 24px 14px;
+    }
+
+    .denuncia-card {
+        padding: 30px 22px;
+    }
+
+    .denuncia-card h2 {
+        font-size: 2rem;
+    }
+
+    .acciones {
+        flex-direction: column-reverse;
+    }
+
+    .acciones button {
+        width: 100%;
+    }
+}
+
+/* RESPETO A LA PREFERENCIA DE MENOS MOVIMIENTO */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
