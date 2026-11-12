@@ -26,6 +26,8 @@ export class Perfil implements OnInit{
   resenas : RatingResponse[] = [];
   cargando : boolean = true;
 
+  fotoError = false;
+
 
   // esto es pa q funcione el get de un perfil ajeno
   esMiPerfil = false;
@@ -84,6 +86,8 @@ export class Perfil implements OnInit{
   private procesarPerfil( perfil : UserProfileDTO){
     this.perfil = perfil;
 
+    this.fotoError = false;
+    
     this.fotoSrc = this.armarFoto(perfil.foto, perfil.tipoImagen);
     this.iniciales = this.obtenerIniciales(perfil.nombre, perfil.apellido);
     this.resenas = perfil.calificacionesRecibidas ?? [];
@@ -123,5 +127,9 @@ export class Perfil implements OnInit{
     const aMedios = Math.round(valor * 2) / 2;
     const redondeado = Math.min(5, Math.max(0.5, aMedios));
     return `/ilustraciones/rating/${this.imagenesEstrellas[redondeado]}.png`;
+  }
+
+  onFotoError(): void {
+    this.fotoError = true;
   }
 }
