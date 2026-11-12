@@ -1,0 +1,93 @@
+<section class="certificaciones">
+
+  @if (certificacionEditar) {
+    <app-editar-certificacion
+      [certificacion]="certificacionEditar"
+      (cancelar)="cancelarEdicion()"
+      (guardada)="edicionGuardada()">
+    </app-editar-certificacion>
+  } @else {
+
+    <h2>Mis certificaciones</h2>
+
+    @if (cargando) {
+      <p>Cargando...</p>
+    }
+
+    @if (error) {
+      <p class="error">{{ error }}</p>
+    }
+
+    @if (!cargando && !error && certificaciones.length === 0) {
+      <p>Todavía no cargaste títulos ni certificaciones.</p>
+    }
+
+    @if (!cargando && !error && certificaciones.length > 0) {
+      <ul>
+        @for (c of certificaciones; track c.uuid) {
+          <li>
+
+            @if (c.titulo) {
+              <strong class="titulo">{{ c.titulo }}</strong>
+            }
+
+            <dl class="datos">
+              <div>
+                <dt>Especialidad</dt>
+                <dd>{{ c.nombreEspecialidad || 'No especificada' }}</dd>
+              </div>
+
+              <div>
+                <dt>Otorgado por</dt>
+                <dd>{{ c.enteOtorgador }}</dd>
+              </div>
+
+              <div>
+                <dt>Matrícula</dt>
+                <dd>{{ c.numMatricula }}</dd>
+              </div>
+
+              <div>
+                <dt>Vence</dt>
+                <dd>{{ c.fechaVencimiento | date:'dd/MM/yyyy' }}</dd>
+              </div>
+
+              <div>
+                <dt>Estado</dt>
+                <dd>
+                  <span [class]="'estado-' + c.estadoVerificacion.toLowerCase()">
+                    {{ c.estadoVerificacion }}
+                  </span>
+                </dd>
+              </div>
+            </dl>
+
+            @if (c.estadoVerificacion === Estado.Rechazado && c.notasAdmin) {
+              <small class="error">
+                Motivo: {{ c.notasAdmin }}
+              </small>
+            }
+
+            <div class="acciones">
+              <button type="button" (click)="abrir(c)">
+                Ver archivo
+              </button>
+
+              @if (c.estadoVerificacion !== Estado.Aprobado) {
+                <button
+                  type="button"
+                  class="btn-editar"
+                  (click)="editar(c)">
+                  Editar
+                </button>
+              }
+            </div>
+
+          </li>
+        }
+      </ul>
+    }
+
+  }
+
+</section>

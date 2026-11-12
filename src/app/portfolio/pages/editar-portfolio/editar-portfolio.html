@@ -1,0 +1,120 @@
+
+<section class="editar-portfolio">
+  <div class="cabecera">
+    <h2>Editar portfolio</h2>
+    <p>Modificá la información de tu trabajo.</p>
+  </div>
+
+  @if (cargando) {
+    <p class="mensaje">Cargando portfolio...</p>
+  }
+
+  @if (error) {
+    <p class="mensaje error">{{ error }}</p>
+  }
+
+  @if (!cargando && portfolio && !error) {
+    <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+      <div class="campo">
+        <label for="titulo">Título del portfolio</label>
+        <input
+          id="titulo"
+          type="text"
+          formControlName="titulo"
+          placeholder="Ingresá el título de tu trabajo"
+          maxlength="150"
+        />
+
+        @if (errorMensaje('titulo')) {
+          <small class="error">{{ errorMensaje('titulo') }}</small>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="notasAspirante">Descripción del trabajo</label>
+        <textarea
+          id="notasAspirante"
+          formControlName="notasAspirante"
+          rows="5"
+          maxlength="5000"
+          placeholder="Contá de qué se trató el trabajo, qué tareas realizaste y qué resultados obtuviste..."
+        ></textarea>
+
+        @if (errorMensaje('notasAspirante')) {
+          <small class="error">{{ errorMensaje('notasAspirante') }}</small>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="enlaceExterno">Enlace externo</label>
+        <input
+          id="enlaceExterno"
+          type="url"
+          formControlName="enlaceExterno"
+          placeholder="https://..."
+          maxlength="255"
+        />
+
+        @if (errorMensaje('enlaceExterno')) {
+          <small class="error">{{ errorMensaje('enlaceExterno') }}</small>
+        }
+      </div>
+
+      <div class="campo">
+        <label for="archivo">Archivo adjunto</label>
+
+        @if (portfolio.archivoAdjunto && !archivoSeleccionado) {
+          <p class="archivo-actual">
+            Ya tenés un archivo adjunto. Si no seleccionás otro, se conservará el actual.
+          </p>
+        }
+
+        <input
+          #inputArchivo
+          id="archivo"
+          type="file"
+          accept=".pdf,.jpg,.jpeg,.png"
+          (change)="seleccionarArchivo($event)"
+        />
+
+        @if (archivoSeleccionado) {
+          <p class="archivo-seleccionado">
+            Archivo seleccionado: {{ archivoSeleccionado.name }}
+          </p>
+        }
+
+        @if (errorMensaje('archivo')) {
+          <small class="error">{{ errorMensaje('archivo') }}</small>
+        }
+
+        <small class="ayuda">
+          Formatos permitidos: PDF, JPG y PNG. Tamaño máximo: {{ maxMb }} MB.
+        </small>
+      </div>
+
+      @if (exito) {
+        <p class="exito">¡Portfolio actualizado correctamente!</p>
+      }
+
+      <div class="acciones">
+        <button
+          type="button"
+          class="boton boton-secundario"
+          (click)="cancelar()"
+          [disabled]="guardando"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="boton boton-primario"
+          [disabled]="guardando"
+        >
+          {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

@@ -1,4 +1,4 @@
-import { Component, ElementRef, forwardRef, inject, HostListener} from '@angular/core';
+import { Component, ElementRef, forwardRef, inject, HostListener, Input} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Dia } from './model/Dia';
 
@@ -18,7 +18,11 @@ export class Calendario implements ControlValueAccessor{
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
   ];
   diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
- 
+
+  //'pasado' (por defecto): se pueden elegir fechas hasta hoy (ej: fecha de nacimiento).
+  //'futuro': solo se pueden elegir fechas posteriores a hoy (ej: fecha de vencimiento).
+  @Input() modo: 'pasado' | 'futuro' = 'pasado';
+
   hoy = new Date();
   anioHoy = this.hoy.getFullYear();
   hoyTexto = this.formato(this.hoy.getFullYear(), this.hoy.getMonth(), this.hoy.getDate());
@@ -166,7 +170,9 @@ export class Calendario implements ControlValueAccessor{
   // ---------- Elegir un día ----------
  
   elegir(dia: Dia): void {
-    if (dia.futuro) return;
+    if (this.diaBloqueado(dia)){
+      return;
+    } 
  
     this.seleccionada = dia.fecha;
  
@@ -177,6 +183,15 @@ export class Calendario implements ControlValueAccessor{
  
     this.onChange(dia.fecha);   // le avisa al formulario el nuevo valor
     this.cerrar();
+  }
+
+  //fechas q no se pueden elegir
+  diaBloqueado(dia: Dia): boolean {
+    return this.modo==='futuro' ? dia.fecha<=this.hoyTexto : dia.fecha>this.hoyTexto
+  }
+
+  anioBloqueado(anio: number): boolean {
+    return this.modo==='futuro' ? anio<this.anioHoy:anio>this.anioHoy
   }
  
   // ---------- Armado de la grilla ----------

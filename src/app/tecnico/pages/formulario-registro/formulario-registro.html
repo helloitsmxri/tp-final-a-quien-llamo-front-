@@ -119,15 +119,9 @@
 
     @if (errorProyectos(); as msg) { <small class="error">{{ msg }}</small> }
 
-        <app-detalle-rubro
-      (rubrosSeleccionados)="onRubros($event)" />
-      
-    <app-detalle-especialidad
-      [nombresPermitidos]="especialidadesDelRubro"
-      (especialidadesSeleccionadas)="onEspecialidades($event)" />
-
-    <app-detalle-habilidad
-      [nombresEspecialidades]="nombresEspecialidades"
+          <app-selector-servicios
+      (rubrosSeleccionados)="onRubros($event)"
+      (especialidadesSeleccionadas)="onEspecialidades($event)"
       (habilidadesSeleccionadas)="onHabilidades($event)" />
 
     @if (errorSeleccion) { 
@@ -149,7 +143,9 @@
           <p class="aviso">Tus especialidades no requieren documentación, pero podés sumar un título o certificación para ganar confianza (opcional).</p>
         }
 
-        <app-certificacion-form modo="registro" [obligatorio]="p.obligatorio" />
+        <app-certificacion-form modo="registro"
+                                [especialidades]="p.opcionesCertificacion"
+                                [obligatorio]="p.obligatorio" />
       } @else {
         @if (p.obligatorio) {
           <p class="aviso">Para ofrecer {{ p.especialidad?.nombre }} tenés que cargar un portfolio (PDF o link). Un administrador lo va a verificar.</p>

@@ -1,0 +1,84 @@
+
+<section class="portfolios">
+  <h2>Mis portfolios</h2>
+
+  @if (cargando) {
+    <p>Cargando...</p>
+  }
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (!cargando && !error && portfolios.length === 0) {
+    <p>Todavía no cargaste portfolios.</p>
+  }
+
+  @if (!cargando && !error && portfolios.length > 0) {
+    <ul>
+      @for (p of portfolios; track p.uuid) {
+        <li>
+          <strong class="titulo">{{ p.titulo }}</strong>
+
+          <dl class="datos">
+            <div>
+              <dt>Especialidad</dt>
+              <dd>{{ p.nombreEspecialidad }}</dd>
+            </div>
+
+            <div>
+              <dt>Estado</dt>
+              <dd>
+                <span [class]="'estado-' + p.estadoVerificacion.toLowerCase()">
+                  {{ p.estadoVerificacion }}
+                </span>
+              </dd>
+            </div>
+          </dl>
+
+          @if (p.estadoVerificacion === Estado.Rechazado && p.notasAdmin) {
+            <small class="error">
+              Motivo: {{ p.notasAdmin }}
+            </small>
+          }
+
+          <div class="acciones">
+            @if (p.archivoAdjunto) {
+              <button
+                type="button"
+                class="boton"
+                (click)="abrirArchivo(p)"
+              >
+                Ver archivo
+              </button>
+            }
+
+            @if (p.enlaceExterno) {
+              <a
+                class="boton"
+                [href]="p.enlaceExterno"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver link
+              </a>
+            }
+
+            @if (
+              p.estadoVerificacion === Estado.Pendiente ||
+              p.estadoVerificacion === Estado.Rechazado
+            ) {
+              <button
+                type="button"
+                class="boton"
+                (click)="editar(p)"
+              >
+                Editar
+              </button>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

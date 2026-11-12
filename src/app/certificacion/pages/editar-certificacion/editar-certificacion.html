@@ -1,0 +1,106 @@
+<div class="formulario-edicion">
+
+  <h3>Editar certificación</h3>
+
+  <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+    <label for="titulo">Título de la certificación</label>
+    <input
+      id="titulo"
+      type="text"
+      formControlName="titulo"
+      maxlength="150"
+    >
+
+    @if (errorMensaje('titulo'); as msg) {
+      <small class="error">{{ msg }}</small>
+    }
+
+    <label for="especialidad">Especialidad</label>
+    <input
+      id="especialidad"
+      type="text"
+      [value]="certificacion.nombreEspecialidad || 'No especificada'"
+      disabled
+    >
+
+    <label for="numMatricula">Número de matrícula</label>
+    <input
+      id="numMatricula"
+      type="text"
+      formControlName="numMatricula"
+    >
+
+    @if (errorMensaje('numMatricula'); as msg) {
+      <small class="error">{{ msg }}</small>
+    }
+
+    <label for="enteOtorgador">Ente otorgador</label>
+    <input
+      id="enteOtorgador"
+      type="text"
+      formControlName="enteOtorgador"
+    >
+
+    @if (errorMensaje('enteOtorgador'); as msg) {
+      <small class="error">{{ msg }}</small>
+    }
+
+    <label for="fechaVencimiento">Fecha de vencimiento</label>
+    <app-calendario
+      modo="futuro"
+      formControlName="fechaVencimiento">
+    </app-calendario>
+
+    @if (errorMensaje('fechaVencimiento'); as msg) {
+      <small class="error">{{ msg }}</small>
+    }
+
+    <label for="archivo">Reemplazar archivo (opcional)</label>
+    <input
+      id="archivo"
+      #inputArchivo
+      type="file"
+      accept="application/pdf,image/jpeg,image/png"
+      (change)="seleccionarArchivo($event)"
+    >
+
+    <small class="ayuda">
+      Si no seleccionás otro archivo, se conserva el documento actual.
+    </small>
+
+    @if (errorMensaje('archivo'); as msg) {
+      <small class="error">{{ msg }}</small>
+    }
+
+    @if (errorServidor) {
+      <p class="error">{{ errorServidor }}</p>
+    }
+
+    @if (exito) {
+      <p class="exito">
+        Certificación actualizada correctamente.
+      </p>
+    }
+
+    <div class="acciones">
+
+      <button
+        type="button"
+        class="btn-cancelar"
+        (click)="cancelar.emit()"
+        [disabled]="enviando">
+        Cancelar
+      </button>
+
+      <button
+        type="submit"
+        class="btn-guardar"
+        [disabled]="enviando">
+        {{ enviando ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+
+    </div>
+
+  </form>
+</div>

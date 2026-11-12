@@ -1,41 +1,58 @@
 <div [formGroup]="formulario" [class.tarjeta]="modo === 'perfil'">
-  <h3>{{ modo === 'registro' ? (obligatorio ? 'Título o certificación (obligatorio)' : 'Título o certificación (opcional)') : 'Cargar título o certificación' }}</h3>
+  <h3>{{ modo === 'registro' ? (obligatorio ? 'Título o certificación (obligatorio)' : 'Título o certificación
+    (opcional)') : 'Cargar título o certificación' }}</h3>
+
+  <label for="titulo">Título de la certificación</label>
+  <input id="titulo" type="text" formControlName="titulo" maxlength="150">
+
+  @if (errorMensaje('titulo'); as msg) {
+  <small class="error">{{ msg }}</small>
+  }
+  <label for="uuidEspecialidad">Especialidad</label>
+  <select id="uuidEspecialidad" formControlName="uuidEspecialidad">
+    <option value="">Elegí una</option>
+    @for (e of especialidades; track e.uuid) {
+    <option [value]="e.uuid">{{ e.nombre }}</option>
+    }
+  </select>
+  @if (errorMensaje('uuidEspecialidad'); as msg) {
+  <small class="error">{{ msg }}</small>
+  }
 
   <label for="numMatricula">Número de matrícula</label>
   <input id="numMatricula" type="text" formControlName="numMatricula">
   @if (errorMensaje('numMatricula'); as msg) {
-    <small class="error">{{ msg }}</small>
+  <small class="error">{{ msg }}</small>
   }
 
   <label for="enteOtorgador">Ente otorgador</label>
   <input id="enteOtorgador" type="text" formControlName="enteOtorgador">
   @if (errorMensaje('enteOtorgador'); as msg) {
-    <small class="error">{{ msg }}</small>
+  <small class="error">{{ msg }}</small>
   }
 
   <label for="fechaVencimiento">Fecha de vencimiento</label>
-  <input id="fechaVencimiento" type="date" formControlName="fechaVencimiento">
+  <app-calendario modo="futuro" formControlName="fechaVencimiento"></app-calendario>
   @if (errorMensaje('fechaVencimiento'); as msg) {
-    <small class="error">{{ msg }}</small>
+  <small class="error">{{ msg }}</small>
   }
 
   <label for="archivo">Archivo (PDF, JPG o PNG, hasta {{ maxMb }} MB)</label>
-  <input id="archivo" #inputArchivo type="file"
-         accept="application/pdf,image/jpeg,image/png"
-         (change)="seleccionarArchivo($event)">
+  <input id="archivo" #inputArchivo type="file" accept="application/pdf,image/jpeg,image/png"
+    (change)="seleccionarArchivo($event)">
   @if (errorMensaje('archivo'); as msg) {
-    <small class="error">{{ msg }}</small>
+  <small class="error">{{ msg }}</small>
   }
 
   @if (modo === 'perfil') {
-    @if (errorServidor) {
-      <p class="error">{{ errorServidor }}</p>
-    }
-    @if (exito) {
-      <p>Listo: tu título quedó pendiente de verificación.</p>
-    }
-    <button type="button" (click)="enviar()" [disabled]="enviando">
-      {{ enviando ? 'Enviando...' : 'Cargar título' }}
-    </button>
+  @if (errorServidor) {
+  <p class="error">{{ errorServidor }}</p>
+  }
+  @if (exito) {
+  <p>Listo: tu título quedó pendiente de verificación.</p>
+  }
+  <button type="button" (click)="enviar()" [disabled]="enviando">
+    {{ enviando ? 'Enviando...' : 'Cargar título' }}
+  </button>
   }
 </div>

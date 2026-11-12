@@ -1,11 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { UbicacionModel } from '../../models/ubicacion-model';
 import { GoogleMapsModel } from '../../models/GoogleMapsModel';
 import { UbicacionService } from '../../services/ubicacion-service';
-import * as L from 'leaflet';
-import { AuthService } from '../../../auth/services/auth-service';
+import { GoogleMapsLoader } from '../../services/google-maps-loader';
+import { UsuarioService } from '../../../user/services/user';
+
+// Google Maps se carga por script; así evitamos instalar los tipos
+declare const google: any;
+
+// Centro por defecto del mapa: Mar del Plata
+const CENTRO_POR_DEFECTO = { lat: -38.0055, lng: -57.5426 };
+const CIUDAD_POR_DEFECTO = 'Mar del Plata';
 
 @Component({
   imports: [CommonModule, FormsModule],
@@ -13,9 +21,9 @@ import { AuthService } from '../../../auth/services/auth-service';
   styleUrl: './detalle-ubicacion.css',
   templateUrl: './detalle-ubicacion.html',
 })
-export class DetalleUbicacion implements OnInit, AfterViewInit{
+export class DetalleUbicacion implements OnInit, AfterViewInit {
 
-  currentUuidUsuario: string = ''; // Se asigna dinámicamente según el usuario autenticado en el auth
+  currentUuidUsuario: string = '';
 
   // 1. Lista de ubicaciones guardadas
   ubicaciones: UbicacionModel[] = [];
@@ -25,7 +33,7 @@ export class DetalleUbicacion implements OnInit, AfterViewInit{
   resultadoMaps: GoogleMapsModel | null = null;
   cargandoMaps: boolean = false;
 
-  // 3. Formulario.
+  // 3. Formulario
   formData: UbicacionModel = {
     calle: '',
     numero: '',
@@ -36,49 +44,65 @@ export class DetalleUbicacion implements OnInit, AfterViewInit{
     numeroPiso: ''
   };
 
-  // Variable para saber si estamos editando una ubicación existente o creando una nueva
+  // Para saber si estamos editando una ubicación existente o creando una nueva
   ubicacionEditandoUuid: string | null = null;
 
-  private map!: L.Map;
-  private marker!: L.Marker;
+  private map: any;
+  private marker: any;
 
-  constructor(private ubicacionService: UbicacionService, private authService:AuthService) {}
+  constructor(
+    private ubicacionService: UbicacionService,
+    private usuarioService: UsuarioService,
+    private mapsLoader: GoogleMapsLoader,
+    private route: ActivatedRoute,
+    private ngZone: NgZone,
+  ) {}
 
   ngOnInit(): void {
-
-    // Obtenemos el UUID directamente desde el AuthService
-    const uuid = this.authService.getUuidUsuarioLogueado();
-
-    if (uuid) {
-      this.currentUuidUsuario = uuid;
-      this.cargarUbicaciones();
-    } else {
-      console.warn('No hay un usuario autenticado o el token no es válido.');
-    }
+    // El uuid real del usuario sale de su perfil
+    this.usuarioService.getMyProfile().subscribe({
+      next: (perfil) => {
+        this.currentUuidUsuario = perfil.uuid;
+        this.cargarUbicaciones();
+      },
+      error: (err) => console.error('No se pudo obtener el perfil:', err),
+    });
   }
 
   ngAfterViewInit(): void {
-    this.initMap();
+    this.initMap().then(() => {
+      // Si venimos del inicio con ?busqueda=..., buscamos esa dirección
+      const busqueda = this.route.snapshot.queryParamMap.get('busqueda');
+      if (busqueda) {
+        this.ngZone.run(() => {
+          this.busquedaDireccion = busqueda;
+          this.buscarEnMaps();
+        });
+      }
+    });
   }
 
-  /* Inicializamos el mapa centrado por defento en Argentina, probar si anda bien */
-  private initMap(): void {
-    this.map = L.map('mapa-container').setView([-38.0055, -57.5426], 13); // coordenadas por defecto para probar. ej: Mar del Plata
+  // Inicializa el mapa de Google centrado en Mar del Plata
+  private async initMap(): Promise<void> {
+    try {
+      await this.mapsLoader.cargar();
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-    }).addTo(this.map);
+      const { Map: GMap } = await google.maps.importLibrary('maps');
+      const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
 
-    // Ajusta un ícono por defecto
-    const customIcon = L.icon({
-      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41]
-    });
+      this.map = new GMap(document.getElementById('mapa-container'), {
+        center: CENTRO_POR_DEFECTO,
+        zoom: 13,
+        mapId: 'DEMO_MAP_ID', // requerido por los marcadores avanzados; en producción usá tu propio Map ID
+      });
 
-    this.marker = L.marker([-38.0055, -57.5426], { icon: customIcon }).addTo(this.map);
+      this.marker = new AdvancedMarkerElement({
+        map: this.map,
+        position: CENTRO_POR_DEFECTO,
+      });
+    } catch (err) {
+      console.error('No se pudo iniciar Google Maps:', err);
+    }
   }
 
   // Carga inicial de las ubicaciones del usuario
@@ -91,51 +115,36 @@ export class DetalleUbicacion implements OnInit, AfterViewInit{
     });
   }
 
-// Búsqueda con OpenStreetMap (Nominatim) - Opción gratuita y sin APIKey)
+  // Búsqueda de dirección: la geocodificación la hace el backend (/maps/geocode)
   buscarEnMaps(): void {
-    if (!this.busquedaDireccion.trim()) return;
+    const texto = this.busquedaDireccion.trim();
+    if (!texto || !this.map) return;
 
     this.cargandoMaps = true;
 
-    //Coordenadas que delimintan Mar del Plata y zonas cercanas
-    const minLon = -57.6800; // Límite Oeste
-    const maxLat = -37.9000; // Límite Norte
-    const maxLon = -57.4800; // Límite Este (costa)
-    const minLat = -38.1200; // Límite Sur
-
-    const viewbox = `${minLon},${maxLat},${maxLon},${minLat}`;
-    const query = `${encodeURIComponent(this.busquedaDireccion)}, Mar del Plata`; //agrega la ciudad a la consulta
-
-//el código de país para Argentina
-const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&countrycodes=ar&viewbox=${viewbox}&bounded=1`;
-
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
+    this.ubicacionService.geocodificar(`${texto}, ${CIUDAD_POR_DEFECTO}`).subscribe({
+      next: (resultado) => {
         this.cargandoMaps = false;
-        if (data && data.length > 0) {
-          const lat = parseFloat(data[0].lat);
-          const lon = parseFloat(data[0].lon);
 
-          this.resultadoMaps = {
-            direccionFormateada: data[0].display_name,
-            latitud: lat,
-            longitud: lon
-          };
-
-          // Mueve el mapa y el marcador de Leaflet
-          if (this.map && this.marker) {
-            this.map.setView([lat, lon], 16);
-            this.marker.setLatLng([lat, lon]);
-          }
-        } else {
+        if (resultado?.latitud == null || resultado?.longitud == null) {
           alert('No se encontró la dirección en el mapa.');
+          return;
         }
-      })
-      .catch(err => {
+
+        this.resultadoMaps = resultado;
+
+        // Mueve el mapa y el marcador
+        const posicion = { lat: resultado.latitud, lng: resultado.longitud };
+        this.map.setCenter(posicion);
+        this.map.setZoom(16);
+        this.marker.position = posicion;
+      },
+      error: (err) => {
         this.cargandoMaps = false;
         console.error('Error al geocodificar:', err);
-      });
+        alert('No se encontró la dirección en el mapa.');
+      }
+    });
   }
 
   // Guardar (Crear o Actualizar)

@@ -1,45 +1,21 @@
 import { Injectable } from '@angular/core';
-import { ChatModel } from '../models/chat-model';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ChatModel } from '../models/chat-model';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ChatService {
+  private baseUrl = 'http://localhost:8080/aquienllamo/chats';
 
-   private readonly API_URL = 'http://localhost:8080/api/chats'; 
+  constructor(private http: HttpClient) {}
 
-
-    chats: ChatModel[] = []; 
-    chat!: ChatModel; 
-
-    constructor(private http: HttpClient) {} 
-
-
-iniciarChat(idUsuario: number, idTecnico: number): Observable<ChatModel> { 
-    return this.http.post<ChatModel>(`${this.API_URL}/iniciar`, { idUsuario, idTecnico }); 
-  } 
-
- 
-
-  // GET: Traer los chats de un usuario según su UUID 
-
-  getByUsuario(uuidUsuario: string): Observable<ChatModel[]> { 
-    return this.http.get<ChatModel[]>(`${this.API_URL}/usuario/${uuidUsuario}`); 
-  } 
-
- 
-
-  // GET: Traer los chats de un técnico según su UUID 
-
-  getByTecnico(uuidTecnico: string): Observable<ChatModel[]> { 
-    return this.http.get<ChatModel[]>(`${this.API_URL}/tecnico/${uuidTecnico}`); 
-  } 
-  // GET: Buscar un chat específico por su UUID 
-
-  getByUuid(uuidChat: string): Observable<ChatModel> { 
-    return this.http.get<ChatModel>(`${this.API_URL}/${uuidChat}`); 
+  // Todos mis chats, ya sea como cliente o como técnico
+  getMisChats(): Observable<ChatModel[]> {
+    return this.http.get<ChatModel[]>(`${this.baseUrl}/mis-chats`);
   }
-  
+
+  // Abre (o recupera) mi chat con un técnico
+  iniciarChat(uuidTecnico: string): Observable<ChatModel> {
+    return this.http.post<ChatModel>(`${this.baseUrl}/iniciar-chat`, { uuidTecnico });
+  }
 }

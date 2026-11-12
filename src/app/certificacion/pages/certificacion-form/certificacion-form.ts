@@ -1,25 +1,29 @@
-import { Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CertificacionService } from '../../services/certificacion';
 import { CertificacionDatos } from '../../models/certificacion-datos';
 import { MAX_MB, archivoValido, fechaFutura } from '../../../utils/validadores';
+import { contieneLetras, matriculaValida } from '../../../utils/validadores-texto';
+import { Calendario } from '../../../components/calendario/calendario';
 
 // tiene que ir ANTES del decorador: entre @Component y la clase no puede haber nada
-type Campo = 'numMatricula' | 'enteOtorgador' | 'fechaVencimiento' | 'archivo';
+type Campo = 'titulo' | 'uuidEspecialidad' | 'numMatricula' | 'enteOtorgador' | 'fechaVencimiento' | 'archivo';
 
 @Component({
   selector: 'app-certificacion-form',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Calendario],
   templateUrl: './certificacion-form.html',
   styleUrl: './certificacion-form.css',
 })
-export class CertificacionForm {
+export class CertificacionForm implements OnChanges {
   private fb = inject(FormBuilder);
   private servicio = inject(CertificacionService);
 
   @Input() modo: 'registro' | 'perfil' = 'perfil';
   @Input() obligatorio = false;
   @Input() uuidTecnico = '';
+  // La certificación respalda una especialidad del técnico: se elige entre estas
+  @Input() especialidades: { uuid: string; nombre: string }[] = [];
   @Output() creada = new EventEmitter<void>();
   @ViewChild('inputArchivo') inputArchivo?: ElementRef<HTMLInputElement>;
 
@@ -29,11 +33,26 @@ export class CertificacionForm {
   errorServidor: string | null = null;
 
   formulario = this.fb.group({
-    numMatricula: ['', [Validators.required, Validators.maxLength(100)]],
-    enteOtorgador: ['', [Validators.required, Validators.maxLength(100)]],
+    titulo: ['', [Validators.required, Validators.maxLength(150)]],
+    uuidEspecialidad: ['', Validators.required],
+    numMatricula: ['', [Validators.required, Validators.maxLength(100), matriculaValida]],
+    enteOtorgador: ['', [Validators.required, Validators.maxLength(100), contieneLetras]],
     fechaVencimiento: ['', [Validators.required, fechaFutura]],
     archivo: [null as File | null, [Validators.required, archivoValido]],
   });
+
+  // Si hay una sola especialidad, queda seleccionada; si la elegida ya no está en la lista, se limpia
+  ngOnChanges(cambios: SimpleChanges): void {
+    if (!cambios['especialidades']) return;
+    const control = this.formulario.controls.uuidEspecialidad;
+
+    if (control.value && !this.especialidades.some((e) => e.uuid === control.value)) {
+      control.setValue('');
+    }
+    if (this.especialidades.length === 1 && !control.value) {
+      control.setValue(this.especialidades[0].uuid);
+    }
+  }
 
   seleccionarArchivo(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -44,7 +63,8 @@ export class CertificacionForm {
 
   private estaVacio(): boolean {
     const v = this.formulario.getRawValue();
-    return !v.numMatricula && !v.enteOtorgador && !v.fechaVencimiento && !v.archivo;
+    // la especialidad sola no cuenta: puede venir preseleccionada y el documento es opcional
+    return !v.titulo && !v.numMatricula && !v.enteOtorgador && !v.fechaVencimiento && !v.archivo;
   }
 
   validar(): boolean {
@@ -57,6 +77,8 @@ export class CertificacionForm {
     if (this.estaVacio() || this.formulario.invalid) return null;
     const v = this.formulario.getRawValue();
     return {
+      titulo: (v.titulo ?? '').trim(),
+      uuidEspecialidad: v.uuidEspecialidad ?? '',
       numMatricula: (v.numMatricula ?? '').trim(),
       enteOtorgador: (v.enteOtorgador ?? '').trim(),
       fechaVencimiento: v.fechaVencimiento ?? '',
@@ -77,7 +99,7 @@ export class CertificacionForm {
       next: () => {
         this.enviando = false;
         this.exito = true;
-        this.formulario.reset();
+        this.formulario.reset({ uuidEspecialidad: '' });
         if (this.inputArchivo) this.inputArchivo.nativeElement.value = '';
         this.creada.emit();
       },
@@ -93,9 +115,16 @@ export class CertificacionForm {
     if (!c.touched || !c.errors) return null;
     if (c.hasError('required')) return campo === 'archivo' ? 'Adjuntá el archivo.' : 'Este campo es obligatorio.';
     if (c.hasError('maxlength')) return 'No puede superar los 100 caracteres.';
+    if (c.hasError('matricula')) return 'La matrícula solo puede tener letras, números y . - / y debe incluir al menos un número.';
+    if (c.hasError('sinLetras')) return 'El ente otorgador tiene que incluir letras, no puede ser solo números.';
     if (c.hasError('fechaPasada')) return 'La fecha de vencimiento tiene que ser posterior a hoy.';
     if (c.hasError('tipoInvalido')) return 'Solo se aceptan PDF, JPG o PNG.';
     if (c.hasError('tamanioExcedido')) return `El archivo no puede pesar más de ${this.maxMb} MB.`;
+    if (c.hasError('maxlength')) {
+    return campo === 'titulo'
+    ? 'El título no puede superar los 150 caracteres.'
+    : 'No puede superar los 100 caracteres.';
+    }
     return null;
   }
 }

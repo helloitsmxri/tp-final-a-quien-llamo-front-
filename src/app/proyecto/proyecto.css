@@ -184,3 +184,45 @@ input:focus, textarea:focus {
   color: #c62828;
   background: #fde7e7;
 }
+
+.volver-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+/* Efectos al pasar el mouse por los botones */
+.btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(91, 63, 214, 0.25);
+}
+
+.btn-primario:hover:not(:disabled) {
+  background: linear-gradient(90deg, #4930bd, #795be0);
+}
+
+.btn-secundario:hover:not(:disabled) {
+  background: #d2c7f5;
+}
+
+/* Botón volver al perfil */
+.volver-container .btn {
+  text-decoration: none;
+}
+
+/* Efectos para Editar y Eliminar */
+.btn-link {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-link:hover:not(:disabled) {
+  transform: translateY(-1px);
+  color: #3820a8;
+}
+
+.btn-link.peligro:hover:not(:disabled) {
+  color: #a31515;
+}

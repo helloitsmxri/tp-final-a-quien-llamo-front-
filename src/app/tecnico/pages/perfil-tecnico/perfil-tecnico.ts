@@ -1,11 +1,14 @@
+
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { TecnicoService } from '../../services/tecnico';
+import { UsuarioService } from '../../../user/services/user';
 import { RatingService } from '../../../rating/services/rating';
-import { PerfilTecnicoModel } from './models/PerfilTecnicoModel';
-import { Calendario } from '../../../components/calendario/calendario';
+import { PerfilTecnicoModel } from '../../models/PerfilTecnicoModel';
 import { RatingResponse } from '../../../rating/models/rating-response';
+import { DetalleCertificacion } from '../../../certificacion/pages/detalle-certificacion/detalle-certificacion';
+import { DetallePortfolio } from '../../../portfolio/pages/detalle-portfolio/detalle-portfolio';
 
 interface ItemDetalle {
   titulo: string;
@@ -14,13 +17,14 @@ interface ItemDetalle {
 
 @Component({
   selector: 'app-perfil-tecnico',
-  imports: [Calendario],
+  imports: [DetalleCertificacion, DetallePortfolio, RouterLink],
   templateUrl: './perfil-tecnico.html',
   styleUrl: './perfil-tecnico.css',
 })
 export class PerfilTecnico implements OnInit {
 
   private servicio = inject(TecnicoService);
+  private usuarioService = inject(UsuarioService);
   private ratingService = inject(RatingService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -36,39 +40,41 @@ export class PerfilTecnico implements OnInit {
   resenas: RatingResponse[] = [];
   promedio = 0;
 
-  // Datos de ejemplo para estudios
-  estudios: ItemDetalle[] = [
-    {
-      titulo: 'Master in Landscape Architecture',
-      detalle: 'Harvard Graduate School of Design',
-    },
-    {
-      titulo: 'MSc in Interior and Spatial Design',
-      detalle: 'Politecnico di Milano',
-    },
-  ];
-
-  // Datos de ejemplo para certificaciones
-  certificaciones: ItemDetalle[] = [
-    {
-      titulo: 'LEED Accredited Professional',
-      detalle: 'Interior Design & Construction',
-    },
-    {
-      titulo: 'Certified Sustainable Landscape Designer',
-      detalle: '',
-    },
-    {
-      titulo: 'International Landscape Design Award',
-      detalle: '2022',
-    },
-  ];
+  // Imágenes de las estrellas según la valoración
+  private imagenesEstrellas: { [key: number]: string } = {
+    0.5: 'media-estrella',
+    1: 'una-estrella',
+    1.5: 'una-estrella-y-media',
+    2: 'dos-estrellas',
+    2.5: 'dos-estrellas-y-media',
+    3: 'tres-estrellas',
+    3.5: 'tres-estrellas-y-media',
+    4: 'cuatro-estrellas',
+    4.5: 'cuatro-estrellas-y-media',
+    5: 'cinco-estrellas'
+  };
 
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');
 
-    if (!uuid || uuid === 't1') {
-      this.cargarMock();
+    // Sin uuid en la URL = cargo MI perfil
+    if (!uuid) {
+      this.servicio.getMiPerfil().subscribe({
+        next: (data: PerfilTecnicoModel) => {
+          this.tecnico = data;
+          this.procesarProyectos();
+
+          // Obtengo el uuid del usuario para cargar sus reseñas
+          this.usuarioService.getMyProfile().subscribe({
+            next: (u) => this.cargarResenas(u.uuid),
+            error: () => (this.resenas = []),
+          });
+        },
+        error: (error: any) => {
+          console.error('Error al cargar mi perfil de técnico:', error.status, error.error);
+          this.errorCarga = true;
+        },
+      });
       return;
     }
 
@@ -76,11 +82,10 @@ export class PerfilTecnico implements OnInit {
       next: (data: PerfilTecnicoModel) => {
         this.tecnico = data;
         this.procesarProyectos();
-        this.cargarResenas(uuid); // TODO: cambiar por data.uuidUsuario cuando el back lo agregue
+        this.cargarResenas(data.uuidUsuario);
       },
       error: (error: any) => {
         console.error('Error al cargar el perfil:', error);
-        console.error('URL solicitada:', error.url);
         console.error('Estado HTTP:', error.status);
         console.error('Respuesta del servidor:', error.error);
 
@@ -110,11 +115,18 @@ export class PerfilTecnico implements OnInit {
     return (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
   }
 
-  // Representación de las estrellas
-  estrellas(valor: number): string {
-    const cantidad = Math.max(0, Math.min(5, Math.round(valor)));
+  // Obtener imagen de estrellas según la valoración
+  imagenEstrellas(valor: number): string | null {
+    if (valor <= 0) {
+      return null;
+    }
 
-    return '★'.repeat(cantidad) + '☆'.repeat(5 - cantidad);
+    const redondeado = Math.min(
+      5,
+      Math.max(0.5, Math.round(valor * 2) / 2)
+    );
+
+    return `/ilustraciones/rating/${this.imagenesEstrellas[redondeado]}.png`;
   }
 
   // Cargar las reseñas que recibió el usuario
@@ -138,7 +150,7 @@ export class PerfilTecnico implements OnInit {
       : 0;
   }
 
-  // Iniciales de quien escribió la reseña (el back todavía no manda su foto)
+  // Iniciales de quien escribió la reseña
   inicialesDe(nombre: string): string {
     return nombre
       .split(' ')
@@ -149,7 +161,7 @@ export class PerfilTecnico implements OnInit {
       .toUpperCase();
   }
 
-  // Procesar proyectos separados por saltos de línea.
+  // Procesar proyectos separados por saltos de línea
   // Formato esperado: "Nombre — detalle"
   private procesarProyectos(): void {
     this.proyectosLista = (this.tecnico?.proyectos ?? '')
@@ -170,72 +182,11 @@ export class PerfilTecnico implements OnInit {
       });
   }
 
-  // Datos ficticios para probar el diseño sin UUID
-  private cargarMock(): void {
-    this.tecnico = {
-      uuid: 't1',
-      nombre: 'Jane',
-      apellido: 'Doe',
-      email: 'jane@mail.com',
-      telefono: '2235550000',
-      sobreMi:
-        'Si querés que tus hogares hagan que tu casa, comercio u oficina, ya sabés con quién trabajar.',
-      fotoBase64: null,
-      tipoImagen: null,
-      cuit: '20384920499',
-      descripcionTrabajo:
-        '¡Hola! Me llamo Jane y me dedico al paisajismo y al diseño de interiores. He trabajado en proyectos alrededor del mundo y recibí el premio Gran Diseño en 2020.',
-      proyectos:
-        'Casa Aurelia — Buenos Aires, Argentina (Interior + landscaping)\n' +
-        'Luna Mare Restaurant — Barcelona, España (Interior design)\n' +
-        'The Olive House — Tulum, México',
-      habilidades: [
-        'Diseño residencial',
-        'Diseño hotelero',
-        'Jardines sostenibles',
-      ],
-      especialidades: [
-        'Paisajista',
-        'Diseñadora de Interiores',
-      ],
-    };
-
-    this.procesarProyectos();
-
-this.resenas = [
-  {
-    uuidCalificacion: 'calificacion-1',
-    uuidRemitente: '123',
-    nombreRemitente: 'María',
-    apellidoRemitente: 'López',
-    nombreDestinatario: 'Juan',
-    valoracion: 5,
-    descripcion: 'Excelente trabajo.',
-    tipoFoto: null,
-    foto: null,
-    caracteristicas: ['Puntual', 'Responsable']
-  },
-  {
-    uuidCalificacion: 'calificacion-2',
-    uuidRemitente: 'u2',
-    nombreRemitente: 'Ludmila',
-    apellidoRemitente: 'Domínguez',
-    nombreDestinatario: 'Jane Doe',
-    valoracion: 5,
-    descripcion: 'Muy conforme con el resultado.',
-    tipoFoto: null,
-    foto: null,
-    caracteristicas: ['Pulcra', 'Clara', 'Ordenada']
-  }
-];
-
-    this.promedio = this.calcularPromedio(this.resenas);
-  }
-  
   verPerfilUsuario(uuid: string): void {
-  if (!uuid) {
-    return;
+    if (!uuid) {
+      return;
     }
-    this.router.navigate(['/usuario', uuid]); // ajustar a la ruta real del perfil de usuario
+
+    this.router.navigate(['/usuario', uuid]);
   }
 }

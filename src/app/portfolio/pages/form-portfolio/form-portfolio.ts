@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PortfolioDatos } from '../../models/portfolio-datos';
 import { PortfolioService } from '../../services/portfolio';
 import { MAX_MB, archivoValido, enlaceOArchivo } from '../../../utils/validadores';
+import { contieneLetras } from '../../../utils/validadores-texto';
 
 @Component({
   selector: 'app-form-portfolio',
@@ -33,8 +34,9 @@ export class FormPortfolio implements OnChanges {
 
   form = this.fb.group(
     {
+      titulo: ['', [Validators.required, Validators.maxLength(150)]],
       uuidEspecialidad: ['', Validators.required],
-      notasAspirante: ['', [Validators.required, Validators.maxLength(5000)]],
+      notasAspirante: ['', [Validators.required, Validators.maxLength(5000), contieneLetras]],
       enlaceExterno: ['', [Validators.maxLength(1000), Validators.pattern(/^https?:\/\/\S+$/i)]],
       archivo: [null as File | null, archivoValido],
     },
@@ -64,7 +66,7 @@ export class FormPortfolio implements OnChanges {
   private estaVacio(): boolean {
     const v = this.form.getRawValue();
     // la especialidad sola no cuenta: puede venir preseleccionada y el portfolio es opcional
-    return !v.notasAspirante && !v.enlaceExterno && !v.archivo;
+    return !v.titulo && !v.notasAspirante && !v.enlaceExterno && !v.archivo;
   }
 
   // Opcional en el registro, pero si empezó a cargarlo tiene que estar completo
@@ -83,6 +85,7 @@ export class FormPortfolio implements OnChanges {
     if (this.estaVacio() || this.form.invalid) return null;
     const v = this.form.getRawValue();
     return {
+      titulo: (v.titulo ?? '').trim(),
       uuidEspecialidad: v.uuidEspecialidad ?? '',
       notasAspirante: (v.notasAspirante ?? '').trim(),
       enlaceExterno: (v.enlaceExterno ?? '').trim(),
@@ -115,14 +118,19 @@ export class FormPortfolio implements OnChanges {
     });
   }
 
-  errorMensaje(campo: 'uuidEspecialidad' | 'notasAspirante' | 'enlaceExterno' | 'archivo'): string | null {
-    const c = this.form.controls[campo];
-    if (!c.touched || !c.errors) return null;
-    if (c.hasError('required')) return 'Este campo es obligatorio.';
-    if (c.hasError('maxlength')) return 'El texto es demasiado largo.';
-    if (c.hasError('pattern')) return 'Ingresá un link que empiece con http:// o https://';
-    if (c.hasError('tipoInvalido')) return 'Solo se aceptan PDF, JPG o PNG.';
-    if (c.hasError('tamanioExcedido')) return `El archivo no puede pesar más de ${this.maxMb} MB.`;
-    return null;
+ errorMensaje(campo: 'titulo' | 'uuidEspecialidad' | 'notasAspirante' | 'enlaceExterno' | 'archivo'): string | null {
+  const c = this.form.controls[campo];
+  if (!c.touched || !c.errors) return null;
+  if (c.hasError('required')) return 'Este campo es obligatorio.';
+  if (c.hasError('sinLetras')) return 'Contanos con palabras, no puede ser solo números.';
+  if (c.hasError('maxlength')) {
+    return campo === 'titulo'
+      ? 'El título no puede superar los 150 caracteres.'
+      : 'El texto es demasiado largo.';
   }
+  if (c.hasError('pattern')) return 'Ingresá un link que empiece con http:// o https://';
+  if (c.hasError('tipoInvalido')) return 'Solo se aceptan PDF, JPG o PNG.';
+  if (c.hasError('tamanioExcedido')) return `El archivo no puede pesar más de ${this.maxMb} MB.`;
+  return null;
+}
 }

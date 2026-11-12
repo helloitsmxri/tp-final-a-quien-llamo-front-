@@ -1,22 +1,33 @@
 <div class="search-box">
-  <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Inserte un nombre aquí para buscar" />
+  <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Buscar conversaciones" />
 </div>
 
 <div class="lista-chats">
-  @for (chat of chatsFiltrados; track chat.uuidChat) {
-    <div 
-      class="item-chat" 
-      [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
-      (click)="seleccionarChat(chat)"
-    >
-      <div class="avatar-chat">
-        <img [src]="'https://ui-avatars.com/api/?name=' + (chat.nombreTecnico || 'Usuario')" alt="Avatar" />
+
+  @if (chatsFiltrados.length > 0) {
+    <p class="seccion-titulo">Conversaciones</p>
+    @for (chat of chatsFiltrados; track chat.uuidChat) {
+      <div
+        class="item-chat"
+        [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
+        (click)="seleccionarChat(chat)"
+      >
+        <div class="avatar-chat">
+          <img [src]="avatar(nombreChat(chat))" alt="Avatar" />
+        </div>
+        <div class="info-chat">
+          <span class="nombre">{{ nombreChat(chat) }}</span>
+        </div>
       </div>
-      <div class="info-chat">
-        <span class="nombre">{{ chat.nombreTecnico || 'Contacto' }}</span>
-      </div>
-    </div>
-  } @empty {
-    <p class="sin-chats">No tenés conversaciones activas.</p>
+    }
+  } @else {
+    <p class="sin-chats">
+      @if (filtroBusqueda.trim()) {
+        No hay conversaciones que coincidan.
+      } @else {
+        Todavía no tenés conversaciones. Contactá a un técnico desde su perfil para empezar.
+      }
+    </p>
   }
+
 </div>

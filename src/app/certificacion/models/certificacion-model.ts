@@ -2,9 +2,12 @@ import { EstadoVerificacion } from "../enum/estado-verificacion";
 
 
 export interface CertificacionModel {
+  titulo: string;
   uuid: string;
   nombreTecnico: string;
   apellidoTecnico: string;
+  uuidEspecialidad: string | null;
+  nombreEspecialidad: string | null;
   numMatricula: string;
   enteOtorgador: string;
   fechaVencimiento: string;

@@ -69,4 +69,22 @@ export class AuthService {
       return null;
     }
   }
+
+   // Lee los roles que vienen dentro del token (claim "roles", ej: ["ROLE_USUARIO","ROLE_TECNICO"])
+  getRoles(): string[] {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return [];
+    try {
+      // el JWT usa base64url (- y _), atob necesita base64 normal (+ y /)
+      const payload = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      const decoded = JSON.parse(atob(payload));
+      return Array.isArray(decoded.roles) ? decoded.roles : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  esTecnico(): boolean {
+    return this.getRoles().includes('ROLE_TECNICO');
+  }
 }

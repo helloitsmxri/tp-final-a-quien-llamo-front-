@@ -1,3 +1,4 @@
+
 @if (tecnico) {
   <div class="main-container">
 
@@ -13,13 +14,18 @@
               } @else {
                 <div class="profile-img avatar-vacio">{{ iniciales }}</div>
               }
-              <button type="button" class="btn-hire">¡Contrátame!</button>
+              <a routerLink="/mi-perfil-tecnico/editar" class="btn-hire">Editar perfil</a>
             </div>
 
             <div class="profile-info">
               <div class="name-rating">
                 <h2>{{ tecnico.nombre }} {{ tecnico.apellido }}</h2>
-                <span class="stars">{{ estrellas(promedio) }}</span>
+
+                @if (imagenEstrellas(promedio); as imagen) {
+                  <img [src]="imagen" alt="Calificación promedio" class="stars-img">
+                } @else {
+                  <span class="sin-calificacion">Sin calificaciones</span>
+                }
               </div>
 
               <div class="pills-container">
@@ -49,32 +55,40 @@
         <div class="detail-columns">
 
           <div class="col-left">
-            <h3 class="title-box">Proyectos</h3>
+            <div class="titulo-con-lapiz">
+              <h3 class="title-box">Proyectos</h3>
+              <a class="btn-lapiz"
+                 [routerLink]="['/perfil-tecnico', tecnico.uuid, 'proyectos']"
+                 title="Agregar o editar proyectos"
+                 aria-label="Agregar o editar proyectos">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 20h9"/>
+                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/>
+                </svg>
+              </a>
+            </div>
+
             <div class="scroll-list">
               <ul class="styled-list">
                 @for (p of proyectosLista; track $index) {
-                  <li><strong>{{ p.titulo }}</strong>@if (p.detalle) { — {{ p.detalle }}}</li>
+                  <li>
+                    <strong>{{ p.titulo }}</strong>
+                    @if (p.detalle) {
+                      — {{ p.detalle }}
+                    }
+                  </li>
                 }
               </ul>
             </div>
-
-            <app-calendario />
           </div>
 
           <div class="col-right">
-            <h3>Estudios</h3>
-            <ul class="styled-list">
-              @for (e of estudios; track $index) {
-                <li>{{ e.titulo }} — <strong>{{ e.detalle }}</strong></li>
-              }
-            </ul>
+            <h3>Certificaciones</h3>
+            <app-detalle-certificacion [uuidTecnico]="tecnico.uuid" />
 
-            <h3>Certificaciones &amp; Portfolio</h3>
-            <ul class="styled-list">
-              @for (c of certificaciones; track $index) {
-                <li>{{ c.titulo }}@if (c.detalle) { — <strong>{{ c.detalle }}</strong>}</li>
-              }
-            </ul>
+            <h3>Portfolio</h3>
+            <app-detalle-portfolio [uuidTecnico]="tecnico.uuid" />
           </div>
 
         </div>
@@ -91,16 +105,22 @@
                    (click)="verPerfilUsuario(r.uuidRemitente)"
                    (keydown.enter)="verPerfilUsuario(r.uuidRemitente)">
             <div class="review-avatar avatar-vacio">{{ inicialesDe(r.nombreRemitente) }}</div>
+
             <div class="review-content">
               <div class="review-header">
                 <h4>{{ r.nombreRemitente }}</h4>
-                <span class="stars">{{ estrellas(r.valoracion) }}</span>
+
+                @if (imagenEstrellas(r.valoracion); as imagen) {
+                  <img [src]="imagen" alt="Calificación de la reseña" class="stars-img">
+                }
               </div>
+
               <div class="pills-container">
                 @for (c of r.caracteristicas; track c) {
                   <span class="pill pill-soft">{{ c }}</span>
                 }
               </div>
+
               @if (r.descripcion) {
                 <p class="review-text">{{ r.descripcion }}</p>
               }

@@ -1,0 +1,242 @@
+<div class="contenedor">
+
+  <a routerLink="/mi-perfil-tecnico" class="volver">
+    ← Volver a mi perfil
+  </a>
+
+  @if (errorCarga) {
+  <p class="estado error">
+    No se pudo cargar tu perfil.
+  </p>
+  }
+
+  @else if (!perfil) {
+  <p class="estado">
+    Cargando...
+  </p>
+  }
+
+  @else if (fase === 'datos') {
+
+  <section class="card">
+
+    <h2>Editar mi perfil</h2>
+
+    <!-- Indicador de pasos -->
+    <div class="pasos">
+      <span [class.activo]="pasoEdicion === 1">
+        1. Datos del perfil
+      </span>
+
+      <span [class.activo]="pasoEdicion === 2">
+        2. Servicios
+      </span>
+    </div>
+
+    <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+      <!-- PASO 1 -->
+      @if (pasoEdicion === 1) {
+
+      <h3>Datos personales</h3>
+
+      <!-- Foto -->
+      <div class="foto-perfil">
+
+        @if (fotoPreview) {
+        <img [src]="fotoPreview" alt="Foto de perfil" class="foto-preview">
+        }
+
+        @else {
+        <p>Sin foto de perfil</p>
+        }
+
+        <label for="foto">
+          Cambiar foto de perfil
+        </label>
+
+        <input id="foto" type="file" accept="image/*" (change)="onFotoSeleccionada($event)">
+
+        @if (errorFoto) {
+        <small class="error">
+          {{ errorFoto }}
+        </small>
+        }
+
+      </div>
+
+      <!-- Nombre -->
+      <label for="nombre">Nombre</label>
+
+      <input id="nombre" type="text" formControlName="nombre">
+
+      @if (errorMensaje('nombre'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
+
+      <!-- Apellido -->
+      <label for="apellido">Apellido</label>
+
+      <input id="apellido" type="text" formControlName="apellido">
+
+      @if (errorMensaje('apellido'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
+
+      <!-- Teléfono -->
+      <label for="telefono">Teléfono</label>
+
+      <input id="telefono" type="text" formControlName="telefono">
+
+      @if (errorMensaje('telefono'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
+
+      <!-- Sobre mí -->
+      <label for="sobreMi">Sobre mí</label>
+
+      <textarea id="sobreMi" rows="4" formControlName="sobreMi" placeholder="Contanos un poco sobre vos..."></textarea>
+
+      <h3>Datos profesionales</h3>
+
+      <!-- CUIT -->
+      <label for="cuit">CUIT</label>
+
+      <input id="cuit" type="text" formControlName="cuit" inputmode="numeric">
+
+      @if (errorMensaje('cuit'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
+
+      <!-- Descripción -->
+      <label for="descripcionTrabajo">
+        Descripción de tu trabajo
+      </label>
+
+      <textarea id="descripcionTrabajo" rows="4" formControlName="descripcionTrabajo"></textarea>
+
+      @if (errorMensaje('descripcionTrabajo'); as msg) {
+      <small class="error">{{ msg }}</small>
+      }
+
+      @if (errorServidor) {
+      <p class="estado error">
+        {{ errorServidor }}
+      </p>
+      }
+
+      <!-- Acciones del paso 1 -->
+      <div class="acciones">
+
+        <a routerLink="/mi-perfil-tecnico" class="boton boton-sec">
+          Cancelar
+        </a>
+
+        <button type="button" class="boton" (click)="continuarEdicion()">
+          Siguiente
+        </button>
+
+      </div>
+      }
+
+      <!-- PASO 2 -->
+      @if (pasoEdicion === 2) {
+
+      <h3>Rubros, especialidades y habilidades</h3>
+
+      <p>
+        Seleccioná los rubros y servicios que ofrecés.
+      </p>
+
+      <app-selector-servicios [especialidadesIniciales]="perfil.especialidades"
+        [habilidadesIniciales]="perfil.habilidades" (especialidadesSeleccionadas)="onEspecialidades($event)"
+        (habilidadesSeleccionadas)="onHabilidades($event)" />
+
+      @if (errorSeleccion) {
+      <small class="error">
+        {{ errorSeleccion }}
+      </small>
+      }
+
+      @if (errorServidor) {
+      <p class="estado error">
+        {{ errorServidor }}
+      </p>
+      }
+
+      <!-- Acciones del paso 2 -->
+      <div class="acciones">
+
+        <button type="button" class="boton boton-sec" (click)="pasoEdicion = 1">
+          Anterior
+        </button>
+
+        <button type="submit" class="boton" [disabled]="guardando">
+          {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+        </button>
+
+      </div>
+      }
+
+    </form>
+
+  </section>
+  }
+
+  <!-- DOCUMENTACIÓN DE ESPECIALIDADES NUEVAS -->
+  @else {
+
+  <section class="card">
+
+    <h2>Tus cambios se guardaron</h2>
+
+    <p class="nota">
+      Las especialidades nuevas piden documentación para ser
+      verificadas. Podés cargarla ahora o más tarde con el botón +
+      de tu perfil.
+    </p>
+
+    @for (p of pendientes; track p.especialidad.uuid) {
+
+    <div class="pendiente">
+
+      @if (hechas.has(p.especialidad.uuid)) {
+
+      <p class="ok">
+        ✓ {{ p.especialidad.nombreEspecialidad }}:
+        documentación cargada
+      </p>
+
+      }
+
+      @else if (
+      p.especialidad.tipoValidacion === Tipo.Certificado
+      ) {
+
+      <app-certificacion-form modo="perfil" [obligatorio]="true" [uuidTecnico]="perfil.uuid"
+        [especialidades]="p.opciones" (creada)="marcarHecha(p.especialidad.uuid)" />
+
+      }
+
+      @else {
+
+      <app-form-portfolio modo="perfil" [obligatorio]="true" [uuidTecnico]="perfil.uuid" [especialidades]="p.opciones"
+        (creada)="marcarHecha(p.especialidad.uuid)" />
+
+      }
+
+    </div>
+    }
+
+    @if (!faltan) {
+    <div class="acciones">
+      <button type="button" class="boton" (click)="terminar()">
+        Listo
+      </button>
+    </div>
+    }
+
+  </section>
+  }
+
+</div>

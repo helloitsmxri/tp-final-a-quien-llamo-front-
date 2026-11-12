@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { Home } from './home/home';
 import { Register } from './auth/register/register';
 import { Login } from './auth/login/login';
-import { DetalleMensaje } from './mensaje/pages/detalle-mensaje/detalle-mensaje';
 import { ListaChat } from './chat/pages/lista-chat/lista-chat';
 import { Planes } from './planes/planes';
 import { ChatView } from './chat/pages/chat-view/chat-view';
@@ -17,6 +16,13 @@ import { authGuard } from './auth/guards/authGuard';
 import { PerfilEdicion } from './user/pages/perfil-edicion/perfil-edicion';
 import { Perfil } from './user/pages/perfil/perfil';
 import { MisPresupuestos } from './presupuesto/pages/mis-presupuestos/mis-presupuestos';
+import { EditarTecnico } from './tecnico/pages/editar-tecnico/editar-tecnico';
+import { CertificacionList } from './certificacion/pages/certificacion-list/certificacion-list';
+import { PortfolioList } from './portfolio/pages/portfolio-list/portfolio-list';
+import { EditarPortfolio } from './portfolio/pages/editar-portfolio/editar-portfolio';
+import { EditarCertificacion } from './certificacion/pages/editar-certificacion/editar-certificacion';
+import { PerfilTecnicoPublico } from './tecnico/pages/perfil-tecnico-publico/perfil-tecnico-publico';
+import { ListTecnicos } from './tecnico/pages/list-tecnicos/list-tecnicos';
 
 export const routes: Routes = [
 
@@ -31,8 +37,17 @@ export const routes: Routes = [
 
     // PERFILES (AUTHGUARD)
     // TÉCNICO
-    {path: 'perfil-tecnico/:uuid', component: PerfilTecnico, canActivate: [authGuard]},
+    {path: 'perfil-tecnico/:uuid', component: PerfilTecnicoPublico, canActivate: [authGuard]},
     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto, canActivate: [authGuard]},
+    {path: 'mi-perfil-tecnico', component: PerfilTecnico, canActivate: [authGuard]},
+    {path: 'mi-perfil-tecnico/editar', component: EditarTecnico, canActivate: [authGuard]},
+    {path: 'tecnicos', component: ListTecnicos},
+     //certificacion
+    {path: 'mis-certificaciones', component: CertificacionList, canActivate: [authGuard]},
+    {path: 'mis-certificaciones/editar/:uuid', component: EditarCertificacion, canActivate: [authGuard]},
+    
+    {path: 'mis-portfolios', component: PortfolioList, canActivate: [authGuard]},
+    {path: 'mis-portfolios/editar/:uuid', component: EditarPortfolio, canActivate: [authGuard]},
     
     // USUARIO
     {path: 'perfil-edicion', component: PerfilEdicion, canActivate: [authGuard]},
@@ -58,7 +73,6 @@ export const routes: Routes = [
     {path: 'pagos/cliente/:uuid', component: ListPago },
     {path: 'pagos/tecnico/:uuid', component: ListPago },
     {path: 'pagos/mercado-pago/:orderId', component: DetallePago },
-
 
     // INICIO DE SESIÓN (PÚBLICO)
 

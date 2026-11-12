@@ -4,7 +4,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TecnicoModel } from '../models/tecnico-model';
 import { PerfilTecnico } from '../pages/perfil-tecnico/perfil-tecnico';
-import { PerfilTecnicoModel } from '../pages/perfil-tecnico/models/PerfilTecnicoModel';
+import { PerfilTecnicoModel } from '../models/PerfilTecnicoModel';
+import { TecnicoListadoModel } from '../models/TecnicoListado';
+
+//lo q se muestra publicamente de una certificacion o un portfolio: solo el título
+export interface ItemPublico {
+  uuid: string;
+  titulo: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class TecnicoService {
@@ -21,8 +28,17 @@ export class TecnicoService {
         return this.http.get<TecnicoModel[]>(this.url);
     }
 
+    getTecnicosListado(): Observable<TecnicoListadoModel[]> {
+     return this.http.get<TecnicoListadoModel[]>(this.url);
+    }
+
     getPerfil(uuid: string): Observable<PerfilTecnicoModel> {
-     return this.http.get<PerfilTecnicoModel>(`${this.url}/${uuid}`);
+      return this.http.get<PerfilTecnicoModel>(`${this.url}/perfil/${uuid}`);
+    }
+
+     // MI perfil de técnico (el back me identifica por el token)
+    getMiPerfil(): Observable<PerfilTecnicoModel> {
+     return this.http.get<PerfilTecnicoModel>(`${this.url}/mi-perfil`);
     }
 
     // CREATE: crear un técnico
@@ -51,4 +67,22 @@ export class TecnicoService {
         `${this.url}/${uuid}`
         );
     }
+
+   // UPDATE: actualizar perfil completo del técnico
+    actualizarPerfilTecnico(uuid: string, datos: FormData): Observable<PerfilTecnicoModel> {
+       return this.http.put<PerfilTecnicoModel>(
+        `${this.url}/actualizar-perfil/${uuid}`,
+        datos
+    );
+    }
+
+    //solo certificaciones aprobadas del tecnico
+    getCertificaciones(uuidTecnico: string): Observable<ItemPublico[]> {
+      return this.http.get<ItemPublico[]>(`http://localhost:8080/aquienllamo/certificaciones/publico/tecnico/${uuidTecnico}`);
+    }
+
+   //solo portfolios aprobados del tecnico
+  getPortfolios(uuidTecnico: string): Observable<ItemPublico[]> {
+   return this.http.get<ItemPublico[]>(`http://localhost:8080/aquienllamo/portafolios/usuario/publico/tecnico/${uuidTecnico}`);
+  }
 }

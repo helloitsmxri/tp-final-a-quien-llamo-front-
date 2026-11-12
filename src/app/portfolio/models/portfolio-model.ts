@@ -5,6 +5,7 @@ import { EstadoVerificacion } from "../enum/estado-verificacion";
 export interface PortfolioModel {
     idPortfolio: number;
     uuid: string;
+    titulo: string;
     tecnico: TecnicoModel;
     especialidad: EspecialidadModel;
     notasAspirante: string | null;
