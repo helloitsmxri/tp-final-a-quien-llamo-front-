@@ -1,3 +1,4 @@
+
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import {
   AbstractControl,
@@ -41,14 +42,14 @@ export class CrearPresupuesto {
     return this.fb.group({
       descripcion: ['',[Validators.required,Validators.minLength(3),Validators.maxLength(150)]],
       precioUnitario: [0, [Validators.required,Validators.min(0.01)]],
-      cantidad: [1,[Validators.required, Validators.min(1), Validators.pattern(/^\d+$/)]]
+      cantidad: [1,[Validators.required, Validators.min(1)]]
     });
   }
 
   // FORMULARIO PRINCIPAL
   formulario = this.fb.group({
     nombreProyecto: ['', [Validators.required,Validators.minLength(3),Validators.maxLength(80)]],
-    observaciones: ['', [Validators.maxLength(2000)]],
+    observaciones: [''],
     descuentoPorcentaje: [0, [Validators.required,Validators.min(0),Validators.max(100)]],
     detalles: this.fb.array([this.crearDetalle()])
   });
@@ -142,24 +143,14 @@ export class CrearPresupuesto {
       return 'Superaste la cantidad máxima de caracteres.';
     }
 
-    if (control.hasError('pattern')) {
-      return 'La cantidad debe ser un número entero.';
-    }
-
     if (control.hasError('min')) {
 
       const minimo = control.getError('min').min;
 
-      // Primero los casos especiales...
       if (minimo === 1) {
         return 'La cantidad debe ser al menos 1.';
       }
 
-      if (minimo === 0) {
-        return 'El descuento no puede ser negativo.';
-      }
-
-      // ...y al final el mensaje general (precio, mínimo 0.01).
       return 'El valor debe ser mayor a cero.';
     }
 
