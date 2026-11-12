@@ -2,10 +2,12 @@ import { Component, inject } from '@angular/core';
 import { DenunciaService } from '../../services/denuncia';
 import { EstadoDenuncia } from '../../enum/estado-denuncia';
 import { DenunciaModel } from '../../models/denuncia-model';
+import { DatePipe } from '@angular/common';
+import { DetalleDenuncia } from '../../components/detalle-denuncia/detalle-denuncia';
 
 @Component({
   selector: 'app-mis-denuncias',
-  imports: [],
+  imports: [DatePipe, DetalleDenuncia],
   templateUrl: './mis-denuncias.html',
   styleUrl: './mis-denuncias.css',
 })

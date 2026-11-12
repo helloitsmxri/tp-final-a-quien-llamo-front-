@@ -1,1 +1,66 @@
-<p>mis-denuncias works!</p>
+
+<section class="mis-denuncias">
+    <h1>Mis Denuncias</h1>
+
+    <div class="pestanas" aria-label="Tipo de denuncias">
+        <button type="button" [class.activa]="tipoSeleccionado === 'CREADAS'" [attr.aria-pressed]="tipoSeleccionado === 'CREADAS'" (click)="cambiarTipo('CREADAS')">Creadas</button>
+        <button type="button" [class.activa]="tipoSeleccionado === 'RECIBIDAS'" [attr.aria-pressed]="tipoSeleccionado === 'RECIBIDAS'" (click)="cambiarTipo('RECIBIDAS')">Recibidas</button>
+    </div>
+
+    <div class="filtros" aria-label="Filtrar denuncias por estado">
+        <button type="button" [class.activo]="estadoSeleccionado === 'TODOS'" [attr.aria-pressed]="estadoSeleccionado === 'TODOS'" (click)="filtrarPorEstado('TODOS')">Todas</button>
+        <button type="button" [class.activo]="estadoSeleccionado === estados.Pendiente" [attr.aria-pressed]="estadoSeleccionado === estados.Pendiente" (click)="filtrarPorEstado(estados.Pendiente)">Pendientes</button>
+        <button type="button" [class.activo]="estadoSeleccionado === estados.En_Proceso" [attr.aria-pressed]="estadoSeleccionado === estados.En_Proceso" (click)="filtrarPorEstado(estados.En_Proceso)">En proceso</button>
+        <button type="button" [class.activo]="estadoSeleccionado === estados.Aprobada" [attr.aria-pressed]="estadoSeleccionado === estados.Aprobada" (click)="filtrarPorEstado(estados.Aprobada)">Aprobadas</button>
+        <button type="button" [class.activo]="estadoSeleccionado === estados.Rechazada" [attr.aria-pressed]="estadoSeleccionado === estados.Rechazada" (click)="filtrarPorEstado(estados.Rechazada)">Rechazadas</button>
+    </div>
+
+    @if (cargando) {
+        <p class="mensaje" role="status">Cargando denuncias...</p>
+    } @else if (error) {
+        <div class="mensaje-error" role="alert">
+            <p>No se pudieron cargar las denuncias.</p>
+            <button type="button" (click)="cargarDenuncias()">Volver a intentar</button>
+        </div>
+    } @else {
+        @if (denunciasFiltradas.length === 0) {
+            <p class="sin-denuncias">{{ denuncias.length === 0 ? mensajeSinDenuncias : 'No hay denuncias para mostrar con este filtro.' }}</p>
+        } @else {
+            <div class="lista-denuncias">
+                @for (denuncia of denunciasFiltradas; track denuncia.uuid) {
+                    <article class="denuncia-card">
+                        <button type="button" class="boton-denuncia" [class.seleccionada]="denunciaSeleccionada?.uuid === denuncia.uuid" [attr.aria-pressed]="denunciaSeleccionada?.uuid === denuncia.uuid" (click)="seleccionarDenuncia(denuncia)">
+                            <div class="card-superior">
+                                <span class="estado" [attr.data-estado]="denuncia.estadoDenuncia">{{ denuncia.estadoDenuncia.replace('_', ' ') }}</span>
+                                <span class="fecha">{{ denuncia.fechaDenuncia | date:'dd/MM/yyyy' }}</span>
+                            </div>
+
+                            @if (tipoSeleccionado === 'CREADAS') {
+                                <h2>Denuncia realizada</h2>
+                                <p>Persona denunciada: {{ denuncia.nombreDenunciado }} {{ denuncia.apellidoDenunciado }}</p>
+                            } @else {
+                                <h2>Denuncia recibida</h2>
+                                <p>Persona denunciante: {{ denuncia.nombreDenunciante }} {{ denuncia.apellidoDenunciante }}</p>
+                            }
+
+                            <p class="motivo">{{ denuncia.motivoDenuncia }}</p>
+
+                            @if (denuncia.tieneFoto) {
+                                <span class="tiene-foto"><span aria-hidden="true">📎</span> Tiene una imagen adjunta</span>
+                            }
+
+                            <span class="ver-detalle">Ver detalle</span>
+                        </button>
+                    </article>
+                }
+            </div>
+        }
+    }
+
+    <!--Con esto sería q abrimos las denuncias para ver mas información!!! -->
+    @if (denunciaSeleccionada) {
+        <section class="contenedor-detalle" aria-label="Detalle de la denuncia seleccionada">
+            <app-detalle-denuncia [denuncia]="denunciaSeleccionada" />
+        </section>
+    }
+</section>

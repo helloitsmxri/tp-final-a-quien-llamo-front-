@@ -23,6 +23,7 @@ import { EditarPortfolio } from './portfolio/pages/editar-portfolio/editar-portf
 import { EditarCertificacion } from './certificacion/pages/editar-certificacion/editar-certificacion';
 import { PerfilTecnicoPublico } from './tecnico/pages/perfil-tecnico-publico/perfil-tecnico-publico';
 import { ListTecnicos } from './tecnico/pages/list-tecnicos/list-tecnicos';
+import { MisDenuncias } from './denuncia/pages/mis-denuncias/mis-denuncias';
 
 export const routes: Routes = [
 
@@ -48,6 +49,9 @@ export const routes: Routes = [
     
     {path: 'mis-portfolios', component: PortfolioList, canActivate: [authGuard]},
     {path: 'mis-portfolios/editar/:uuid', component: EditarPortfolio, canActivate: [authGuard]},
+
+    // mis denuncias
+    {path : 'mis-denuncias', component: MisDenuncias, canActivate : [authGuard]},
     
     // USUARIO
     {path: 'perfil-edicion', component: PerfilEdicion, canActivate: [authGuard]},
