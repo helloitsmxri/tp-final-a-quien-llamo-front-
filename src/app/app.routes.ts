@@ -23,6 +23,8 @@ import { EditarPortfolio } from './portfolio/pages/editar-portfolio/editar-portf
 import { EditarCertificacion } from './certificacion/pages/editar-certificacion/editar-certificacion';
 import { PerfilTecnicoPublico } from './tecnico/pages/perfil-tecnico-publico/perfil-tecnico-publico';
 import { ListTecnicos } from './tecnico/pages/list-tecnicos/list-tecnicos';
+import { RecuperarPassword } from './auth/recuperar-password/recuperar-password';
+import { ResetPassword } from './auth/reset-password/reset-password';
 
 export const routes: Routes = [
 
@@ -77,4 +79,6 @@ export const routes: Routes = [
     // INICIO DE SESIÓN (PÚBLICO)
 
     {path: 'iniciar-sesion', component: Login},
+    { path: 'recuperar', component: RecuperarPassword },
+    { path: 'reset-password', component: ResetPassword },
 ];

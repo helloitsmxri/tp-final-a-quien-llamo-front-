@@ -17,6 +17,8 @@
   padding: 16px 24px;
   border-bottom: 1px solid rgba(0,0,0,0.05);
   background-color: #ffffff;
+  position: relative;
+   z-index: 10;
 }
 
 .info-contacto {
@@ -96,10 +98,44 @@
   margin-top: 6px;
 }
 
+.pdf-link {
+  display: inline-block;
+  margin-top: 6px;
+  color: #513689;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.sin-mensajes {
+  text-align: center;
+  color: #8c7fa6;
+  margin: auto;
+}
+
 /* Footer Input */
 .footer-chat-input {
   padding: 16px 24px;
   background-color: transparent;
+}
+
+.archivo-pendiente {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #e9e1fc;
+  color: #513689;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.archivo-pendiente button {
+  background: none;
+  border: none;
+  color: #513689;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .input-pill {
@@ -138,4 +174,283 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* --- DESPLEGABLE DE PRESUPUESTOS --- */
+.menu-presupuesto-wrapper {
+  position: relative;
+}
+
+.btn-opciones {
+  background-color: #f4f0ff;
+  color: #513689;
+  border: 1px solid #dfd5fc;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-opciones:hover {
+  background-color: #e9e1fc;
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  background-color: #ffffff;
+  border: 1px solid #e9e1fc;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(81, 54, 137, 0.14);
+  min-width: 225px;
+  z-index: 50;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-item {
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #372f47;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f4f0ff;
+  color: #513689;
+}
+
+/* --- MODALES DE PRESUPUESTO --- */
+.overlay-modal {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(55, 47, 71, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal-contenido {
+  background-color: #ffffff;
+  border-radius: 22px;
+  max-width: 760px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 24px 28px;
+  box-shadow: 0 20px 45px rgba(55, 47, 71, 0.28);
+  border: 1px solid #e9e1fc;
+}
+
+.header-modal,
+.barra-superior-detalle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e9e1fc;
+}
+
+.sobretitulo-modal {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #8b5cf6;
+  margin-bottom: 2px;
+}
+
+.header-modal h3 {
+  margin: 0;
+  color: #513689;
+  font-size: 1.2rem;
+}
+
+.etiqueta-vista {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #513689;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-cerrar-modal {
+  background-color: #f4f0ff;
+  color: #513689;
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.btn-cerrar-modal:hover {
+  background-color: #e9e1fc;
+}
+
+/* Tarjetas de cada presupuesto en el listado del chat */
+.item-presupuesto {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background-color: #faf8ff;
+  border: 1px solid #e5dcfa;
+  border-radius: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.item-presupuesto:hover {
+  border-color: #8b5cf6;
+  background-color: #f4f0ff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.12);
+}
+
+.item-presupuesto-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.item-presupuesto-titulo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.item-presupuesto-titulo strong {
+  color: #372f47;
+  font-size: 1rem;
+}
+
+.item-presupuesto-fecha {
+  font-size: 0.82rem;
+  color: #7c6f99;
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  background-color: #e9e1fc;
+  color: #513689;
+}
+
+.estado-badge[data-estado="Pendiente"] {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.estado-badge[data-estado="Aceptado"] {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.estado-badge[data-estado="Rechazado"] {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.estado-badge[data-estado="Cancelado"] {
+  background-color: #f1f5f9;
+  color: #475569;
+}
+
+.item-presupuesto-derecha {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.item-presupuesto-precio {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #513689;
+}
+
+.item-presupuesto-flecha {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #8b5cf6;
+}
+
+.estado-vacio-modal {
+  text-align: center;
+  padding: 32px 16px;
+  color: #7c6f99;
+}
+
+.btn-crear-desde-vacio {
+  margin-top: 12px;
+  background-color: #8b5cf6;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Botón para crear trabajo desde el modal cuando está aceptado */
+.accion-trabajo-modal {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e9e1fc;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-registrar-trabajo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #8b5cf6;
+  color: #ffffff;
+  padding: 11px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.3);
+  transition: background-color 0.2s ease;
+}
+
+.btn-registrar-trabajo:hover {
+  background-color: #7c3aed;
+}
+
+.dropdown-item-peligro {
+  color: #dc2626;
+  border-top: 1px solid #f4f0ff;
+}
+
+.dropdown-item-peligro:hover {
+  background-color: #fef2f2;
+  color: #b91c1c;
 }
