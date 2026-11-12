@@ -139,3 +139,109 @@
   align-items: center;
   justify-content: center;
 }
+
+/* ---------- PRESUPUESTOS ---------- */
+
+.acciones-header {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-ver-presupuestos,
+.btn-crear-presupuesto {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Secundario: lo ven cliente y técnico */
+.btn-ver-presupuestos {
+  background-color: #ffffff;
+  color: #513689;
+  border: 1px solid #e9e1fc;
+}
+
+.btn-ver-presupuestos:hover {
+  background-color: #e9e1fc;
+}
+
+/* Principal: solo el técnico */
+.btn-crear-presupuesto {
+  background-color: #8b5cf6;
+  color: #ffffff;
+  border: none;
+}
+
+.btn-crear-presupuesto:hover {
+  filter: brightness(1.1);
+}
+
+/* Fondo oscuro que tapa la pantalla */
+.overlay-presupuesto {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Sin fondo ni padding: los componentes traen su propia tarjeta */
+.contenedor-presupuesto {
+  width: 90%;
+  max-width: 720px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Lista de presupuestos del chat */
+.lista-presupuestos {
+  position: relative;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px 32px;
+  width: 90%;
+  max-width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.lista-presupuestos h3 {
+  margin: 0 0 16px;
+  color: #513689;
+  font-size: 1.1rem;
+}
+
+.btn-cerrar-lista {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: #513689;
+  cursor: pointer;
+}
+
+.item-presupuesto {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: #ffffff;
+  border: 1px solid #e9e1fc;
+  border-radius: 12px;
+  color: #372f47;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.item-presupuesto:hover {
+  background-color: #f6f2fe;
+}
