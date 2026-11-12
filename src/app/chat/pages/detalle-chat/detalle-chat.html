@@ -8,6 +8,26 @@
         <h3>{{ nombreOtro }}</h3>
       </div>
     </div>
+
+    <!-- Desplegable de Presupuestos -->
+    <div class="menu-presupuesto-wrapper">
+      <button type="button" class="btn-opciones" (click)="alternarMenu()">
+        ⋮ Opciones
+      </button>
+
+      @if (menuAbierto) {
+        <div class="dropdown-menu">
+          @if (soyElTecnico) {
+            <button type="button" class="dropdown-item" (click)="abrirCrearPresupuesto()">
+              ➕ Crear presupuesto
+            </button>
+          }
+          <button type="button" class="dropdown-item" (click)="abrirVerPresupuestos()">
+            📄 Ver presupuestos del chat
+          </button>
+        </div>
+      }
+    </div>
   </header>
 
   <!-- Lista de mensajes -->
@@ -61,3 +81,85 @@
   </footer>
 
 </div>
+
+<!-- MODAL PARA CREAR PRESUPUESTO -->
+@if (mostrandoCrearPresupuesto && chat) {
+  <div class="overlay-modal">
+    <div class="modal-contenido">
+      <app-crear-presupuesto
+        [uuidChat]="chat.uuidChat"
+        (presupuestoCreado)="onPresupuestoCreado($event)"
+        (cerrar)="cerrarPanelesPresupuesto()"
+      />
+    </div>
+  </div>
+}
+
+<!-- MODAL PARA VER PRESUPUESTOS DEL CHAT -->
+@if (mostrandoListaPresupuestos || presupuestoSeleccionado) {
+  <div class="overlay-modal">
+    <div class="modal-contenido">
+      @if (presupuestoSeleccionado) {
+        <div class="barra-superior-detalle">
+          <span class="etiqueta-vista">Detalle del presupuesto</span>
+          <button type="button" class="btn-cerrar-modal" (click)="cerrarPanelesPresupuesto()">✕</button>
+        </div>
+
+        <app-ver-presupuesto
+          [presupuesto]="presupuestoSeleccionado"
+          [esTecnico]="soyElTecnico"
+          (presupuestoActualizado)="onPresupuestoActualizado($event)"
+          (volver)="presupuestoSeleccionado = null"
+        />
+
+        @if (soyElTecnico && presupuestoSeleccionado.estado === EstadoPresupuesto.Aceptado) {
+          <div class="accion-trabajo-modal">
+            <a [routerLink]="['/trabajos/nuevo', presupuestoSeleccionado.uuid]" class="btn-registrar-trabajo" (click)="cerrarPanelesPresupuesto()">
+              🛠️ Registrar trabajo a partir de este presupuesto
+            </a>
+          </div>
+        }
+      } @else {
+        <div class="lista-presupuestos-chat">
+          <div class="header-modal">
+            <div>
+              <span class="sobretitulo-modal">HISTORIAL EN ESTE CHAT</span>
+              <h3>Presupuestos de la conversación</h3>
+            </div>
+            <button type="button" class="btn-cerrar-modal" (click)="cerrarPanelesPresupuesto()">✕</button>
+          </div>
+
+          @if (cargandoPresupuestos) {
+            <p class="estado-vacio-modal">Cargando presupuestos...</p>
+          } @else {
+            @for (p of presupuestosDelChat; track p.uuid) {
+              <div class="item-presupuesto" (click)="seleccionarPresupuesto(p)">
+                <div class="item-presupuesto-info">
+                  <div class="item-presupuesto-titulo">
+                    <strong>{{ p.nombreProyecto }}</strong>
+                    <span class="estado-badge" [attr.data-estado]="p.estado">{{ p.estado }}</span>
+                  </div>
+                  <span class="item-presupuesto-fecha">Emitido el {{ p.fechaRealizado | date:'dd/MM/yyyy' }}</span>
+                </div>
+
+                <div class="item-presupuesto-derecha">
+                  <span class="item-presupuesto-precio">{{ p.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}</span>
+                  <span class="item-presupuesto-flecha">Ver →</span>
+                </div>
+              </div>
+            } @empty {
+              <div class="estado-vacio-modal">
+                <p>Todavía no hay presupuestos en este chat.</p>
+                @if (soyElTecnico) {
+                  <button type="button" class="btn-crear-desde-vacio" (click)="abrirCrearPresupuesto()">
+                    ➕ Crear primer presupuesto
+                  </button>
+                }
+              </div>
+            }
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
