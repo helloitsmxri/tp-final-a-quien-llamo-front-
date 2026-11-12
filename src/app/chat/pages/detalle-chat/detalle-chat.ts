@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ChatModel } from '../../models/chat-model';
 import { MensajeModel } from '../../../mensaje/models/mensaje-model';
@@ -8,17 +9,22 @@ import { MensajeService } from '../../../mensaje/services/mensaje';
 import { UsuarioService } from '../../../user/services/user';
 import { WebSocketService } from '../../services/web-socket-service';
 
+import { CrearPresupuesto } from '../../../presupuesto/pages/crear-presupuesto/crear-presupuesto';
+import { VerPresupuesto } from '../../../presupuesto/pages/ver-presupuesto/ver-presupuesto';
+import { PresupuestoService } from '../../../presupuesto/services/presupuesto';
+import { PresupuestoModel } from '../../../presupuesto/models/presupuesto-model';
+import { EstadoPresupuesto } from '../../../presupuesto/enum/estado-presupuesto';
+
 const BACKEND = 'http://localhost:8080';
+
 @Component({
   selector: 'app-detalle-chat',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule, CrearPresupuesto, VerPresupuesto],
   templateUrl: './detalle-chat.html',
   styleUrl: './detalle-chat.css',
 })
 export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   @Input() chat: ChatModel | null = null;
-
-  // Avisa cada vez que aparece un mensaje en este chat (enviado o recibido)
   @Output() mensajeNuevo = new EventEmitter<string>();
 
   @ViewChild('areaMensajes') private areaMensajesContainer!: ElementRef;
@@ -27,6 +33,15 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   nuevoMensajeTexto = '';
   archivoSeleccionado: File | null = null;
   miUuid = '';
+  menuAbierto = false;
+
+  // Variables para mostrar los componentes de presupuesto
+  mostrandoCrearPresupuesto = false;
+  mostrandoListaPresupuestos = false;
+  presupuestosDelChat: PresupuestoModel[] = [];
+  presupuestoSeleccionado: PresupuestoModel | null = null;
+  cargandoPresupuestos = false;
+  EstadoPresupuesto = EstadoPresupuesto;
 
   private wsSub?: Subscription;
 
@@ -34,6 +49,7 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     private mensajeService: MensajeService,
     private usuarioService: UsuarioService,
     private wsService: WebSocketService,
+    private presupuestoService: PresupuestoService,
     private ngZone: NgZone,
   ) {}
 
@@ -44,10 +60,10 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     });
   }
 
-  // Se ejecuta cada vez que cambia el chat seleccionado
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['chat'] && this.chat) {
       this.mensajes = [];
+      this.cerrarPanelesPresupuesto();
       this.cargarMensajes(this.chat.uuidChat);
       this.escucharChat(this.chat.uuidChat);
     }
@@ -57,18 +73,20 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     this.wsSub?.unsubscribe();
   }
 
+  get soyElTecnico(): boolean {
+    return !!this.chat && !!this.miUuid && this.chat.uuidUsuario !== this.miUuid;
+  }
+
   esMio(m: MensajeModel): boolean {
     return !!this.miUuid && m.uuidSender === this.miUuid;
   }
 
-  // Convierte la ruta del archivo (/uploads/...) en una URL completa hacia el backend
-urlArchivo(url: string | null | undefined): string {
-  if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://')) return url;
-  return BACKEND + (url.startsWith('/') ? url : '/' + url);
-}
+  urlArchivo(url: string | null | undefined): string {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) return url;
+    return BACKEND + (url.startsWith('/') ? url : '/' + url);
+  }
 
-  // Nombre de la OTRA persona del chat
   get nombreOtro(): string {
     if (!this.chat) return 'Contacto';
     const soyElCliente = this.chat.uuidUsuario === this.miUuid;
@@ -80,13 +98,12 @@ urlArchivo(url: string | null | undefined): string {
   }
 
   private escucharChat(uuidChat: string): void {
-    this.wsSub?.unsubscribe(); // corta la suscripción del chat anterior
+    this.wsSub?.unsubscribe();
     this.wsSub = this.wsService.escucharChat(uuidChat).subscribe((m: MensajeModel) =>
       this.ngZone.run(() => this.agregarMensaje(m)),
     );
   }
 
-  // Evita duplicados: el mismo mensaje puede llegar por REST y por WebSocket
   private agregarMensaje(m: MensajeModel): void {
     if (this.mensajes.some((x) => x.uuidMensaje === m.uuidMensaje)) return;
     this.mensajes.push(m);
@@ -97,8 +114,7 @@ urlArchivo(url: string | null | undefined): string {
   cargarMensajes(uuidChat: string): void {
     this.mensajeService.getByChat(uuidChat).subscribe({
       next: (data) => {
-        if (this.chat?.uuidChat !== uuidChat) return; // cambié de chat mientras cargaba
-        // Junto lo cargado con lo que haya llegado por WebSocket mientras tanto
+        if (this.chat?.uuidChat !== uuidChat) return;
         const ids = new Set(data.map((m) => m.uuidMensaje));
         this.mensajes = [...data, ...this.mensajes.filter((m) => !ids.has(m.uuidMensaje))];
         this.scrollToBottom();
@@ -110,7 +126,7 @@ urlArchivo(url: string | null | undefined): string {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files?.length) this.archivoSeleccionado = input.files[0];
-    input.value = ''; // permite volver a elegir el mismo archivo
+    input.value = '';
   }
 
   quitarArchivo(): void {
@@ -125,13 +141,67 @@ urlArchivo(url: string | null | undefined): string {
       .store(this.chat.uuidChat, this.nuevoMensajeTexto.trim(), this.archivoSeleccionado || undefined)
       .subscribe({
         next: (creado) => {
-          console.log('Mensaje guardado:', creado);
           this.agregarMensaje(creado);
           this.nuevoMensajeTexto = '';
           this.archivoSeleccionado = null;
         },
         error: (err) => console.error('Error al enviar mensaje:', err),
       });
+  }
+
+  alternarMenu(): void {
+    this.menuAbierto = !this.menuAbierto;
+  }
+
+  abrirCrearPresupuesto(): void {
+    this.menuAbierto = false;
+    this.mostrandoListaPresupuestos = false;
+    this.presupuestoSeleccionado = null;
+    this.mostrandoCrearPresupuesto = true;
+  }
+
+  abrirVerPresupuestos(): void {
+    if (!this.chat) return;
+    this.menuAbierto = false;
+    this.mostrandoCrearPresupuesto = false;
+    this.presupuestoSeleccionado = null;
+    this.mostrandoListaPresupuestos = true;
+    this.cargandoPresupuestos = true;
+
+    this.presupuestoService.obtenerPresupuestoChat(this.chat.uuidChat).subscribe({
+      next: (lista) => {
+        this.presupuestosDelChat = lista;
+        this.cargandoPresupuestos = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar presupuestos del chat:', err);
+        this.cargandoPresupuestos = false;
+      },
+    });
+  }
+
+  seleccionarPresupuesto(p: PresupuestoModel): void {
+    this.presupuestoSeleccionado = p;
+  }
+
+  onPresupuestoCreado(nuevo: PresupuestoModel): void {
+    this.mostrandoCrearPresupuesto = false;
+    this.presupuestosDelChat.unshift(nuevo);
+    this.presupuestoSeleccionado = nuevo;
+  }
+
+  onPresupuestoActualizado(actualizado: PresupuestoModel): void {
+    const idx = this.presupuestosDelChat.findIndex((p) => p.uuid === actualizado.uuid);
+    if (idx !== -1) {
+      this.presupuestosDelChat[idx] = actualizado;
+    }
+  }
+
+  cerrarPanelesPresupuesto(): void {
+    this.menuAbierto = false;
+    this.mostrandoCrearPresupuesto = false;
+    this.mostrandoListaPresupuestos = false;
+    this.presupuestoSeleccionado = null;
   }
 
   private scrollToBottom(): void {
