@@ -55,10 +55,10 @@ export class Register {
   formulario = this.fb.group({
     // Paso 1
     email: ['', [Validators.required, Validators.email]],
-    clave: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]],
+    clave: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/)]],
     repetirClave: ['', [Validators.required]],
-    nombre: ['', [Validators.required, Validators.minLength(2)]],
-    apellido: ['', [Validators.required, Validators.minLength(2)]],
+    nombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\p{L}\s]+$/u)]],
+    apellido: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/^[\p{L}\s]+$/u)]],
  
     // Paso 2
     dni: ['', [Validators.required, Validators.pattern(/^\d{8}$/)]],
@@ -67,51 +67,56 @@ export class Register {
     sobreMi: ['', [Validators.required, Validators.maxLength(500)]],
   }, { validators: clavesIguales });
  
-  // Devuelve el mensaje de error de un campo (o null si no hay nada que mostrar)
   errorMensaje(campo: string): string | null {
-    const c = this.formulario.get(campo);
- 
-    if (!c || !c.touched) return null;
- 
-    if (c.hasError('required')) {
-      return 'Este campo es obligatorio.';
-    }
- 
-    if (campo === 'repetirClave' && this.formulario.hasError('clavesDistintas')) {
-      return 'Las contraseñas no coinciden.';
-    }
- 
-    if (c.hasError('email')) {
-      return 'Ingresá un email válido.';
-    }
+  const c = this.formulario.get(campo);
 
-    if (c.hasError('pattern')) {
-      if (campo === 'clave') {
-        return 'La contraseña debe tener mayúscula, minúscula, número y carácter especial.';
-      }
+  if (!c || !c.touched) return null;
 
-      if (campo === 'dni') {
-        return 'El DNI debe tener exactamente 8 números.';
-      }
-
-      if (campo === 'telefono') {
-        return 'El teléfono debe tener exactamente 10 números.';
-      }
-    }
-    if (c.hasError('menorDeEdad')){
-      return 'Tenés que ser mayor de 18 años para poder registrarte en la plataforma.';
-    }
- 
-    if (c.hasError('minlength')) {
-      return `Debe tener al menos ${c.errors?.['minlength'].requiredLength} caracteres.`;
-    }
- 
-    if (c.hasError('maxlength')) {
-      return `No puede superar los ${c.errors?.['maxlength'].requiredLength} caracteres.`;
-    }
- 
-    return null;
+  if (c.hasError('required')) {
+    return 'Este campo es obligatorio.';
   }
+
+  if (campo === 'repetirClave' && this.formulario.hasError('clavesDistintas')) {
+    return 'Las contraseñas no coinciden.';
+  }
+
+  if (c.hasError('email')) {
+    return 'Ingresá un email válido.';
+  }
+
+  if (c.hasError('pattern')) {
+
+    if (campo === 'clave') {
+      return 'Debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.';
+    }
+
+    if (campo === 'nombre' || campo === 'apellido') {
+      return 'Solo se permiten letras y espacios, sin números ni símbolos.';
+    }
+
+    if (campo === 'dni') {
+      return 'El DNI debe tener exactamente 8 números.';
+    }
+
+    if (campo === 'telefono') {
+      return 'El teléfono debe tener exactamente 10 números.';
+    }
+  }
+
+  if (c.hasError('menorDeEdad')) {
+    return 'Tenés que ser mayor de 18 años para poder registrarte en la plataforma.';
+  }
+
+  if (c.hasError('minlength')) {
+    return `Debe tener al menos ${c.errors?.['minlength'].requiredLength} caracteres.`;
+  }
+
+  if (c.hasError('maxlength')) {
+    return `No puede superar los ${c.errors?.['maxlength'].requiredLength} caracteres.`;
+  }
+
+  return null;
+}
  
   siguiente(): void {
     const controles = this.camposPaso1.map(c => this.formulario.get(c)!);
