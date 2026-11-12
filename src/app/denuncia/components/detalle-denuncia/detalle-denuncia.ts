@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
-  imports: [],
   selector: 'app-detalle-denuncia',
-  styleUrl: './detalle-denuncia.css',
+  imports: [],
   templateUrl: './detalle-denuncia.html',
+  styleUrl: './detalle-denuncia.css',
 })
-export class DetalleDenuncia {}
+export class DetalleDenuncia {
+
+}
