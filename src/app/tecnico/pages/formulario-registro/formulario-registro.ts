@@ -445,7 +445,7 @@ export class FormularioRegistro {
       next: (uuidTecnico) => {
         this.enviado = false;
         // la sesion queda iniciada: se va directo al perfil del tecnico (cambiar por '/' si se prefiere el inicio)
-        this.router.navigate(['/perfil-tecnico', uuidTecnico]);
+        this.router.navigate(['/mi-perfil-tecnico']);
       },
       error: (e) => {
         this.enviado = false;
