@@ -135,11 +135,14 @@ urlArchivo(url: string | null | undefined): string {
       });
   }
 
-  alternarMenu(): void {
-  private scrollToBottom(): void {
-    setTimeout(() => {
-      const el = this.areaMensajesContainer?.nativeElement;
-      if (el) el.scrollTop = el.scrollHeight;
-    }, 100);
-  }
+ alternarMenu(): void {
+  this.menuAbierto = !this.menuAbierto;
+}
+
+private scrollToBottom(): void {
+  setTimeout(() => {
+    const el = this.areaMensajesContainer?.nativeElement;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, 100);
+}
 }
