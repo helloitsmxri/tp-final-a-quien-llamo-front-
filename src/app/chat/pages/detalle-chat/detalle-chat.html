@@ -9,7 +9,7 @@
       </div>
     </div>
 
-    <!-- Desplegable de Presupuestos -->
+    <!-- Desplegable de Presupuestos y Denuncia -->
     <div class="menu-presupuesto-wrapper">
       <button type="button" class="btn-opciones" (click)="alternarMenu()">
         ⋮ Opciones
@@ -24,6 +24,9 @@
           }
           <button type="button" class="dropdown-item" (click)="abrirVerPresupuestos()">
             📄 Ver presupuestos del chat
+          </button>
+          <button type="button" class="dropdown-item dropdown-item-peligro" (click)="irADenunciar()">
+            🚨 Denunciar usuario
           </button>
         </div>
       }
@@ -76,7 +79,7 @@
         accept="image/*,.pdf"
         style="display: none;"
       />
-      <button class="btn-send" (click)="enviarMensaje()">➕</button>
+      <button type="button" class="btn-send" (click)="enviarMensaje()">➕</button>
     </div>
   </footer>
 

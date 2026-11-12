@@ -1,14 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ChatModel } from '../../models/chat-model';
 import { MensajeModel } from '../../../mensaje/models/mensaje-model';
 import { MensajeService } from '../../../mensaje/services/mensaje';
 import { UsuarioService } from '../../../user/services/user';
 import { WebSocketService } from '../../services/web-socket-service';
-
 import { CrearPresupuesto } from '../../../presupuesto/pages/crear-presupuesto/crear-presupuesto';
 import { VerPresupuesto } from '../../../presupuesto/pages/ver-presupuesto/ver-presupuesto';
 import { PresupuestoService } from '../../../presupuesto/services/presupuesto';
@@ -50,7 +49,8 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     private usuarioService: UsuarioService,
     private wsService: WebSocketService,
     private presupuestoService: PresupuestoService,
-    private ngZone: NgZone,
+    private router: Router,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -151,6 +151,25 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
 
   alternarMenu(): void {
     this.menuAbierto = !this.menuAbierto;
+  }
+
+  get uuidOtroUsuario(): string {
+    if (!this.chat) return '';
+    return this.chat.uuidUsuario === this.miUuid
+      ? (this.chat as any).uuidTecnico || (this.chat as any).uuidUsuarioTecnico || ''
+      : this.chat.uuidUsuario;
+  }
+
+  irADenunciar(): void {
+    if (!this.chat) return;
+    this.menuAbierto = false;
+
+    this.router.navigate(['/denuncias/nueva'], {
+      queryParams: {
+        uuidChat: this.chat.uuidChat,
+        uuidDenunciado: this.uuidOtroUsuario,
+      },
+    });
   }
 
   abrirCrearPresupuesto(): void {
