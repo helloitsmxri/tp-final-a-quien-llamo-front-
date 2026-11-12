@@ -36,15 +36,19 @@ export class ListTecnicos implements OnInit {
   error = '';
 
   ngOnInit(): void {
-    // si ya está en el listado y toca otra categoría, el componente se reutiliza
-    this.route.queryParamMap.subscribe(params => {
-      this.rubroPedido = params.get('rubro');
-      this.aplicarRubroPedido();
-    });
+  this.route.queryParamMap.subscribe(params => {
+    this.rubroPedido = params.get('rubro');
 
-    this.cargarTecnicos();
-    this.cargarRubros();
-  }
+    // Recupera los filtros enviados desde el Home
+    this.textoBusqueda = params.get('busqueda') ?? '';
+    this.especialidadElegida = params.get('especialidad');
+
+    this.aplicarRubroPedido();
+  });
+
+  this.cargarTecnicos();
+  this.cargarRubros();
+}
 
   cargarTecnicos(): void {
     this.cargando = true;
