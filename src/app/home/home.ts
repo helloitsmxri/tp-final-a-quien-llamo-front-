@@ -14,17 +14,21 @@ export class Home {
   
   especialidad = '';
   ciudad = '';
- 
   buscar(): void {
-  const especialidad = this.especialidad.trim();
-  const ciudad = this.ciudad.trim();
+    const especialidad = this.especialidad.trim();
+    const ciudad = this.ciudad.trim();
 
-  if (!especialidad && !ciudad) return;
+    if (especialidad) {
+      this.router.navigate(['/tecnicos'], {
+        queryParams: { especialidad }
+      });
+      return;
+    }
 
-  const queryParams: any = {};
-  if (ciudad) queryParams.busqueda = ciudad;
-  if (especialidad) queryParams.especialidad = especialidad;
-
-  this.router.navigate(['/ubicacion'], { queryParams });
-}
+    if (ciudad) {
+      this.router.navigate(['/ubicacion'], {
+        queryParams: { busqueda: ciudad }
+      });
+    }
+  }
 }
