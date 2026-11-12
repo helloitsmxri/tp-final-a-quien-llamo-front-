@@ -1,0 +1,139 @@
+
+<section class="detalle-denuncia" aria-labelledby="titulo-detalle">
+    <header class="encabezado">
+        <div>
+            <h2 id="titulo-detalle">Detalle de la denuncia</h2>
+            <p class="uuid">Código: {{ denuncia.uuid }}</p>
+        </div>
+
+        <span [class]="'estado estado-' + denuncia.estadoDenuncia.toLowerCase()"
+              aria-label="Estado de la denuncia">
+            {{ denuncia.estadoDenuncia.replace('_', ' ') }}
+        </span>
+    </header>
+
+    <section class="seccion" aria-labelledby="titulo-informacion">
+        <h3 id="titulo-informacion">Información de la denuncia</h3>
+
+        <dl>
+            <div class="dato">
+                <dt class="etiqueta">Fecha de creación</dt>
+                <dd>{{ denuncia.fechaDenuncia | date:'dd/MM/yyyy HH:mm' }}</dd>
+            </div>
+
+            <div class="dato motivo">
+                <dt class="etiqueta">Motivo</dt>
+                <dd>{{ denuncia.motivoDenuncia }}</dd>
+            </div>
+
+            @if (denuncia.notaDelAdmin) {
+                <div class="dato motivo">
+                    <dt class="etiqueta">Observación del administrador</dt>
+                    <dd>{{ denuncia.notaDelAdmin }}</dd>
+                </div>
+            }
+        </dl>
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-denunciante">
+        <h3 id="titulo-denunciante">Persona denunciante</h3>
+
+        <dl>
+            <div class="dato">
+                <dt class="etiqueta">Nombre y apellido</dt>
+                <dd>{{ denuncia.nombreDenunciante }} {{ denuncia.apellidoDenunciante }}</dd>
+            </div>
+
+            <div class="dato">
+                <dt class="etiqueta">Correo electrónico</dt>
+                <dd>{{ denuncia.emailDenunciante }}</dd>
+            </div>
+
+            <div class="dato">
+                <dt class="etiqueta">UUID</dt>
+                <dd class="identificador">{{ denuncia.uuidDenunciante }}</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-denunciado">
+        <h3 id="titulo-denunciado">Persona denunciada</h3>
+
+        <dl>
+            <div class="dato">
+                <dt class="etiqueta">Nombre y apellido</dt>
+                <dd>{{ denuncia.nombreDenunciado }} {{ denuncia.apellidoDenunciado }}</dd>
+            </div>
+
+            <div class="dato">
+                <dt class="etiqueta">Correo electrónico</dt>
+                <dd>{{ denuncia.emailDenunciado }}</dd>
+            </div>
+
+            <div class="dato">
+                <dt class="etiqueta">UUID</dt>
+                <dd class="identificador">{{ denuncia.uuidDenunciado }}</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-administrador">
+        <h3 id="titulo-administrador">Administrador asignado</h3>
+
+        @if (denuncia.uuidAdministrador) {
+            <dl>
+                <div class="dato">
+                    <dt class="etiqueta">Nombre</dt>
+                    <dd>{{ denuncia.nombreAdministrador }}</dd>
+                </div>
+
+                <div class="dato">
+                    <dt class="etiqueta">UUID</dt>
+                    <dd class="identificador">{{ denuncia.uuidAdministrador }}</dd>
+                </div>
+            </dl>
+        } @else {
+            <p class="sin-datos">Esta denuncia todavía no tiene un administrador asignado.</p>
+        }
+    </section>
+
+    <section class="seccion" aria-labelledby="titulo-foto">
+        <h3 id="titulo-foto">Imagen adjunta</h3>
+
+        @if (cargandoFoto) {
+            <p class="sin-datos" role="status">Cargando imagen...</p>
+        } @else if (fotoUrl) {
+            <button
+                type="button"
+                class="boton-foto"
+                (click)="abrirFoto()"
+                aria-label="Ampliar imagen adjunta como evidencia de la denuncia">
+
+                <img
+                    class="foto-denuncia"
+                    [src]="fotoUrl"
+                    alt="Evidencia fotográfica adjunta a la denuncia">
+
+                <span>Ampliar imagen</span>
+            </button>
+        } @else {
+            <p class="sin-datos" role="status">
+                {{ denuncia.tieneFoto ? 'No se pudo mostrar la imagen.' : 'Esta denuncia no tiene una imagen adjunta.' }}
+            </p>
+        }
+    </section>
+</section>
+
+@if (mostrarFotoAmpliada && fotoUrl) {
+    <div class="visor-foto" (click)="cerrarFoto()" role="presentation">
+        <div class="visor-contenido" #visorContenido role="dialog" aria-modal="true" aria-labelledby="titulo-visor" (click)="$event.stopPropagation()">
+            <h2 id="titulo-visor" class="titulo-visor">Imagen adjunta de la denuncia</h2>
+
+            <button type="button" #botonCerrar class="cerrar-visor" (click)="cerrarFoto()" aria-label="Cerrar imagen ampliada">
+                <span aria-hidden="true">×</span>
+            </button>
+
+            <img [src]="fotoUrl" alt="Imagen ampliada presentada como evidencia de la denuncia">
+        </div>
+    </div>
+}

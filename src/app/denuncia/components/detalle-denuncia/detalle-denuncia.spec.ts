@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { DetalleDenuncia } from './detalle-denuncia';
 
 describe('DetalleDenuncia', () => {
@@ -7,12 +8,13 @@ describe('DetalleDenuncia', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DetalleDenuncia],
-    }).compileComponents();
+      imports: [DetalleDenuncia]
+    })
+    .compileComponents();
 
     fixture = TestBed.createComponent(DetalleDenuncia);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
