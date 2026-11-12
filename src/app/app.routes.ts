@@ -25,6 +25,9 @@ import { PerfilTecnicoPublico } from './tecnico/pages/perfil-tecnico-publico/per
 import { ListTecnicos } from './tecnico/pages/list-tecnicos/list-tecnicos';
 import { RecuperarPassword } from './auth/recuperar-password/recuperar-password';
 import { ResetPassword } from './auth/reset-password/reset-password';
+import { ListTrabajo } from './trabajo/pages/list-trabajo/list-trabajo';
+import { DetalleTrabajo } from './trabajo/pages/detalle-trabajo/detalle-trabajo';
+import { FormTrabajo } from './trabajo/pages/form-trabajo/form-trabajo';
 
 export const routes: Routes = [
 
@@ -81,4 +84,14 @@ export const routes: Routes = [
     {path: 'iniciar-sesion', component: Login},
     { path: 'recuperar', component: RecuperarPassword },
     { path: 'reset-password', component: ResetPassword },
+
+
+    // TRABAJOS
+{path: 'trabajos', component: FormTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/lista', component: ListTrabajo, canActivate: [authGuard]},
+{path: 'mis-trabajos', component: ListTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/:uuid', component: DetalleTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/estado/:estadoTrabajo', component: ListTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/cliente/:uuid', component: ListTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/tecnico/:uuid', component: ListTrabajo, canActivate: [authGuard]},
 ];

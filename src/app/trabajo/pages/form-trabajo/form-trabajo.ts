@@ -8,8 +8,7 @@ import {
 } from '@angular/forms';
 
 import { TrabajoService } from '../../services/trabajo';
-import { FormTrabajoModel } from '../../models/form-trabajo-model';
-import { EstadoTrabajo } from '../../enum/estado-trabajo';
+import { TrabajoRequestModel } from '../../models/trabajo-request-model';
 
 @Component({
   selector: 'app-form-trabajo',
@@ -24,11 +23,8 @@ export class FormTrabajo {
   descripcionTrabajo: FormControl;
   fechaEstimadaInicio: FormControl;
   fechaEstimadaFin: FormControl;
-  estadoTrabajo: FormControl;
 
   formulario: FormGroup;
-
-  estadosTrabajo = Object.values(EstadoTrabajo);
 
   constructor(public tService: TrabajoService) {
 
@@ -38,8 +34,8 @@ export class FormTrabajo {
 
     this.descripcionTrabajo = new FormControl('', [
       Validators.required,
-      Validators.minLength(10),
-      Validators.maxLength(500)
+      Validators.minLength(50),
+      Validators.maxLength(1000)
     ]);
 
     this.fechaEstimadaInicio = new FormControl('', [
@@ -50,17 +46,11 @@ export class FormTrabajo {
       Validators.required
     ]);
 
-    this.estadoTrabajo = new FormControl(
-      EstadoTrabajo.Pendiente,
-      [Validators.required]
-    );
-
     this.formulario = new FormGroup({
       uuidPresupuesto: this.uuidPresupuesto,
       descripcionTrabajo: this.descripcionTrabajo,
       fechaEstimadaInicio: this.fechaEstimadaInicio,
-      fechaEstimadaFin: this.fechaEstimadaFin,
-      estadoTrabajo: this.estadoTrabajo
+      fechaEstimadaFin: this.fechaEstimadaFin
     });
   }
 
@@ -71,15 +61,19 @@ export class FormTrabajo {
       return;
     }
 
-    const trabajo: FormTrabajoModel = {
+    const trabajo: TrabajoRequestModel = {
       uuidPresupuesto: this.uuidPresupuesto.value,
       descripcionTrabajo: this.descripcionTrabajo.value,
       fechaEstimadaInicio: this.fechaEstimadaInicio.value,
-      fechaEstimadaFin: this.fechaEstimadaFin.value,
-      estadoTrabajo: this.estadoTrabajo.value
+      fechaEstimadaFin: this.fechaEstimadaFin.value
     };
 
-    this.tService.store(trabajo).subscribe({
+    if (new Date(trabajo.fechaEstimadaFin) < new Date(trabajo.fechaEstimadaInicio)) {
+      console.error('La fecha de finalizacion no puede ser anterior a la fecha de inicio.');
+      return;
+    }
+
+    this.tService.storeTrabajo(trabajo).subscribe({
       next: (respuesta) => {
         console.log('Trabajo registrado correctamente', respuesta);
 
@@ -87,8 +81,7 @@ export class FormTrabajo {
           uuidPresupuesto: '',
           descripcionTrabajo: '',
           fechaEstimadaInicio: '',
-          fechaEstimadaFin: '',
-          estadoTrabajo: EstadoTrabajo.Pendiente
+          fechaEstimadaFin: ''
         });
       },
       error: (e) => {
@@ -101,4 +94,3 @@ export class FormTrabajo {
     console.log(this.formulario.value);
   }
 }
-

@@ -1,0 +1,204 @@
+
+:host {
+  display: block;
+  width: 100%;
+  font-family: "Creato Display", sans-serif;
+  color: var(--color-texto, #30294a);
+}
+
+/* CONTENEDOR PRINCIPAL */
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 680px;
+  padding: 28px;
+  background: var(--color-tarjeta, #fff);
+  border: 1px solid var(--color-borde, #e6e1ef);
+  border-radius: var(--radio-tarjeta, 18px);
+  box-shadow: var(--sombra-tarjeta, 0 8px 30px rgba(48, 35, 90, 0.08));
+  box-sizing: border-box;
+}
+
+/* ENCABEZADO */
+
+.register-card h2 {
+  margin: 0 0 8px;
+  color: var(--color-texto, #30294a);
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.register-card > p {
+  margin: 0 0 24px;
+  color: var(--color-texto-secundario, #777184);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* FORMULARIO */
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* ETIQUETAS */
+
+.form-group label {
+  color: var(--color-texto, #30294a);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* INPUTS Y TEXTAREA */
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  border: 1px solid var(--color-borde, #ded9e8);
+  border-radius: 9px;
+  background: var(--color-blanco, #fff);
+  color: var(--color-texto, #30294a);
+  font-family: inherit;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input {
+  min-height: 44px;
+}
+
+.form-group textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #a09aaa;
+}
+
+/* ESTADOS DE LOS CAMPOS */
+
+.form-group input:focus-visible,
+.form-group textarea:focus-visible {
+  outline: none;
+  border-color: var(--color-acento, #3b2a7a);
+  box-shadow: 0 0 0 3px rgba(59, 42, 122, 0.13);
+}
+
+.form-group input:invalid,
+.form-group textarea:invalid {
+  box-shadow: none;
+}
+
+/* ERRORES */
+
+.error {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.error span {
+  color: #b52e42;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* BOTÓN PRINCIPAL */
+
+.formulario button[type="submit"] {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 5px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 9px;
+  background: var(--degrade-boton, #3b2a7a);
+  color: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.2s ease, opacity 0.2s ease;
+}
+
+.formulario button[type="submit"]:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.formulario button[type="submit"]:focus-visible {
+  outline: 3px solid var(--color-acento, #3b2a7a);
+  outline-offset: 3px;
+}
+
+.formulario button[type="submit"]:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+  .register-container {
+    padding: 12px;
+  }
+
+  .register-card {
+    padding: 20px 16px;
+    border-radius: 13px;
+  }
+
+  .register-card h2 {
+    font-size: 21px;
+  }
+
+  .register-card > p {
+    font-size: 13px;
+  }
+
+  .formulario {
+    gap: 17px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 14px;
+  }
+}
+
+/* ACCESIBILIDAD */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
