@@ -14,6 +14,9 @@ export class AuthService {
 
     private readonly API_URL_REGISTER = 'http://localhost:8080/auth/register'
     private readonly API_URL_LOGIN = 'http://localhost:8080/auth/login'
+     private readonly API_URL_FORGOT_PASSWORD = 'http://localhost:8080/auth/forgot-password';
+    private readonly API_URL_RESET_PASSWORD = 'http://localhost:8080/auth/reset-password';
+
 
     usuarios: UsuarioModel[] = [];
     usuario!: UsuarioModel;
@@ -87,4 +90,17 @@ export class AuthService {
   esTecnico(): boolean {
     return this.getRoles().includes('ROLE_TECNICO');
   }
+
+  //solicitar recuperacion de contraseña
+    forgotPassword(email: string): Observable<void> {
+        return this.http.post<void>(this.API_URL_FORGOT_PASSWORD, { email });
+    }
+
+    //restablecer contraseña mediante el token recibido por correo
+    resetPassword(token: string, newPassword: string): Observable<void> {
+        return this.http.post<void>(this.API_URL_RESET_PASSWORD, {
+            token,
+            newPassword
+        });
+    }
 }
