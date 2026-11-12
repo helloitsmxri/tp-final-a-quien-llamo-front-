@@ -19,8 +19,6 @@ export class VerPresupuesto {
   @Input({ required: true }) presupuesto!: PresupuestoModel;
   @Input() esTecnico = false;
 
-  @Input() textoVolver = 'Volver a mis presupuestos';
-
   @Output() volver = new EventEmitter<void>();
   @Output() presupuestoActualizado = new EventEmitter<PresupuestoModel>();
 

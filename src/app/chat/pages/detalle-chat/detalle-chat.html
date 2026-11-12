@@ -8,18 +8,6 @@
         <h3>{{ nombreOtro }}</h3>
       </div>
     </div>
-
-    <div class="acciones-header">
-      <button type="button" class="btn-ver-presupuestos" (click)="abrirPresupuestos()">
-        📄 Ver presupuestos
-      </button>
-
-      @if (soyElTecnico) {
-        <button type="button" class="btn-crear-presupuesto" (click)="abrirCrearPresupuesto()">
-          📝 Crear Presupuesto
-        </button>
-      }
-    </div>
   </header>
 
   <!-- Lista de mensajes -->
@@ -71,53 +59,5 @@
       <button class="btn-send" (click)="enviarMensaje()">➕</button>
     </div>
   </footer>
-
-  <!-- Formulario para crear presupuesto (solo lo ve el técnico) -->
-  @if (mostrarCrearPresupuesto && chat) {
-    <div class="overlay-presupuesto">
-      <div class="contenedor-presupuesto">
-        <app-crear-presupuesto
-          [uuidChat]="chat.uuidChat"
-          (presupuestoCreado)="alCrearPresupuesto()"
-          (cerrar)="cerrarCrearPresupuesto()"
-        ></app-crear-presupuesto>
-      </div>
-    </div>
-  }
-
-  @if (mostrarListaPresupuestos) {
-    <div class="overlay-presupuesto">
-      @if (presupuestoSeleccionado) {
-        <div class="contenedor-presupuesto">
-          <app-ver-presupuesto
-            [presupuesto]="presupuestoSeleccionado"
-            [esTecnico]="soyElTecnico"
-            textoVolver="Volver a la lista de presupuestos"
-            (volver)="volverALista()"
-            (presupuestoActualizado)="alActualizarPresupuesto()"
-          ></app-ver-presupuesto>
-        </div>
-      } @else {
-        <div class="lista-presupuestos">
-          <button type="button" class="btn-cerrar-lista" (click)="cerrarPresupuestos()" aria-label="Cerrar">✕</button>
-          <h3>Presupuestos de esta conversación</h3>
-
-          @if (cargandoPresupuestos) {
-            <p>Cargando...</p>
-          } @else {
-            @for (p of presupuestosChat; track p.uuid) {
-              <button type="button" class="item-presupuesto" (click)="verPresupuesto(p)">
-                <span>{{ p.nombreProyecto }}</span>
-                <span>{{ p.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}</span>
-                <span>{{ p.estado }}</span>
-              </button>
-            } @empty {
-              <p>Todavía no hay presupuestos en esta conversación.</p>
-            }
-          }
-        </div>
-      }
-    </div>
-  }
 
 </div>

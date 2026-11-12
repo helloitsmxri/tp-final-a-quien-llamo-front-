@@ -7,15 +7,11 @@ import { MensajeModel } from '../../../mensaje/models/mensaje-model';
 import { MensajeService } from '../../../mensaje/services/mensaje';
 import { UsuarioService } from '../../../user/services/user';
 import { WebSocketService } from '../../services/web-socket-service';
-import { PresupuestoService } from '../../../presupuesto/services/presupuesto';
-import { PresupuestoModel } from '../../../presupuesto/models/presupuesto-model';
-import { CrearPresupuesto } from '../../../presupuesto/pages/crear-presupuesto/crear-presupuesto';
-import { VerPresupuesto } from '../../../presupuesto/pages/ver-presupuesto/ver-presupuesto';
 
 const BACKEND = 'http://localhost:8080';
 @Component({
   selector: 'app-detalle-chat',
-  imports: [CommonModule, FormsModule, CrearPresupuesto, VerPresupuesto],
+  imports: [CommonModule, FormsModule],
   templateUrl: './detalle-chat.html',
   styleUrl: './detalle-chat.css',
 })
@@ -32,13 +28,6 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   archivoSeleccionado: File | null = null;
   miUuid = '';
 
-  // Presupuestos
-  mostrarCrearPresupuesto = false;
-  mostrarListaPresupuestos = false;
-  presupuestosChat: PresupuestoModel[] = [];
-  presupuestoSeleccionado: PresupuestoModel | null = null;
-  cargandoPresupuestos = false;
-
   private wsSub?: Subscription;
 
   constructor(
@@ -46,7 +35,6 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     private usuarioService: UsuarioService,
     private wsService: WebSocketService,
     private ngZone: NgZone,
-    private presupuestoService: PresupuestoService,
   ) {}
 
   ngOnInit(): void {
@@ -59,11 +47,6 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   // Se ejecuta cada vez que cambia el chat seleccionado
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['chat'] && this.chat) {
-      // Si cambio de chat, cierro cualquier ventana de presupuesto abierta
-      this.mostrarCrearPresupuesto = false;
-      this.mostrarListaPresupuestos = false;
-      this.presupuestoSeleccionado = null;
-
       this.mensajes = [];
       this.cargarMensajes(this.chat.uuidChat);
       this.escucharChat(this.chat.uuidChat);
@@ -78,17 +61,12 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     return !!this.miUuid && m.uuidSender === this.miUuid;
   }
 
-  // En este chat, ¿yo soy el técnico? (si no soy el cliente, soy el técnico)
-  get soyElTecnico(): boolean {
-    return !!this.chat && !!this.miUuid && this.chat.uuidUsuario !== this.miUuid;
-  }
-
   // Convierte la ruta del archivo (/uploads/...) en una URL completa hacia el backend
-  urlArchivo(url: string | null | undefined): string {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    return BACKEND + (url.startsWith('/') ? url : '/' + url);
-  }
+urlArchivo(url: string | null | undefined): string {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  return BACKEND + (url.startsWith('/') ? url : '/' + url);
+}
 
   // Nombre de la OTRA persona del chat
   get nombreOtro(): string {
@@ -154,60 +132,6 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
         },
         error: (err) => console.error('Error al enviar mensaje:', err),
       });
-  }
-
-  // ---------- PRESUPUESTOS ----------
-
-  abrirCrearPresupuesto(): void {
-    this.mostrarCrearPresupuesto = true;
-  }
-
-  cerrarCrearPresupuesto(): void {
-    this.mostrarCrearPresupuesto = false;
-  }
-
-  // Se creó el presupuesto: cierro el formulario y recargo mensajes
-  // (el back dejó un mensaje automático en el chat)
-  alCrearPresupuesto(): void {
-    this.mostrarCrearPresupuesto = false;
-    if (this.chat) this.cargarMensajes(this.chat.uuidChat);
-  }
-
-  abrirPresupuestos(): void {
-    if (!this.chat) return;
-
-    this.mostrarListaPresupuestos = true;
-    this.presupuestoSeleccionado = null;
-    this.cargandoPresupuestos = true;
-
-    this.presupuestoService.obtenerPresupuestoChat(this.chat.uuidChat).subscribe({
-      next: (lista) => {
-        this.presupuestosChat = lista;
-        this.cargandoPresupuestos = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar presupuestos:', err);
-        this.cargandoPresupuestos = false;
-      },
-    });
-  }
-
-  cerrarPresupuestos(): void {
-    this.mostrarListaPresupuestos = false;
-    this.presupuestoSeleccionado = null;
-  }
-
-  verPresupuesto(p: PresupuestoModel): void {
-    this.presupuestoSeleccionado = p;
-  }
-
-  volverALista(): void {
-    this.presupuestoSeleccionado = null;
-  }
-
-  // Aceptar, rechazar y cancelar dejan un mensaje automático: recargo mensajes
-  alActualizarPresupuesto(): void {
-    if (this.chat) this.cargarMensajes(this.chat.uuidChat);
   }
 
   private scrollToBottom(): void {
