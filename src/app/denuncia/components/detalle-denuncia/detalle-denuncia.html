@@ -126,27 +126,14 @@
 
 @if (mostrarFotoAmpliada && fotoUrl) {
     <div class="visor-foto" (click)="cerrarFoto()" role="presentation">
-        <div
-            class="visor-contenido"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="titulo-visor"
-            (click)="$event.stopPropagation()">
-
+        <div class="visor-contenido" #visorContenido role="dialog" aria-modal="true" aria-labelledby="titulo-visor" (click)="$event.stopPropagation()">
             <h2 id="titulo-visor" class="titulo-visor">Imagen adjunta de la denuncia</h2>
 
-            <button
-                type="button"
-                class="cerrar-visor"
-                (click)="cerrarFoto()"
-                aria-label="Cerrar imagen ampliada"
-                autofocus>
+            <button type="button" #botonCerrar class="cerrar-visor" (click)="cerrarFoto()" aria-label="Cerrar imagen ampliada">
                 <span aria-hidden="true">×</span>
             </button>
 
-            <img
-                [src]="fotoUrl"
-                alt="Imagen ampliada presentada como evidencia de la denuncia">
+            <img [src]="fotoUrl" alt="Imagen ampliada presentada como evidencia de la denuncia">
         </div>
     </div>
 }
