@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, HostListener, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ChatModel } from '../../models/chat-model';
@@ -31,8 +31,6 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   nuevoMensajeTexto = '';
   archivoSeleccionado: File | null = null;
   miUuid = '';
-  menuAbierto = false;
-  mostrarDenuncia = false;
 
   // Presupuestos
   mostrarCrearPresupuesto = false;
@@ -61,8 +59,7 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   // Se ejecuta cada vez que cambia el chat seleccionado
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['chat'] && this.chat) {
-      // Si cambio de chat, cierro el menú y cualquier ventana de presupuesto abierta
-      this.menuAbierto = false;
+      // Si cambio de chat, cierro cualquier ventana de presupuesto abierta
       this.mostrarCrearPresupuesto = false;
       this.mostrarListaPresupuestos = false;
       this.presupuestoSeleccionado = null;
@@ -159,31 +156,9 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
       });
   }
 
-  // ---------- MENÚ DESPLEGABLE (⋮) ----------
-
-  alternarMenu(): void {
-    this.menuAbierto = !this.menuAbierto;
-  }
-
-  // Si hago clic fuera del menú, se cierra
-  @HostListener('document:click', ['$event'])
-  cerrarMenuAlHacerClicAfuera(event: MouseEvent): void {
-    const objetivo = event.target as HTMLElement;
-    if (!objetivo.closest('.menu-acciones')) {
-      this.menuAbierto = false;
-    }
-  }
-
-  // Con la tecla Escape también se cierra
-  @HostListener('document:keydown.escape')
-  cerrarMenuConEscape(): void {
-    this.menuAbierto = false;
-  }
-
   // ---------- PRESUPUESTOS ----------
 
   abrirCrearPresupuesto(): void {
-    this.menuAbierto = false;
     this.mostrarCrearPresupuesto = true;
   }
 
@@ -199,7 +174,6 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   }
 
   abrirPresupuestos(): void {
-    this.menuAbierto = false;
     if (!this.chat) return;
 
     this.mostrarListaPresupuestos = true;
@@ -236,21 +210,6 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     if (this.chat) this.cargarMensajes(this.chat.uuidChat);
   }
 
-    // ---------- DENUNCIA ----------
-
-  abrirDenuncia(): void {
-    this.menuAbierto = false;
-    this.mostrarDenuncia = true;
-  }
-
-  cerrarDenuncia(): void {
-    this.mostrarDenuncia = false;
-  }
-
-  alCrearDenuncia(): void {
-    this.mostrarDenuncia = false;
-  }
-  
   private scrollToBottom(): void {
     setTimeout(() => {
       const el = this.areaMensajesContainer?.nativeElement;

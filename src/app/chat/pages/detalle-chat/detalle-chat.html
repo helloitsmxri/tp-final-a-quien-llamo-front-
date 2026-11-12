@@ -9,32 +9,15 @@
       </div>
     </div>
 
-    <div class="menu-acciones">
-      <button
-        type="button"
-        class="btn-menu"
-        (click)="alternarMenu()"
-        aria-label="Más opciones"
-        aria-haspopup="menu"
-        [attr.aria-expanded]="menuAbierto"
-      >⋮</button>
+    <div class="acciones-header">
+      <button type="button" class="btn-ver-presupuestos" (click)="abrirPresupuestos()">
+        📄 Ver presupuestos
+      </button>
 
-      @if (menuAbierto) {
-        <div class="menu-desplegable" role="menu">
-          <button type="button" role="menuitem" (click)="abrirPresupuestos()">
-            📄 Ver presupuestos
-          </button>
-
-          @if (soyElTecnico) {
-            <button type="button" role="menuitem" (click)="abrirCrearPresupuesto()">
-              📝 Crear presupuesto
-            </button>
-          }
-
-          <button type="button" role="menuitem" class="opcion-peligro" (click)="abrirDenuncia()">
-            🚩 Hacer denuncia
-          </button>
-        </div>
+      @if (soyElTecnico) {
+        <button type="button" class="btn-crear-presupuesto" (click)="abrirCrearPresupuesto()">
+          📝 Crear Presupuesto
+        </button>
       }
     </div>
   </header>
@@ -102,7 +85,6 @@
     </div>
   }
 
-  <!-- Lista de presupuestos del chat y detalle -->
   @if (mostrarListaPresupuestos) {
     <div class="overlay-presupuesto">
       @if (presupuestoSeleccionado) {
@@ -135,20 +117,6 @@
           }
         </div>
       }
-    </div>
-  }
-
-  <!-- Formulario de denuncia -->
-  @if (mostrarDenuncia && chat) {
-    <div class="overlay-presupuesto">
-      <div class="contenedor-presupuesto">
-        <app-crear-denuncia
-          [uuidChat]="chat.uuidChat"
-          [nombreDenunciado]="nombreOtro"
-          (denunciaCreada)="alCrearDenuncia()"
-          (cerrar)="cerrarDenuncia()"
-        ></app-crear-denuncia>
-      </div>
     </div>
   }
 

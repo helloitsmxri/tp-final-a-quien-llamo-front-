@@ -140,63 +140,43 @@
   justify-content: center;
 }
 
-/* ---------- MENÚ DESPLEGABLE (⋮) ---------- */
+/* ---------- PRESUPUESTOS ---------- */
 
-.menu-acciones {
-  position: relative;
+.acciones-header {
+  display: flex;
+  gap: 8px;
 }
 
-.btn-menu {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  color: #8b5cf6;
-  font-size: 1.6rem;
-  line-height: 1;
+.btn-ver-presupuestos,
+.btn-crear-presupuesto {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.btn-menu:hover,
-.btn-menu[aria-expanded="true"] {
+/* Secundario: lo ven cliente y técnico */
+.btn-ver-presupuestos {
+  background-color: #ffffff;
+  color: #513689;
+  border: 1px solid #e9e1fc;
+}
+
+.btn-ver-presupuestos:hover {
   background-color: #e9e1fc;
 }
 
-.menu-desplegable {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  z-index: 50;
-  min-width: 210px;
-  display: flex;
-  flex-direction: column;
-  padding: 6px;
-  background: #ffffff;
-  border: 1px solid #e9e1fc;
-  border-radius: 14px;
-  box-shadow: 0 8px 24px rgba(81, 54, 137, 0.15);
-}
-
-.menu-desplegable button {
-  padding: 10px 14px;
+/* Principal: solo el técnico */
+.btn-crear-presupuesto {
+  background-color: #8b5cf6;
+  color: #ffffff;
   border: none;
-  border-radius: 10px;
-  background: transparent;
-  color: #372f47;
-  font-size: 0.9rem;
-  text-align: left;
-  cursor: pointer;
 }
 
-.menu-desplegable button:hover {
-  background-color: #f6f2fe;
+.btn-crear-presupuesto:hover {
+  filter: brightness(1.1);
 }
-
-/* ---------- PRESUPUESTOS ---------- */
 
 /* Fondo oscuro que tapa la pantalla */
 .overlay-presupuesto {
@@ -264,16 +244,4 @@
 
 .item-presupuesto:hover {
   background-color: #f6f2fe;
-}
-
-/* Opción de denuncia dentro del menú */
-.menu-desplegable .opcion-peligro {
-  margin-top: 4px;
-  border-top: 1px solid #f0ebfa;
-  border-radius: 0 0 10px 10px;
-  color: #b13d4d;
-}
-
-.menu-desplegable .opcion-peligro:hover {
-  background-color: #fbecef;
 }
