@@ -71,13 +71,16 @@ export class AdminService {
 
 
   // AMONESTAR / SUSPENDER USUARIO
-  amonestarUsuario(uuid: string, motivo: string) {
-    return this.http.patch<string>(
-      `${this.API_AMONESTAR_URL}/${uuid}`,
-      null,
-      { params: { motivo } }
-    );
-  }
+amonestarUsuario(uuid: string, motivo: string) {
+  return this.http.patch(
+    `${this.API_AMONESTAR_URL}/${uuid}`,
+    null,
+    {
+      params: { motivo },
+      responseType: 'text'
+    }
+  );
+}
 
 
   // DAR DE BAJA USUARIO

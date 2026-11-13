@@ -36,36 +36,47 @@ export class Login {
     return this.formulario.get('password')!;
   }
 
-  manejarEnvio(): void {
+  
+manejarEnvio(): void {
 
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      return;
-    }
+  if (this.formulario.invalid) {
+    this.formulario.markAllAsTouched();
+    return;
+  }
 
-    this.cargando = true;
-    this.error = '';
+  this.cargando = true;
+  this.error = '';
 
-    const login: AuthLoginModel = {username: this.username.value!,password: this.password.value!};
+  const login: AuthLoginModel = {
+    username: this.username.value!,
+    password: this.password.value!
+  };
 
-    this.authService.login(login).subscribe({
+  this.authService.login(login).subscribe({
 
-      next: (response) => {
+    next: (response) => {
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
 
-        localStorage.setItem('accessToken', response.accessToken);
-        localStorage.setItem('refreshToken', response.refreshToken);
+      this.cargando = false;
+      this.router.navigate(['/home']);
+    },
 
-        this.cargando = false;
+    error: (err) => {
+      console.error(err);
 
-        this.router.navigate(['/home']);
-      },
+      const mensaje = err.error?.mensaje || err.error?.message || '';
 
-      error: (err) => {
-        console.error(err);
-        this.error = err.error?.message || 'Email o clave incorrectos.';
-        this.cargando = false;
+      if (mensaje.toLowerCase().includes('suspendido')) {
+        this.error = mensaje;
+      } else {
+        this.error = 'Email o clave incorrectos.';
       }
 
-    });
-  }
+      this.cargando = false;
+    }
+
+  });
+}
+
 }

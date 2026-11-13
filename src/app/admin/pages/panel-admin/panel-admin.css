@@ -1,3 +1,4 @@
+
 :host {
   display: block;
   min-height: calc(100vh - var(--alto-header, 0px));
@@ -5,7 +6,7 @@
 
   /* Paleta del diseño gráfico del panel */
   --violeta: #6c4df0;
-  --violeta-fin: #7557ef;              /* final del degradé: un poco más oscuro que #8b6ff3 para que el texto blanco se lea bien */
+  --violeta-fin: #7557ef;
   --violeta-suave: #ece8fd;
   --tarjeta: #f4f3f8;
   --texto-menu: #3b3552;
@@ -21,28 +22,26 @@
 .panel-admin {
   display: flex;
   min-height: calc(100vh - var(--alto-header, 0px));
-  
 }
 
 /* MENÚ LATERAL */
-
 .menu-admin {
-  position: sticky;
-  /* Si tu header es fijo, definí --alto-header (ej: 72px) en styles.css.
-     Sin definirla vale 0 y todo queda igual. */
-  top: var(--alto-header, 0px);
-  align-self: flex-start;                          /* necesario para que sticky funcione dentro de flex */
+  position: static;
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
   width: 250px;
   min-width: 250px;
-  height: calc(100vh - var(--alto-header, 0px));
-  height: calc(100dvh - var(--alto-header, 0px));  /* en celulares, ignora la barra del navegador */
+
+  height: calc(100vh - var(--alto-header, 0px) + 30px);
+  height: calc(100dvh - var(--alto-header, 0px) + 30px);
+
+  margin-top: 60px;
   padding: 30px 18px;
-  overflow-y: auto;                                /* si la pantalla es baja, el menú scrollea en vez de cortarse */
+  overflow-y: auto;
   background: var(--tarjeta);
   color: var(--texto-menu);
-  border-radius: 0 24px 24px 0;                    /* esquinas redondeadas como en el diseño; sacalo si lo querés recto */
+  border-radius: 0 24px 24px 0;
   box-shadow: 10px 0 24px rgba(108, 77, 240, 0.12);
 }
 
@@ -58,10 +57,11 @@
   color: var(--texto-menu);
 }
 
-/* Subtítulo (va fuera del @media y con .logo-admin delante para que ningún otro span le gane) */
+/* SUBTÍTULO */
+
 .logo-admin .subtitulo {
   display: block;
-  color: var(--violeta);                           /* #6c4df0 llega al contraste mínimo sobre este fondo; #7d5ff0 no */
+  color: var(--violeta);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 1.5px;
@@ -102,7 +102,8 @@
   font-weight: 800;
 }
 
-/* Foco visible para quien navega con teclado */
+/* FOCO VISIBLE */
+
 .opcion-admin:focus-visible {
   outline: 3px solid var(--violeta);
   outline-offset: 3px;
@@ -121,7 +122,6 @@ img.icono {
   object-fit: contain;
 }
 
-/* Los PNG tienen el trazo oscuro: en la opción activa se pasan a blanco */
 .opcion-admin.activo img.icono {
   filter: brightness(0) invert(1);
 }
@@ -135,17 +135,16 @@ img.icono {
 }
 
 .deshabilitado:hover {
-  background: transparent;                         /* no debe parecer clickeable */
+  background: transparent;
 }
 
 .deshabilitado img.icono {
   opacity: 0.55;
 }
 
-/* El cartel va con opacidad normal: es información, tiene que poder leerse */
 .deshabilitado small {
   width: 100%;
-  padding-left: 33px;                              /* alinea con el texto, no con el ícono */
+  padding-left: 33px;
   color: var(--texto-suave);
   font-size: 0.72rem;
 }
@@ -156,7 +155,10 @@ img.icono {
   flex: 1;
   min-width: 0;
   padding: 30px;
+  box-sizing: border-box;
 }
+
+/* ACCESIBILIDAD */
 
 @media (prefers-reduced-motion: reduce) {
   .opcion-admin {

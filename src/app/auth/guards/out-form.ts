@@ -1,9 +1,10 @@
 import { CanDeactivateFn } from '@angular/router';
 
-export interface CanComponentDeactivate {
-    canDeactivate: () => boolean;
-}
+export const outForm: CanDeactivateFn<any> = (component) => {
 
-export const outForm: CanDeactivateFn<CanComponentDeactivate> = (component) => {
-    return component.canDeactivate ? component.canDeactivate() : true;
+    if (component.formulario?.dirty) {
+        return window.confirm('¿Estás seguro de que querés salir del formulario? Los cambios podrían perderse.');
+    }
+
+    return true;
 };

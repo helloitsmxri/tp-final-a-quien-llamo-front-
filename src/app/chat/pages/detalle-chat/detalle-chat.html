@@ -1,89 +1,99 @@
-<div class="chat-activo-container">
+@if (chat) {
+  <div class="chat-activo-container">
 
-  <!-- Header -->
-  <header class="header-chat-activo">
-    <div class="info-contacto">
-      <img [src]="avatar(nombreOtro)" alt="Avatar" class="avatar-header" />
-      <div>
-        <h3>{{ nombreOtro }}</h3>
-      </div>
-    </div>
-
-    <!-- Desplegable de Presupuestos y Denuncia -->
-    <div class="menu-presupuesto-wrapper">
-      <button type="button" class="btn-opciones" (click)="alternarMenu()">
-        ⋮ Opciones
-      </button>
-
-      @if (menuAbierto) {
-        <div class="dropdown-menu">
-          @if (soyElTecnico) {
-            <button type="button" class="dropdown-item" (click)="abrirCrearPresupuesto()">
-              ➕ Crear presupuesto
-            </button>
-          }
-          <button type="button" class="dropdown-item" (click)="abrirVerPresupuestos()">
-            📄 Ver presupuestos del chat
-          </button>
-          <button type="button" class="dropdown-item dropdown-item-peligro" (click)="irADenunciar()">
-            🚨 Denunciar usuario
-          </button>
+    <!-- Header -->
+    <header class="header-chat-activo">
+      <div class="info-contacto">
+        <img [src]="avatar(nombreOtro)" alt="Avatar" class="avatar-header" />
+        <div>
+          <h3>{{ nombreOtro }}</h3>
         </div>
+      </div>
+
+      <!-- Desplegable de Presupuestos y Denuncia -->
+      <div class="menu-presupuesto-wrapper">
+        <button type="button" class="btn-opciones" (click)="alternarMenu()">
+          ⋮ Opciones
+        </button>
+
+        @if (menuAbierto) {
+          <div class="dropdown-menu">
+            @if (soyElTecnico) {
+              <button type="button" class="dropdown-item" (click)="abrirCrearPresupuesto()">
+                ➕ Crear presupuesto
+              </button>
+            }
+            <button type="button" class="dropdown-item" (click)="abrirVerPresupuestos()">
+              📄 Ver presupuestos del chat
+            </button>
+            <button type="button" class="dropdown-item dropdown-item-peligro" (click)="irADenunciar()">
+              🚨 Denunciar usuario
+            </button>
+          </div>
+        }
+      </div>
+    </header>
+
+    <!-- Lista de mensajes -->
+    <div #areaMensajes class="area-mensajes">
+      @for (msg of mensajes; track msg.uuidMensaje) {
+        <div class="burbuja-wrapper" [class.sent]="esMio(msg)" [class.received]="!esMio(msg)">
+          <div class="burbuja">
+            @if (msg.mensaje) {
+              <p class="texto-msg">{{ msg.mensaje }}</p>
+            }
+            @if (msg.archivoUrl && msg.tipoArchivo === 'imagen') {
+              <img [src]="urlArchivo(msg.archivoUrl)" alt="Imagen adjunta" class="img-preview" />
+            }
+            @if (msg.archivoUrl && msg.tipoArchivo === 'pdf') {
+              <a [href]="urlArchivo(msg.archivoUrl)" target="_blank" rel="noopener noreferrer" class="pdf-link">
+                📄 Ver documento PDF
+              </a>
+            }
+          </div>
+        </div>
+      } @empty {
+        <p class="sin-mensajes">No hay mensajes en esta conversación aún.</p>
       }
     </div>
-  </header>
 
-  <!-- Lista de mensajes -->
-  <div #areaMensajes class="area-mensajes">
-    @for (msg of mensajes; track msg.uuidMensaje) {
-      <div class="burbuja-wrapper" [class.sent]="esMio(msg)" [class.received]="!esMio(msg)">
-        <div class="burbuja">
-          @if (msg.mensaje) {
-            <p class="texto-msg">{{ msg.mensaje }}</p>
-          }
-          @if (msg.archivoUrl && msg.tipoArchivo === 'imagen') {
-            <img [src]="urlArchivo(msg.archivoUrl)" alt="Imagen adjunta" class="img-preview" />
-          }
-          @if (msg.archivoUrl && msg.tipoArchivo === 'pdf') {
-            <a [href]="urlArchivo(msg.archivoUrl)" target="_blank" rel="noopener noreferrer" class="pdf-link">
-              📄 Ver documento PDF
-            </a>
-          }
+    <!-- Input -->
+    <footer class="footer-chat-input">
+      @if (archivoSeleccionado) {
+        <div class="archivo-pendiente">
+          📎 {{ archivoSeleccionado.name }}
+          <button type="button" (click)="quitarArchivo()">✕</button>
         </div>
+      }
+      <div class="input-pill">
+        <input
+          type="text"
+          [(ngModel)]="nuevoMensajeTexto"
+          placeholder="Escribe un mensaje aquí para chatear..."
+          (keyup.enter)="enviarMensaje()"
+        />
+        <label for="file-attach" class="btn-input-icon" title="Adjuntar archivo">🖼️</label>
+        <input
+          id="file-attach"
+          type="file"
+          (change)="onFileSelected($event)"
+          accept="image/*,.pdf"
+          style="display: none;"
+        />
+        <button type="button" class="btn-send" (click)="enviarMensaje()">➕</button>
       </div>
-    } @empty {
-      <p class="sin-mensajes">No hay mensajes en esta conversación aún.</p>
-    }
+    </footer>
+
   </div>
-
-  <!-- Input -->
-  <footer class="footer-chat-input">
-    @if (archivoSeleccionado) {
-      <div class="archivo-pendiente">
-        📎 {{ archivoSeleccionado.name }}
-        <button type="button" (click)="quitarArchivo()">✕</button>
-      </div>
-    }
-    <div class="input-pill">
-      <input
-        type="text"
-        [(ngModel)]="nuevoMensajeTexto"
-        placeholder="Escribe un mensaje aquí para chatear..."
-        (keyup.enter)="enviarMensaje()"
-      />
-      <label for="file-attach" class="btn-input-icon" title="Adjuntar archivo">🖼️</label>
-      <input
-        id="file-attach"
-        type="file"
-        (change)="onFileSelected($event)"
-        accept="image/*,.pdf"
-        style="display: none;"
-      />
-      <button type="button" class="btn-send" (click)="enviarMensaje()">➕</button>
+} @else {
+  <div class="chat-sin-seleccionar">
+    <div class="chat-sin-seleccionar-contenido">
+      <div class="icono-sin-chat">💬</div>
+      <h3>Seleccione un chat</h3>
+      <p>Elegí una conversación de la lista para ver los mensajes o gestionar presupuestos.</p>
     </div>
-  </footer>
-
-</div>
+  </div>
+}
 
 <!-- MODAL PARA CREAR PRESUPUESTO -->
 @if (mostrandoCrearPresupuesto && chat) {
@@ -117,9 +127,12 @@
 
         @if (soyElTecnico && presupuestoSeleccionado.estado === EstadoPresupuesto.Aceptado) {
           <div class="accion-trabajo-modal">
-            <a [routerLink]="['/trabajos', presupuestoSeleccionado.uuid]" class="btn-registrar-trabajo" (click)="cerrarPanelesPresupuesto()">
+            <button
+              type="button"
+              class="btn-registrar-trabajo"
+              (click)="abrirRegistrarTrabajo(presupuestoSeleccionado.uuid)">
               🛠️ Registrar trabajo a partir de este presupuesto
-            </a>
+            </button>
           </div>
         }
       } @else {
@@ -163,6 +176,25 @@
           }
         </div>
       }
+    </div>
+  </div>
+}
+
+<!-- MODAL PARA REGISTRAR TRABAJO -->
+@if (uuidPresupuestoParaTrabajo) {
+  <div class="overlay-modal">
+    <div class="modal-contenido">
+      <div class="barra-superior-detalle">
+        <span class="etiqueta-vista">Registrar trabajo</span>
+        <button type="button" class="btn-cerrar-modal" (click)="cerrarPanelesPresupuesto()">✕</button>
+      </div>
+
+      <app-form-trabajo
+        [uuidPresupuestoPreset]="uuidPresupuestoParaTrabajo"
+        [esModal]="true"
+        (trabajoCreado)="onTrabajoCreado()"
+        (cerrar)="cerrarPanelesPresupuesto()"
+      />
     </div>
   </div>
 }

@@ -492,4 +492,61 @@ export class AdministradorDenuncias {
     });
 
   }
+
+  suspenderDenunciado(): void {
+
+  if (!this.denunciaSeleccionada) {
+    return;
+  }
+
+  const denuncia = this.denunciaSeleccionada;
+
+  const confirmar = confirm(
+    `¿Estás seguro de que querés suspender la cuenta de ${denuncia.nombreDenunciado} ${denuncia.apellidoDenunciado}?`
+  );
+
+  if (!confirmar) {
+    return;
+  }
+
+  this.procesandoAccion = true;
+
+  this.adminService.amonestarUsuario(
+    denuncia.uuidDenunciado,
+    denuncia.motivoDenuncia
+  ).subscribe({
+
+    next: () => {
+      this.procesandoAccion = false;
+      alert('La cuenta del usuario fue suspendida correctamente.');
+    },
+
+    error: (error) => {
+  this.procesandoAccion = false;
+
+  console.error('Error al suspender al usuario:', error);
+
+  let mensaje = 'No se pudo suspender la cuenta del usuario.';
+
+  const respuesta = error.error;
+
+  if (typeof respuesta === 'string') {
+    try {
+      const datos = JSON.parse(respuesta);
+
+      if (datos.mensaje === 'El usuario ya se encuentra suspendido.') {
+        mensaje = 'Este usuario ya se encuentra suspendido.';
+      }
+    } catch {
+      // La respuesta no contiene un JSON válido.
+    }
+  } else if (respuesta?.mensaje === 'El usuario ya se encuentra suspendido.') {
+    mensaje = 'Este usuario ya se encuentra suspendido.';
+  }
+
+  alert(mensaje);
+}
+
+  });
+}
 }
