@@ -1,15 +1,126 @@
-<div class="container">
-    <ul>
-        @for (rating of ratings; track $index) {
-            <li>
-                <p>remitente : {{ rating.nombreRemitente }} {{ rating.apellidoRemitente }}</p>
-                <p>destinatario : {{ rating.nombreDestinatario }}</p>
-                <p>valoracion : {{ rating.valoracion }}</p>
-                <p>descripcion : {{ rating.descripcion }}</p>
-                <p>caracteristicas : {{ rating.caracteristicas.join(', ') }}</p>
-            </li>
+<section class="mis-ratings-page">
+  @if (ratingSeleccionado) {
+    <app-detalle-rating
+      [ratingSeleccionado]="ratingSeleccionado"
+      [esRecibida]="pestanaActiva === 'recibidas'"
+      (volver)="ratingSeleccionado = null"
+    />
+  } @else {
+    <header class="page-header">
+      <h1>Mis <span class="titulo-acento">Reseñas</span></h1>
+      <a routerLink="/ratings/nuevo" class="btn-nueva-resena">
+        ★ Crear reseña
+      </a>
+    </header>
+
+    <nav class="tabs-bar" aria-label="Tipo de reseñas">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.activa]="pestanaActiva === 'recibidas'"
+        (click)="cambiarPestana('recibidas')"
+      >
+        Recibidas
+      </button>
+      <button
+        type="button"
+        class="tab-btn"
+        [class.activa]="pestanaActiva === 'enviadas'"
+        (click)="cambiarPestana('enviadas')"
+      >
+        Enviadas
+      </button>
+    </nav>
+
+    <div class="filtros-pills">
+      <button
+        type="button"
+        class="pill-btn"
+        [class.activa]="filtroEstrellas === 'todas'"
+        (click)="cambiarFiltro('todas')"
+      >
+        Todas
+      </button>
+      <button
+        type="button"
+        class="pill-btn"
+        [class.activa]="filtroEstrellas === 5"
+        (click)="cambiarFiltro(5)"
+      >
+        5 ★
+      </button>
+      <button
+        type="button"
+        class="pill-btn"
+        [class.activa]="filtroEstrellas === 4"
+        (click)="cambiarFiltro(4)"
+      >
+        4 ★
+      </button>
+      <button
+        type="button"
+        class="pill-btn"
+        [class.activa]="filtroEstrellas === 3"
+        (click)="cambiarFiltro(3)"
+      >
+        3 ★
+      </button>
+      <button
+        type="button"
+        class="pill-btn"
+        [class.activa]="filtroEstrellas === 2"
+        (click)="cambiarFiltro(2)"
+      >
+        1 - 2 ★
+      </button>
+    </div>
+
+    @if (cargando) {
+      <p class="mensaje-vacio">Cargando reseñas...</p>
+    } @else {
+      <div class="cards-list">
+        @for (r of ratingsFiltrados; track r.uuidCalificacion) {
+          <article class="rating-card" (click)="verDetalle(r)">
+            <div class="card-top">
+              <span class="badge-estrellas" [attr.data-puntaje]="r.valoracion">
+                @for (e of estrellasArray; track e) {
+                  {{ r.valoracion >= e ? '★' : '☆' }}
+                }
+                ({{ r.valoracion }}.0)
+              </span>
+
+              <span class="ver-mas-link">Ver detalle →</span>
+            </div>
+
+            <h3 class="persona-titulo">
+              @if (pestanaActiva === 'recibidas') {
+                {{ r.nombreRemitente }} {{ r.apellidoRemitente }}
+              } @else {
+                Para: {{ r.nombreDestinatario }}
+              }
+            </h3>
+
+            @if (r.descripcion) {
+              <p class="comentario-preview">{{ r.descripcion }}</p>
+            }
+
+            @if (r.caracteristicas && r.caracteristicas.length > 0) {
+              <div class="chips-preview">
+                @for (car of r.caracteristicas; track $index) {
+                  <span class="chip-mini">{{ car }}</span>
+                }
+              </div>
+            }
+          </article>
         } @empty {
-            <li>no se encontraron reseñas!</li>
+          <div class="empty-card">
+            <p>
+              No hay reseñas {{ pestanaActiva === 'recibidas' ? 'recibidas' : 'enviadas' }}
+              con este filtro todavía.
+            </p>
+          </div>
         }
-    </ul>
-</div>
+      </div>
+    }
+  }
+</section>

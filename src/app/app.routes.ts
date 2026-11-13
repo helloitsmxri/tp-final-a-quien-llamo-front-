@@ -26,6 +26,8 @@ import { ListTecnicos } from './tecnico/pages/list-tecnicos/list-tecnicos';
 import { MisDenuncias } from './denuncia/pages/mis-denuncias/mis-denuncias';
 import { RecuperarPassword } from './auth/recuperar-password/recuperar-password';
 import { ResetPassword } from './auth/reset-password/reset-password';
+import { ListRating } from './rating/pages/list-rating/list-rating';
+import { FormRating } from './rating/pages/form-rating/form-rating';
 
 export const routes: Routes = [
 
@@ -85,4 +87,22 @@ export const routes: Routes = [
     {path: 'iniciar-sesion', component: Login},
     { path: 'recuperar', component: RecuperarPassword },
     { path: 'reset-password', component: ResetPassword },
+// Reseñas del usuario logueado (enlace desde el header / perfil)
+  {
+    path: 'mis-resenas',
+    component: ListRating,
+    canActivate: [authGuard],
+  },
+  // Crear nueva reseña (botón "★ Crear reseña" en ListRating)
+  {
+    path: 'ratings/nuevo',
+    component: FormRating,
+    canActivate: [authGuard],
+  },
+  // Ver reseñas públicas de un usuario/técnico específico por su UUID
+  {
+    path: 'ratings/:uuid',
+    component: ListRating,
+  },
+
 ];
