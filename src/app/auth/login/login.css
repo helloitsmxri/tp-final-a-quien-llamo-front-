@@ -116,3 +116,59 @@ input:focus {
     font-size: 2rem;
   }
 }
+
+
+.alerta-suspension {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    margin: 15px 0;
+    border: 1px solid #e7a3a3;
+    border-radius: 12px;
+    background-color: #fff1f1;
+    color: #842626;
+    text-align: left;
+}
+
+.icono-alerta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #b83232;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.contenido-alerta h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.contenido-alerta p {
+    margin: 0 0 8px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.contenido-alerta .detalle-suspension {
+    font-weight: 600;
+}
+
+.contenido-alerta .contacto-suspension {
+    margin-bottom: 0;
+    font-size: 12px;
+}
+
+.error {
+    color: #c62828;
+    font-size: 13px;
+    text-align: center;
+    margin: 12px 0;
+}
