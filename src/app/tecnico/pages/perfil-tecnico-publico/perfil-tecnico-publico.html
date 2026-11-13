@@ -98,30 +98,30 @@
           </div>
 
           <div class="col-right">
+            <h3>Certificaciones</h3>
 
-        <h3>Certificaciones</h3>
-
-        @if (certificaciones.length) {
-          <ul class="certificaciones-list">
-            @for (c of certificaciones; track c.uuid) {
-              <li class="certificacion-item">
-                <span class="certificacion-icono">✓</span>
-                <span class="certificacion-titulo">{{ c.titulo }}</span>
-              </li>
+            @if (certificaciones.length) {
+              <ul class="credenciales-list">
+                @for (c of certificaciones; track c.uuid) {
+                  <li class="credencial-item">
+                    {{ c.titulo }}
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="sin-datos">
+                Todavía no tiene certificaciones verificadas.
+              </p>
             }
-          </ul>
-        } @else {
-          <p class="sin-datos">
-            Todavía no tiene certificaciones verificadas.
-          </p>
-        }
 
             <h3>Portfolio</h3>
 
             @if (portfolios.length) {
-              <ul class="styled-list">
+              <ul class="credenciales-list">
                 @for (p of portfolios; track p.uuid) {
-                  <li>{{ p.titulo }}</li>
+                  <li class="credencial-item">
+                    {{ p.titulo }}
+                  </li>
                 }
               </ul>
             } @else {

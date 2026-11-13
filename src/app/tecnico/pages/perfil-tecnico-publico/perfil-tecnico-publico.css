@@ -51,42 +51,23 @@
   line-height: 1;
 }
 
-.certificaciones-list {
+.credenciales-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   padding: 0;
   margin: 12px 0 24px;
   list-style: none;
 }
 
-.certificacion-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  background: rgba(125, 95, 240, 0.07);
-  border: 1px solid rgba(125, 95, 240, 0.2);
-  border-radius: 10px;
-}
-
-.certificacion-icono {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: #3b2a7a;
-  color: white;
-  font-size: 0.85rem;
-  font-weight: bold;
-}
-
-.certificacion-titulo {
+.credencial-item {
+  padding: 9px 12px;
+  background: rgba(125, 95, 240, 0.06);
+  border: 1px solid rgba(125, 95, 240, 0.16);
+  border-radius: 8px;
   color: #211b30;
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 0.85rem;
+  font-weight: 600;
   line-height: 1.4;
 }
+
