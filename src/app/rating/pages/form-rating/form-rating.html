@@ -3,8 +3,12 @@
     <div class="form-header">
       <div>
         <span class="sobretitulo">NUEVA VALORACIÓN</span>
-        <h2>Crear reseña</h2>
-        <p>Seleccioná un trabajo finalizado y calificá tu experiencia.</p>
+        <h2>{{ calificandoACliente ? 'Calificar al cliente' : 'Calificar al técnico' }}</h2>
+        <p>
+          {{ calificandoACliente
+            ? 'Seleccioná un trabajo finalizado y contá cómo fue tu experiencia trabajando con este cliente.'
+            : 'Seleccioná un trabajo finalizado y calificá el desempeño del profesional.' }}
+        </p>
       </div>
       <button type="button" class="btn-volver-pill" (click)="cancelar()">✕ Cancelar</button>
     </div>
@@ -23,7 +27,7 @@
           <p class="info-carga">Cargando tus trabajos finalizados...</p>
         } @else if (trabajosDisponibles.length > 0) {
           <select id="trabajo" formControlName="uuidTrabajo" class="select-estilizado">
-            <option value="" disabled selected>Seleccioná un trabajo...</option>
+            <option value="" disabled>Seleccioná un trabajo...</option>
             @for (t of trabajosDisponibles; track t.uuidTrabajo) {
               <option [value]="t.uuidTrabajo">{{ t.etiqueta }}</option>
             }
@@ -41,7 +45,9 @@
 
       <!-- Estrellas -->
       <fieldset class="form-group">
-        <label>Puntuación *</label>
+        <label>
+          {{ calificandoACliente ? 'Puntuación para el cliente *' : 'Puntuación para el técnico *' }}
+        </label>
         <div class="estrellas-selector">
           @for (estrella of estrellasOpciones; track estrella) {
             <button
@@ -60,23 +66,29 @@
 
       <!-- Características seleccionables desde BD -->
       <fieldset class="form-group">
-        <label>Características destacadas * (elegí al menos una)</label>
+        <label>
+          {{ calificandoACliente
+            ? 'Aspectos destacados del cliente * (elegí al menos uno)'
+            : 'Aspectos destacados del técnico * (elegí al menos uno)' }}
+        </label>
 
-        @if (caracteristicasDisponibles.length > 0) {
+        @if (cargandoCaracteristicas) {
+          <p class="info-carga">Cargando características disponibles...</p>
+        } @else if (caracteristicasDisponibles.length > 0) {
           <div class="chips-contenedor">
             @for (car of caracteristicasDisponibles; track car.uuid) {
-              <button
-                type="button"
-                class="chip-seleccionable"
-                [class.seleccionado]="estaSeleccionada(car.uuid)"
-                (click)="toggleCaracteristica(car.uuid)"
-              >
-                {{ estaSeleccionada(car.uuid) ? '✓ ' : '+ ' }}{{ car.nombre || car.descripcion }}
-              </button>
-            }
+  <button
+    type="button"
+    class="chip-seleccionable"
+    [class.seleccionado]="estaSeleccionada(car.uuid)"
+    (click)="toggleCaracteristica(car.uuid)"
+  >
+    {{ estaSeleccionada(car.uuid) ? '✓ ' : '+ ' }}{{ car.valorAdjetivo }}
+  </button>
+}
           </div>
         } @else {
-          <p class="info-carga">Cargando características disponibles...</p>
+          <p class="error">No se encontraron características cargadas en la base de datos.</p>
         }
 
         @if (uuidCaracteristicas.invalid && uuidCaracteristicas.touched) {
@@ -92,7 +104,9 @@
         <textarea
           id="descripcion"
           formControlName="descripcion"
-          placeholder="Contá cómo fue la experiencia, puntualidad y calidad del trabajo..."
+          [placeholder]="calificandoACliente
+            ? 'Contá cómo fue el trato con el cliente, claridad en lo acordado y cumplimiento...'
+            : 'Contá cómo fue la experiencia, puntualidad y calidad del trabajo...'"
           rows="4"
         ></textarea>
         @if (descripcion.invalid && descripcion.touched) {
