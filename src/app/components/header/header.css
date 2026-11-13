@@ -88,6 +88,7 @@
 .dropdown-toggle[aria-expanded="true"] { font-weight: 600; }
  
 .mega-panel {
+  font-family: "Creato Display", Arial, sans-serif;
   position: absolute;                /* flota encima del contenido sin empujarlo */
   top: calc(100% - 20px);            /* justo debajo de la barra. El -20px es para q se pegue y no quede un hueco por donde el mouse se escape */
   left: 6rem;                        /* left y right = mismo margen q el padding de la barra, así quedan alineados */
@@ -132,6 +133,7 @@
   background: linear-gradient(160deg, #8b86f9, #6c63f0);   /* degradé violeta, de arriba-izquierda a abajo-derecha */
   color: #fff;
   text-decoration: none;
+  container-type: size; /*así se acomoda según la formita*/
   transition: transform 0.2s, box-shadow 0.2s;   /* q el movimiento al pasar el mouse sea suave y no de golpe */
 }
 /* al pasar el mouse, la tarjeta sube 3px y le sale sombra*/
@@ -147,11 +149,17 @@
  
 .tarjeta__nombre {
   position: absolute;                /* lo pongo arriba a la izquierda, sin importar lo demás */
-  top: 0.9rem;
-  left: 1rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%; 
+  text-align: center;
   z-index: 2;                        /* por encima del dibujo */
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: clamp(0.95rem, 7cqw, 1.2rem); /*cwq es el porcentual del ancho de la tarjeta*/
+  line-height: 1.15;
+  text-shadow: 0 1px 8px rgba(48, 34, 100, 0.55); 
+  font-family: ;
 }
  
 /* el dibujo ocupa toda la tarjeta */
@@ -161,11 +169,24 @@
   width: 100%;
   height: 100%;
   object-fit: contain;               /* el dibujo se ve ENTERO sin deformarse (cover lo recortaría) */
-  object-position: center bottom;    /* lo apoya abajo en el medio */
-  padding: 2.2rem 0.8rem 0.6rem;     /* arriba deja lugar para el nombre */
+  object-position: center;    /* lo apoya en el medio */
+  padding: 0.5rem 0.8rem; 
   box-sizing: border-box;            /* q el padding no agrande la imagen */
+  opacity: var(--opacidad-dibujo, 0.55); /*como en algunas el nombre va encima entonces el dibujo es + suave*/
 }
  
+@container (orientation: portrait) {
+  .tarjeta__nombre {
+    top: 1rem;
+    transform: translateX(-50%);
+  }
+ 
+  .tarjeta__img {
+    padding: 2.8rem 0.6rem 0.6rem;     /* deja lugar para el nombre */
+    object-position: center bottom;
+    opacity: 1;
+  }
+}
 
 .tarjeta__flecha {
   position: absolute;
@@ -241,11 +262,12 @@
     right: 0.75rem;
     max-height: 75dvh;               /* nunca más alto q el 75% de la pantalla */
     overflow-y: auto;                /* si no entra todo, se scrollea ADENTRO del panel */
+    font-family: "Creato Display", Arial, sans-serif;
   }
  
   .mega-grid {
     grid-template-columns: 1fr 1fr;  /* 2 columnas en vez de 4 */
-    grid-template-rows: none;        /* saco las 3 filas fijas de arriba */
+    grid-template-rows: repeat(3, minmax(8.2rem, 1fr));        /* saco las 3 filas fijas de arriba */
     grid-auto-rows: 8rem;            /* ahora cada fila crece sola, de 8rem */
     /* plano nuevo para el celu: tecnologia y eventos ocupan el ancho completo */
     grid-template-areas:
