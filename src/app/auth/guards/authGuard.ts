@@ -15,19 +15,25 @@ export const authGuard: CanActivateFn = () => {
         return router.createUrlTree(['/iniciar-sesion']);
     }
 
-    // Si existe, consulta al backend para validar su autenticidad.
+    // Validar token en el backend.
     return authService.validarToken().pipe(
 
-        // Si el backend responde correctamente, permite el acceso.
         map(() => true),
 
-        // Si el backend devuelve un error, elimina el token y redirige.
-        catchError(() => {
-            localStorage.removeItem('accessToken');
+        catchError((error) => {
 
-            return of(router.createUrlTree(['/iniciar-sesion']));
+            // Token inválido o vencido.
+            if (error.status === 401) {
+                authService.logout();
+
+                return of(router.createUrlTree(['/iniciar-sesion']));
+            }
+
+            // Error del servidor u otro problema.
+            console.error('Error al validar el token:', error);
+
+            return of(false);
         })
 
     );
-
 };
