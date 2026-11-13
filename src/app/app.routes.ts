@@ -28,6 +28,7 @@ import { RecuperarPassword } from './auth/recuperar-password/recuperar-password'
 import { ResetPassword } from './auth/reset-password/reset-password';
 import { ListRating } from './rating/pages/list-rating/list-rating';
 import { FormRating } from './rating/pages/form-rating/form-rating';
+import { Contacto } from './contacto/contacto';
 
 export const routes: Routes = [
 
@@ -42,7 +43,7 @@ export const routes: Routes = [
 
     // PERFILES (AUTHGUARD)
     // TÉCNICO
-    {path: 'perfil-tecnico/:uuid', component: PerfilTecnicoPublico, canActivate: [authGuard]},
+    {path: 'perfil-tecnico/:uuid', component: PerfilTecnicoPublico},
     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico', component: PerfilTecnico, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico/editar', component: EditarTecnico, canActivate: [authGuard]},
@@ -105,4 +106,6 @@ export const routes: Routes = [
     component: ListRating,
   },
 
+
+    { path: 'contacto', component: Contacto }
 ];
