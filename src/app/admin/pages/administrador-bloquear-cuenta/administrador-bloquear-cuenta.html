@@ -12,6 +12,10 @@
 
     <section class="tarjeta-bloqueo">
 
+      <div class="etiqueta-proximamente">
+        Próximamente
+      </div>
+
       <div class="icono-bloqueo">
         ⊘
       </div>
@@ -34,32 +38,23 @@
           type="text"
           [formControl]="uuidControl"
           placeholder="Ingresá el UUID del usuario..."
-          autocomplete="off">
-
-        @if (uuidControl.touched && uuidControl.invalid) {
-          <span class="mensaje-error">
-            El UUID es obligatorio.
-          </span>
-        }
+          autocomplete="off"
+          [disabled]="true">
 
         <div class="acciones">
 
           <button
             type="button"
             class="boton-limpiar"
-            [disabled]="procesando"
-            (click)="limpiarFormulario()">
+            [disabled]="true">
             Limpiar
           </button>
 
           <button
             type="button"
             class="boton-bloquear"
-            [disabled]="procesando || !uuidControl.value.trim()"
-            (click)="bloquearCuenta()">
-
-            {{ procesando ? 'Procesando...' : 'Bloquear cuenta' }}
-
+            [disabled]="true">
+            Bloquear cuenta
           </button>
 
         </div>
@@ -75,8 +70,8 @@
       <div>
         <h3>Importante</h3>
         <p>
-          Antes de bloquear una cuenta, verificá que el UUID corresponda
-          al usuario correcto. La acción realizará la baja de su cuenta.
+          Próximamente vas a poder gestionar la baja de cuentas
+          directamente desde esta sección.
         </p>
       </div>
 
