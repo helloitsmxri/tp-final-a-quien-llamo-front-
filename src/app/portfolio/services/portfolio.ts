@@ -1,5 +1,5 @@
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, from, switchMap } from 'rxjs';
 
@@ -7,6 +7,8 @@ import { archivoABase64 } from '../../utils/validadores';
 import { PortfolioDatos } from '../models/portfolio-datos';
 import { PortfolioUsuarioModel } from '../models/portfolio-usuario';
 import { PortfolioEdicionDatos } from '../models/portfolio-edicion-datos';
+import { PortfolioAdminModel } from '../models/portfolio-admin';
+import { EstadoVerificacion } from '../enum/estado-verificacion';
 
 @Injectable({ providedIn: 'root' })
 export class PortfolioService {
@@ -68,4 +70,65 @@ export class PortfolioService {
         : null,
     };
   }
+
+  private readonly urlAdmin =
+  'http://localhost:8080/aquienllamo/portafolios/admin';
+
+// Obtener todos los portfolios para administración
+getAllAdmin(): Observable<PortfolioAdminModel[]> {
+  return this.http.get<PortfolioAdminModel[]>(this.urlAdmin);
+}
+
+// Obtener un portfolio por UUID
+getByUuidAdmin(uuid: string): Observable<PortfolioAdminModel> {
+  return this.http.get<PortfolioAdminModel>(
+    `${this.urlAdmin}/${uuid}`
+  );
+}
+
+// Obtener portfolios por estado
+getByEstadoAdmin(
+  estado: EstadoVerificacion
+): Observable<PortfolioAdminModel[]> {
+  const params = new HttpParams()
+    .set('estadoVerificacion', estado);
+
+  return this.http.get<PortfolioAdminModel[]>(
+    `${this.urlAdmin}/estadoVerificacion`,
+    { params }
+  );
+}
+
+// Aprobar portfolio
+aprobarAdmin(
+  uuid: string,
+  notasAdmin?: string
+): Observable<PortfolioAdminModel> {
+  let params = new HttpParams();
+
+  if (notasAdmin) {
+    params = params.set('notasAdmin', notasAdmin);
+  }
+
+  return this.http.patch<PortfolioAdminModel>(
+    `${this.urlAdmin}/aprobar/${uuid}`,
+    null,
+    { params }
+  );
+}
+
+// Rechazar portfolio
+rechazarAdmin(
+  uuid: string,
+  notasAdmin: string
+): Observable<PortfolioAdminModel> {
+  const params = new HttpParams()
+    .set('notasAdmin', notasAdmin);
+
+  return this.http.patch<PortfolioAdminModel>(
+    `${this.urlAdmin}/rechazar/${uuid}`,
+    null,
+    { params }
+  );
+}
 }
