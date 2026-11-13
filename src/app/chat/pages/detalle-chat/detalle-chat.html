@@ -117,7 +117,7 @@
 
         @if (soyElTecnico && presupuestoSeleccionado.estado === EstadoPresupuesto.Aceptado) {
           <div class="accion-trabajo-modal">
-            <a [routerLink]="['/trabajos/nuevo', presupuestoSeleccionado.uuid]" class="btn-registrar-trabajo" (click)="cerrarPanelesPresupuesto()">
+            <a [routerLink]="['/trabajos', presupuestoSeleccionado.uuid]" class="btn-registrar-trabajo" (click)="cerrarPanelesPresupuesto()">
               🛠️ Registrar trabajo a partir de este presupuesto
             </a>
           </div>

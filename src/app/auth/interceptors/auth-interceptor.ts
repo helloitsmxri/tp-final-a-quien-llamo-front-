@@ -13,7 +13,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 && accessToken) {
         localStorage.removeItem('accessToken');
-        router.navigate(['/login']);
+        router.navigate(['/iniciar-sesion']);
       }
 
       return throwError(() => error);
