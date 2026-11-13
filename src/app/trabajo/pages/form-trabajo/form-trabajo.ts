@@ -28,7 +28,6 @@ export class FormTrabajo implements OnInit {
   @Output() trabajoCreado = new EventEmitter<TrabajoModel>();
   @Output() cerrar = new EventEmitter<void>();
 
-  // UUID interno, no es un campo rellenable.
   uuidPresupuesto = '';
 
   descripcionTrabajo: FormControl;
@@ -66,10 +65,14 @@ export class FormTrabajo implements OnInit {
     });
   }
 
-    // Obtener automáticamente el UUID del presupuesto desde la URL.
-    this.route.paramMap.subscribe(params => {
-      this.uuidPresupuesto = params.get('uuid') ?? '';
-    });
+  ngOnInit(): void {
+    if (this.uuidPresupuestoPreset) {
+      this.uuidPresupuesto = this.uuidPresupuestoPreset;
+    } else {
+      this.route.paramMap.subscribe(params => {
+        this.uuidPresupuesto = params.get('uuid') ?? '';
+      });
+    }
   }
 
   manejarEnvio(): void {
@@ -112,8 +115,11 @@ export class FormTrabajo implements OnInit {
         this.cargando = false;
         this.mensajeExito = '¡Trabajo registrado correctamente!';
 
-        this.formulario.reset();
-      },
+        this.formulario.reset({
+          descripcionTrabajo: '',
+          fechaEstimadaInicio: '',
+          fechaEstimadaFin: ''
+        });
 
         if (this.trabajoCreado.observed) {
           this.trabajoCreado.emit(respuesta);
@@ -130,5 +136,14 @@ export class FormTrabajo implements OnInit {
 
   cancelar(): void {
     this.cerrar.emit();
+  }
+
+  canDeactivate(): boolean {
+    if (this.formulario.dirty) {
+      return window.confirm(
+        '¿Estás seguro de que querés salir del formulario? Los cambios podrían perderse.'
+      );
+    }
+    return true;
   }
 }
