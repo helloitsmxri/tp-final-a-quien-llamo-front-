@@ -32,8 +32,8 @@
                 <article class="trabajo-card">
 
                     <div class="card-superior">
-                        <span class="estado" [attr.data-estado]="trabajo.estadoTrabajo">
-                            {{ trabajo.estadoTrabajo }}
+                        <span class="estado" [attr.data-estado]="formatearEstado(trabajo.estadoTrabajo)">
+                            {{ formatearEstado(trabajo.estadoTrabajo) }}
                         </span>
 
                         <span class="fecha">
@@ -91,7 +91,7 @@
                     <footer class="card-inferior">
                         <div class="acciones-trabajo">
                             @if (esTecnicoDelTrabajo(trabajo)) {
-                                @if (trabajo.estadoTrabajo === estados.Pendiente) {
+                                @if (estaPendiente(trabajo)) {
                                     <button
                                         type="button"
                                         class="btn-estado btn-proceso"
@@ -101,17 +101,17 @@
                                     </button>
                                 }
 
-                                @if (trabajo.estadoTrabajo === estados.En_proceso) {
+                                @if (estaEnProceso(trabajo)) {
                                     <button
                                         type="button"
                                         class="btn-estado btn-finalizar"
                                         [disabled]="actualizandoUuid === trabajo.uuid"
                                         (click)="cambiarEstado(trabajo, estados.Finalizado)">
-                                        {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Marcar como finalizado' }}
+                                        {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
                                     </button>
                                 }
 
-                                @if (trabajo.estadoTrabajo === estados.Pendiente || trabajo.estadoTrabajo === estados.En_proceso) {
+                                @if (estaPendiente(trabajo) || estaEnProceso(trabajo)) {
                                     <button
                                         type="button"
                                         class="btn-estado btn-cancelar"
@@ -122,7 +122,7 @@
                                 }
                             }
 
-                            @if (trabajo.estadoTrabajo === estados.Finalizado) {
+                            @if (estaFinalizado(trabajo)) {
                                 <a
                                     [routerLink]="['/ratings/nuevo']"
                                     [queryParams]="{ uuidTrabajo: trabajo.uuid, nombreTrabajo: trabajo.nombreProyecto }"

@@ -44,6 +44,23 @@ export class ListTrabajo implements OnInit {
     return !!this.miUuid && trabajo.uuidUsuarioTecnico === this.miUuid;
   }
 
+  estaPendiente(trabajo: TrabajoModel): boolean {
+    return String(trabajo.estadoTrabajo) === EstadoTrabajo.Pendiente;
+  }
+
+  estaEnProceso(trabajo: TrabajoModel): boolean {
+    const estado = String(trabajo.estadoTrabajo);
+    return estado === EstadoTrabajo.En_proceso || estado === 'En_proceso';
+  }
+
+  estaFinalizado(trabajo: TrabajoModel): boolean {
+    return String(trabajo.estadoTrabajo) === EstadoTrabajo.Finalizado;
+  }
+
+  formatearEstado(estado: EstadoTrabajo | string): string {
+    return String(estado) === 'En_proceso' ? EstadoTrabajo.En_proceso : String(estado);
+  }
+
   listarTrabajos(): void {
     const ruta = this.root.snapshot.routeConfig?.path;
     const uuid = this.root.snapshot.paramMap.get('uuid');
@@ -115,7 +132,8 @@ export class ListTrabajo implements OnInit {
 
     this.actualizandoUuid = trabajo.uuid;
 
-   const estadoParam = (nuevoEstado === EstadoTrabajo.En_proceso
+    // El backend espera 'En_proceso' con guion bajo como valor del enum Java
+    const estadoParam = (nuevoEstado === EstadoTrabajo.En_proceso
       ? 'En_proceso'
       : nuevoEstado) as EstadoTrabajo;
 

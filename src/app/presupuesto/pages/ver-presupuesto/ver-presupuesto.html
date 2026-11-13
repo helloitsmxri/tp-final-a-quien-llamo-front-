@@ -1,22 +1,24 @@
 <section class="ver-presupuesto" aria-labelledby="titulo-presupuesto">
-  <button type="button" class="boton-volver" (click)="volverAlListado()"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>Volver a mis presupuestos</button>
+  <button type="button" class="boton-volver" (click)="volverAlListado()">
+    ← Volver a mis presupuestos
+  </button>
+
   <article class="documento-presupuesto">
     <header class="encabezado-documento">
-      <div class="marca-documento">
-        <span class="material-symbols-outlined" aria-hidden="true">
-          description
-        </span>
-      </div>
+      <div class="marca-documento" aria-hidden="true">📄</div>
 
       <div class="titulo-documento">
         <p class="sobre-titulo">DOCUMENTO DE PRESUPUESTO</p>
         <h1 id="titulo-presupuesto">Presupuesto del Proyecto</h1>
         <p class="nombre-proyecto">{{ presupuesto.nombreProyecto }}</p>
       </div>
-      <span class="estado" [attr.data-estado]="presupuesto.estado" aria-live="polite">{{ presupuesto.estado }}</span>
-    </header>
-    <div class="datos-documento">
 
+      <span class="estado" [attr.data-estado]="presupuesto.estado" aria-live="polite">
+        {{ presupuesto.estado }}
+      </span>
+    </header>
+
+    <div class="datos-documento">
       <div class="dato">
         <span>{{ esTecnico ? 'CLIENTE' : 'PROFESIONAL' }}</span>
         <strong>
@@ -27,7 +29,7 @@
           }
         </strong>
       </div>
-      
+
       <div class="dato">
         <span>FECHA DE EMISIÓN</span>
         <strong>{{ presupuesto.fechaRealizado | date:'dd/MM/yyyy' }}</strong>
@@ -60,12 +62,14 @@
         </div>
       }
     </div>
+
     @if (presupuesto.observaciones) {
       <section class="observaciones" aria-labelledby="titulo-observaciones">
         <h2 id="titulo-observaciones">Observaciones</h2>
         <p>{{ presupuesto.observaciones }}</p>
       </section>
     }
+
     <section class="resumen" aria-label="Resumen de importes">
       <div class="fila-resumen">
         <span>Subtotal</span>
@@ -74,7 +78,7 @@
       @if (presupuesto.descuentoPorcentaje > 0) {
         <div class="fila-resumen descuento">
           <span>Descuento ({{ presupuesto.descuentoPorcentaje }}%)</span>
-          <span> -{{ presupuesto.montoDescuento | currency:'ARS':'symbol':'1.2-2' }}</span>
+          <span>-{{ presupuesto.montoDescuento | currency:'ARS':'symbol':'1.2-2' }}</span>
         </div>
       }
       <div class="fila-total">
@@ -84,22 +88,30 @@
         </strong>
       </div>
     </section>
+
     <footer class="pie-documento">
       <span>Presupuesto emitido por {{ presupuesto.nombreTecnico }} {{ presupuesto.apellidoTecnico }}</span>
       <span>¿A Quién Llamo?</span>
     </footer>
   </article>
+
   @if (estaPendiente) {
     <section class="acciones-presupuesto" aria-label="Acciones del presupuesto">
       @if (!esTecnico) {
         <p>¿Qué querés hacer con este presupuesto?</p>
         <div class="botones-acciones">
-          <button type="button" class="boton-aceptar" (click)="aceptarPresupuesto()" [disabled]="procesando"><span class="material-symbols-outlined" aria-hidden="true">check_circle</span>{{ procesando ? 'Procesando...' : 'Aceptar presupuesto' }}</button>
-          <button type="button" class="boton-rechazar" (click)="rechazarPresupuesto()" [disabled]="procesando">Rechazar presupuesto</button>
+          <button type="button" class="boton-aceptar" (click)="aceptarPresupuesto()" [disabled]="procesando">
+            ✓ {{ procesando ? 'Procesando...' : 'Aceptar presupuesto' }}
+          </button>
+          <button type="button" class="boton-rechazar" (click)="rechazarPresupuesto()" [disabled]="procesando">
+            Rechazar presupuesto
+          </button>
         </div>
       } @else {
         <p>Este presupuesto todavía está pendiente de respuesta.</p>
-        <button type="button" class="boton-cancelar" (click)="cancelarPresupuesto()" [disabled]="procesando">{{ procesando ? 'Procesando...' : 'Cancelar presupuesto' }}</button>
+        <button type="button" class="boton-cancelar" (click)="cancelarPresupuesto()" [disabled]="procesando">
+          {{ procesando ? 'Procesando...' : 'Cancelar presupuesto' }}
+        </button>
       }
     </section>
   } @else {

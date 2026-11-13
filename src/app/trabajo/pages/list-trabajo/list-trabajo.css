@@ -350,6 +350,26 @@
 .btn-cancelar:hover:not(:disabled) {
     background-color: #fecaca;
 }
+.estado[data-estado="Pendiente"] {
+  color: #946200;
+  background: #fff2cc;
+}
+
+.estado[data-estado="En proceso"],
+.estado[data-estado="En_proceso"] {
+  color: #5b3da3;
+  background: #ebe4fc;
+}
+
+.estado[data-estado="Finalizado"] {
+  color: #237347;
+  background: #dcf5e7;
+}
+
+.estado[data-estado="Cancelado"] {
+  color: #a83232;
+  background: #ffe2e2;
+}
 /* ACCESIBILIDAD */
 @media (prefers-reduced-motion: reduce) {
     .trabajo-card,
