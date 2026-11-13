@@ -47,12 +47,10 @@ export class ListaChat implements OnInit {
         this.miUuid = (perfil as any).uuid;
         this.chats = chats;
 
-        // Si venimos del botón "Contactame" (/chats?tecnico=UUID), abrimos ese chat
+        // Solo abrimos un chat automáticamente si venimos del botón "Contactame" (?tecnico=UUID)
         const uuidTecnico = this.route.snapshot.queryParamMap.get('tecnico');
         if (uuidTecnico) {
           this.abrirChatCon(uuidTecnico);
-        } else if (this.chats.length > 0) {
-          this.seleccionarChat(this.chats[0]);
         }
       },
       error: (err) => console.error('No se pudo obtener tu perfil:', err),
@@ -113,7 +111,6 @@ export class ListaChat implements OnInit {
       },
       error: (err) => {
         console.error('Error al iniciar el chat:', err);
-        if (this.chats.length > 0) this.seleccionarChat(this.chats[0]);
       },
     });
   }
