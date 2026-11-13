@@ -94,11 +94,11 @@
 
       <h3>{{ tecnico.nombre }} {{ tecnico.apellido }}</h3>
 
-      @if (tecnico.especialidades?.length) {
+      @if (tecnico.especialidades.length) {
       <div class="bloque">
         <span class="etiqueta-bloque">Especialidades</span>
         <div class="pills">
-          @for (especialidad of tecnico.especialidades?.slice(0, 3) ?? []; track especialidad) {
+          @for (especialidad of tecnico.especialidades.slice(0, 3); track especialidad) {
           <span class="pill">{{ especialidad }}</span>
           }
           @if (tecnico.especialidades.length > 3) {
