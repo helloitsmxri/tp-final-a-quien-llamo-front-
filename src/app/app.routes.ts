@@ -34,7 +34,12 @@ import { PanelAdmin } from './admin/pages/panel-admin/panel-admin';
 import { ListRating } from './rating/pages/list-rating/list-rating';
 import { FormRating } from './rating/pages/form-rating/form-rating';
 import { Contacto } from './contacto/contacto';
+import { AdministradorCertificaciones } from './admin/pages/administrador-certificaciones/administrador-certificaciones';
+import { AdministradorPortfolio } from './admin/pages/administrador-portfolio/administrador-portfolio';
+import { AdministradorBloquearCuenta } from './admin/pages/administrador-bloquear-cuenta/administrador-bloquear-cuenta';
+import { CrearDenuncia } from './denuncia/components/crear-denuncia/crear-denuncia';
 import { outForm } from './auth/guards/out-form';
+
 
 export const routes: Routes = [
 
@@ -63,11 +68,15 @@ export const routes: Routes = [
 
     // mis denuncias
     {path : 'mis-denuncias', component: MisDenuncias, canActivate : [authGuard]},
+    {path: 'crear-denuncia', component: CrearDenuncia, canActivate: [authGuard]},
 
     // administracion
     {path: 'panel-admin', component: PanelAdmin, canActivate: [authGuard], children: [
     {path: '', redirectTo: 'denuncias', pathMatch: 'full'},
-    {path: 'denuncias', component: AdministradorDenuncias}]
+    {path: 'denuncias', component: AdministradorDenuncias},
+    {path: 'certificaciones', component: AdministradorCertificaciones },
+    {path: 'portfolios', component: AdministradorPortfolio },
+    {path: 'bloquear-cuenta', component: AdministradorBloquearCuenta},]
     },
     
     // USUARIO

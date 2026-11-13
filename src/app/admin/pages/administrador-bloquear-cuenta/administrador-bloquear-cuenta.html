@@ -1,0 +1,87 @@
+
+<div class="administrador-bloquear">
+
+  <header class="encabezado">
+    <div>
+      <h1>Bloquear cuenta</h1>
+      <p>Gestioná la baja de usuarios de la plataforma.</p>
+    </div>
+  </header>
+
+  <div class="contenido-bloqueo">
+
+    <section class="tarjeta-bloqueo">
+
+      <div class="icono-bloqueo">
+        ⊘
+      </div>
+
+      <h2>Dar de baja una cuenta</h2>
+
+      <p class="descripcion">
+        Ingresá el UUID del usuario cuya cuenta querés dar de baja.
+        Esta acción desactivará su cuenta en la plataforma.
+      </p>
+
+      <div class="formulario-bloqueo">
+
+        <label for="uuidUsuario">
+          UUID del usuario
+        </label>
+
+        <input
+          id="uuidUsuario"
+          type="text"
+          [formControl]="uuidControl"
+          placeholder="Ingresá el UUID del usuario..."
+          autocomplete="off">
+
+        @if (uuidControl.touched && uuidControl.invalid) {
+          <span class="mensaje-error">
+            El UUID es obligatorio.
+          </span>
+        }
+
+        <div class="acciones">
+
+          <button
+            type="button"
+            class="boton-limpiar"
+            [disabled]="procesando"
+            (click)="limpiarFormulario()">
+            Limpiar
+          </button>
+
+          <button
+            type="button"
+            class="boton-bloquear"
+            [disabled]="procesando || !uuidControl.value.trim()"
+            (click)="bloquearCuenta()">
+
+            {{ procesando ? 'Procesando...' : 'Bloquear cuenta' }}
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="aviso-bloqueo">
+
+      <span class="icono-aviso">!</span>
+
+      <div>
+        <h3>Importante</h3>
+        <p>
+          Antes de bloquear una cuenta, verificá que el UUID corresponda
+          al usuario correcto. La acción realizará la baja de su cuenta.
+        </p>
+      </div>
+
+    </section>
+
+  </div>
+
+</div>

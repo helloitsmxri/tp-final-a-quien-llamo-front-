@@ -1,0 +1,399 @@
+<div class="administrador-portfolio">
+
+    <header class="encabezado">
+        <div>
+            <h1>Gestión de portfolios</h1>
+            <p>Revisá y verificá los trabajos presentados por los técnicos.</p>
+        </div>
+
+        <button type="button" class="boton-actualizar" [disabled]="buscando" (click)="cargarPortfolios()">
+            ↻ Actualizar
+        </button>
+    </header>
+
+    <div class="contenido-portfolio">
+
+        <!-- LISTADO -->
+
+        <section class="columna-listado">
+
+            <div class="titulo-listado">
+                <h2>Portfolios</h2>
+                <span class="contador">{{ portfoliosFiltrados.length }}</span>
+            </div>
+
+            <!-- FILTROS -->
+
+            <div class="filtros">
+
+                <button type="button" [class.activo]="filtroActual === 'TODAS'" (click)="cambiarFiltro('TODAS')">
+                    Todos
+                </button>
+
+                <button type="button" [class.activo]="filtroActual === 'PENDIENTES'"
+                    (click)="cambiarFiltro('PENDIENTES')">
+                    Pendientes
+                </button>
+
+                <button type="button" [class.activo]="filtroActual === 'APROBADAS'"
+                    (click)="cambiarFiltro('APROBADAS')">
+                    Aprobados
+                </button>
+
+                <button type="button" [class.activo]="filtroActual === 'RECHAZADAS'"
+                    (click)="cambiarFiltro('RECHAZADAS')">
+                    Rechazados
+                </button>
+
+            </div>
+
+            <!-- BUSCADOR -->
+
+            <div class="buscador">
+                <span>⌕</span>
+
+                <input type="text" [(ngModel)]="busqueda" placeholder="Buscar por título, técnico o UUID...">
+            </div>
+
+            @if (buscando) {
+            <div class="estado-listado">
+                Cargando portfolios...
+            </div>
+            }
+
+            @if (!buscando) {
+
+            @if (portfoliosFiltrados.length > 0) {
+
+            <div class="lista-portfolios">
+
+                @for (
+                portfolio of portfoliosFiltrados;
+                track portfolio.uuid
+                ) {
+
+                <button type="button" class="portfolio-card"
+                    [class.seleccionada]="portfolioSeleccionado?.uuid === portfolio.uuid"
+                    (click)="seleccionarPortfolio(portfolio)">
+
+                    <div class="card-superior">
+
+                        <span class="identificador">
+                            Portfolio #{{ portfolio.uuid.slice(0, 8) }}
+                        </span>
+
+                        <span class="estado" [attr.data-estado]="portfolio.estadoVerificacion">
+                            {{ portfolio.estadoVerificacion }}
+                        </span>
+
+                    </div>
+
+                    <h3>{{ portfolio.titulo }}</h3>
+
+                    <p class="nombre-tecnico">
+                        Técnico: {{ portfolio.nombreTecnico }}
+                    </p>
+
+                    <div class="card-inferior">
+
+                        <span>
+                            {{ portfolio.nombreEspecialidad || 'Sin especialidad' }}
+                        </span>
+
+                        <span class="fecha">
+                            {{ formatearFecha(portfolio.fechaEntrega) }}
+                        </span>
+
+                    </div>
+
+                </button>
+
+                }
+
+            </div>
+
+            } @else {
+
+            <div class="sin-portfolios">
+                <span class="icono-vacio">✓</span>
+                <h3>No hay portfolios</h3>
+                <p>No se encontraron portfolios para este filtro.</p>
+            </div>
+
+            }
+
+            }
+
+        </section>
+
+
+        <!-- DETALLE -->
+
+        <section class="columna-detalle">
+
+            @if (portfolioSeleccionado; as portfolio) {
+
+            <div class="detalle-encabezado">
+
+                <div>
+                    <span class="subtitulo">DETALLE DEL PORTFOLIO</span>
+                    <h2>Información del portfolio</h2>
+                </div>
+
+                <span class="estado" [attr.data-estado]="portfolio.estadoVerificacion">
+                    {{ portfolio.estadoVerificacion }}
+                </span>
+
+            </div>
+
+            <div class="detalle-contenido">
+
+                <!-- INFORMACIÓN GENERAL -->
+
+                <section class="bloque-detalle">
+
+                    <h3>Información general</h3>
+
+                    <div class="dato">
+                        <span>Identificador</span>
+                        <p>{{ portfolio.uuid }}</p>
+                    </div>
+
+                    <div class="dato">
+                        <span>Título</span>
+                        <p>{{ portfolio.titulo }}</p>
+                    </div>
+
+                    <div class="dato">
+                        <span>Especialidad</span>
+                        <p>{{ portfolio.nombreEspecialidad || 'No especificada' }}</p>
+                    </div>
+
+                    <div class="dato">
+                        <span>Fecha de entrega</span>
+                        <p>{{ formatearFecha(portfolio.fechaEntrega) }}</p>
+                    </div>
+
+                </section>
+
+
+                <!-- INFORMACIÓN DEL TÉCNICO -->
+
+                <section class="bloque-detalle">
+
+                    <h3>Datos del técnico</h3>
+
+                    <div class="dato">
+                        <span>Nombre</span>
+                        <p>{{ portfolio.nombreTecnico }}</p>
+                    </div>
+
+                    <div class="dato">
+                        <span>Identificador del técnico</span>
+                        <p>{{ portfolio.uuidTecnico }}</p>
+                    </div>
+
+                </section>
+
+
+                <!-- DESCRIPCIÓN DEL TRABAJO -->
+
+                <section class="bloque-detalle">
+
+                    <h3>Descripción del trabajo</h3>
+
+                    <p class="texto-motivo">
+                        {{ portfolio.notasAspirante || 'El técnico no agregó una descripción.' }}
+                    </p>
+
+                </section>
+
+
+                <!-- ARCHIVO ADJUNTO -->
+
+                <section class="bloque-detalle">
+
+                    <h3>Archivo adjunto</h3>
+
+                    @if (obtenerArchivo(portfolio)) {
+
+                    @if (esImagen(portfolio)) {
+
+                    <button type="button" class="imagen-miniatura" (click)="abrirImagen()">
+
+                        <img [src]="obtenerArchivo(portfolio)" alt="Archivo del portfolio">
+
+                        <span>Ver imagen ampliada</span>
+
+                    </button>
+
+                    }  @else if (esPdf(portfolio)) {
+
+                    <button type="button" class="enlace-archivo" (click)="abrirPdf(portfolio)">
+                        Abrir archivo PDF ↗
+                    </button>
+
+                    } @else {
+
+                    <a class="enlace-archivo" [href]="obtenerArchivo(portfolio)" [attr.download]="portfolio.titulo">
+                        Descargar archivo adjunto
+                    </a>
+
+                    }
+
+                    } @else {
+
+                    <p class="texto-secundario">
+                        Este portfolio no tiene un archivo adjunto.
+                    </p>
+
+                    }
+
+                </section>
+
+
+                <!-- ENLACE EXTERNO -->
+
+                @if (portfolio.enlaceExterno) {
+
+                <section class="bloque-detalle">
+
+                    <h3>Enlace externo</h3>
+
+                    <a class="enlace-archivo" [href]="portfolio.enlaceExterno" target="_blank"
+                        rel="noopener noreferrer">
+                        Abrir enlace del portfolio ↗
+                    </a>
+
+                </section>
+
+                }
+
+
+                <!-- NOTA DEL ADMINISTRADOR -->
+
+                @if (portfolio.notasAdmin) {
+
+                <section class="bloque-detalle">
+
+                    <h3>Observaciones del administrador</h3>
+
+                    <p class="texto-motivo">
+                        {{ portfolio.notasAdmin }}
+                    </p>
+
+                </section>
+
+                }
+
+
+                <!-- ACCIONES DE VERIFICACIÓN -->
+
+                @if (esPendiente(portfolio)) {
+
+                <section class="bloque-resolucion">
+
+                    <h3>Verificar portfolio</h3>
+
+                    <p class="texto-secundario">
+                        Revisá la información y los archivos adjuntos antes de tomar una decisión.
+                    </p>
+
+                    <label for="motivoAdmin">
+                        Observaciones / motivo del rechazo
+                    </label>
+
+                    <textarea id="motivoAdmin" [(ngModel)]="motivoAdmin" rows="4"
+                        placeholder="Escribí el motivo si decidís rechazar el portfolio...">
+              </textarea>
+
+                    @if (errorMensaje) {
+                    <p class="mensaje-error">{{ errorMensaje }}</p>
+                    }
+
+                    <div class="acciones-resolucion">
+
+                        <button type="button" class="boton-rechazar" [disabled]="procesandoAccion"
+                            (click)="rechazarPortfolio()">
+                            Rechazar portfolio
+                        </button>
+
+                        <button type="button" class="boton-aprobar" [disabled]="procesandoAccion"
+                            (click)="aprobarPortfolio()">
+                            Aprobar portfolio
+                        </button>
+
+                    </div>
+
+                </section>
+
+                } @else {
+
+                <div class="resolucion-finalizada"
+                    [class.rechazada]="portfolio.estadoVerificacion === estadoVerificacion.Rechazado">
+
+                    <span>
+                        {{ portfolio.estadoVerificacion === estadoVerificacion.Aprobado ? '✓' : '!' }}
+                    </span>
+
+                    <p>
+                        @if (portfolio.estadoVerificacion === estadoVerificacion.Aprobado) {
+                        Este portfolio ya fue aprobado.
+                        } @else {
+                        Este portfolio fue rechazado.
+                        }
+                    </p>
+
+                </div>
+
+                }
+
+                @if (mensaje) {
+                <p class="mensaje-exito">{{ mensaje }}</p>
+                }
+
+                @if (errorMensaje && !esPendiente(portfolio)) {
+                <p class="mensaje-error">{{ errorMensaje }}</p>
+                }
+
+            </div>
+
+            } @else {
+
+            <div class="sin-seleccion">
+
+                <span>☰</span>
+
+                <h2>Seleccioná un portfolio</h2>
+
+                <p>
+                    Elegí un portfolio de la lista para consultar sus datos,
+                    revisar los archivos adjuntos y gestionar su aprobación.
+                </p>
+
+            </div>
+
+            }
+
+        </section>
+
+    </div>
+
+
+    <!-- VISOR DE IMAGEN -->
+
+    @if (mostrarImagen && portfolioSeleccionado) {
+
+    <div class="visor-imagen" (click)="cerrarImagen()">
+
+        <button type="button" class="cerrar-visor" aria-label="Cerrar imagen" (click)="cerrarImagen()">
+            ×
+        </button>
+
+        <img [src]="obtenerArchivo(portfolioSeleccionado)" alt="Portfolio ampliado" (click)="$event.stopPropagation()">
+
+    </div>
+
+    }
+
+</div>

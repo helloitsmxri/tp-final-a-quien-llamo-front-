@@ -1,0 +1,359 @@
+<div class="administrador-certificaciones">
+
+    <header class="encabezado">
+        <div>
+            <h1>Gestión de certificaciones</h1>
+            <p>Revisá y verificá las certificaciones presentadas por los técnicos.</p>
+        </div>
+
+        <button type="button" class="boton-actualizar" [disabled]="buscando" (click)="cargarCertificaciones()">
+            ↻ Actualizar
+        </button>
+    </header>
+
+    <div class="contenido-certificaciones">
+
+        <!-- LISTADO -->
+
+        <section class="columna-listado">
+
+            <div class="titulo-listado">
+                <h2>Certificaciones</h2>
+                <span class="contador">{{ certificacionesFiltradas.length }}</span>
+            </div>
+
+            <!-- FILTROS -->
+
+            <div class="filtros">
+
+                <button type="button" [class.activo]="filtroActual === 'TODAS'" (click)="cambiarFiltro('TODAS')">
+                    Todas
+                </button>
+
+                <button type="button" [class.activo]="filtroActual === 'PENDIENTES'"
+                    (click)="cambiarFiltro('PENDIENTES')">
+                    Pendientes
+                </button>
+
+                <button type="button" [class.activo]="filtroActual === 'APROBADAS'"
+                    (click)="cambiarFiltro('APROBADAS')">
+                    Aprobadas
+                </button>
+
+                <button type="button" [class.activo]="filtroActual === 'RECHAZADAS'"
+                    (click)="cambiarFiltro('RECHAZADAS')">
+                    Rechazadas
+                </button>
+
+            </div>
+
+            <!-- BUSCADOR -->
+
+            <div class="buscador">
+                <span>⌕</span>
+
+                <input type="text" [formControl]="busquedaControl" placeholder="Buscar por título, técnico o UUID...">
+            </div>
+
+            @if (buscando) {
+
+            <div class="estado-listado">
+                Cargando certificaciones...
+            </div>
+
+            }
+
+            @if (!buscando) {
+
+            @if (certificacionesFiltradas.length > 0) {
+
+            <div class="lista-certificaciones">
+
+                @for (
+                certificacion of certificacionesFiltradas;
+                track certificacion.uuid
+                ) {
+
+                <button type="button" class="certificacion-card"
+                    [class.seleccionada]="certificacionSeleccionada?.uuid === certificacion.uuid"
+                    (click)="seleccionarCertificacion(certificacion)">
+
+                    <div class="card-superior">
+
+                        <span class="identificador">
+                            Certificación #{{ certificacion.uuid.slice(0, 8) }}
+                        </span>
+
+                        <span class="estado" [attr.data-estado]="certificacion.estadoVerificacion">
+                            {{ certificacion.estadoVerificacion }}
+                        </span>
+
+                    </div>
+
+                    <h3>{{ certificacion.titulo }}</h3>
+
+                    <p class="nombre-tecnico">
+                        Técnico:
+                        {{ certificacion.nombreTecnico }}
+                        {{ certificacion.apellidoTecnico }}
+                    </p>
+
+                    <div class="card-inferior">
+
+                        <span>
+                            {{ certificacion.nombreEspecialidad || 'Sin especialidad' }}
+                        </span>
+
+                        <span class="fecha">
+                            Vence: {{ formatearFecha(certificacion.fechaVencimiento) }}
+                        </span>
+
+                    </div>
+
+                </button>
+
+                }
+
+            </div>
+
+            } @else {
+
+            <div class="sin-certificaciones">
+                <span class="icono-vacio">✓</span>
+                <h3>No hay certificaciones</h3>
+                <p>No se encontraron certificaciones para este filtro.</p>
+            </div>
+
+            }
+
+            }
+
+        </section>
+
+
+        <!-- DETALLE -->
+
+        <section class="columna-detalle">
+
+            @if (certificacionSeleccionada; as certificacion) {
+
+            <div class="detalle-encabezado">
+
+                <div>
+                    <span class="subtitulo">DETALLE DE LA CERTIFICACIÓN</span>
+                    <h2>Información de la certificación</h2>
+                </div>
+
+                <span class="estado" [attr.data-estado]="certificacion.estadoVerificacion">
+                    {{ certificacion.estadoVerificacion }}
+                </span>
+
+            </div>
+
+
+            <div class="detalle-contenido">
+
+                <!-- INFORMACIÓN GENERAL -->
+
+                <section class="bloque-detalle">
+
+                    <h3>Información general</h3>
+
+                    <div class="dato">
+                        <span>Identificador</span>
+                        <p>{{ certificacion.uuid }}</p>
+                    </div>
+
+                    <div class="dato">
+                        <span>Título</span>
+                        <p>{{ certificacion.titulo }}</p>
+                    </div>
+
+                    <div class="dato">
+                        <span>Especialidad</span>
+                        <p>{{ certificacion.nombreEspecialidad || 'No especificada' }}</p>
+                    </div>
+
+                </section>
+
+
+                <!-- INFORMACIÓN DEL TÉCNICO -->
+
+                <section class="bloque-detalle">
+
+                    <h3>Datos del técnico</h3>
+
+                    <div class="dato">
+                        <span>Nombre completo</span>
+                        <p>
+                            {{ certificacion.nombreTecnico }}
+                            {{ certificacion.apellidoTecnico }}
+                        </p>
+                    </div>
+
+                </section>
+
+
+                <!-- DATOS DE LA CERTIFICACIÓN -->
+
+                <section class="bloque-detalle">
+
+                    <h3>Datos del certificado</h3>
+
+                    <div class="dato">
+                        <span>Número de matrícula</span>
+                        <p>{{ certificacion.numMatricula || 'No informado' }}</p>
+                    </div>
+
+                    <div class="dato">
+                        <span>Ente otorgador</span>
+                        <p>{{ certificacion.enteOtorgador || 'No informado' }}</p>
+                    </div>
+
+                    <div class="dato">
+                        <span>Fecha de vencimiento</span>
+                        <p>{{ formatearFecha(certificacion.fechaVencimiento) }}</p>
+                    </div>
+
+                </section>
+
+
+                <!-- ARCHIVO ADJUNTO -->
+
+                <section class="bloque-detalle">
+
+                    <h3>Certificado adjunto</h3>
+
+                    @if (obtenerImagen(certificacion)) {
+
+                    <button type="button" class="enlace-archivo" (click)="abrirCertificado(certificacion)">
+                        Abrir certificado ↗
+                    </button>
+
+                    } @else {
+
+                    <p class="texto-secundario">
+                        Esta certificación no tiene un archivo adjunto.
+                    </p>
+
+                    }
+
+                </section>
+
+
+                <!-- NOTA DEL ADMINISTRADOR -->
+
+                @if (certificacion.notasAdmin) {
+
+                <section class="bloque-detalle">
+
+                    <h3>Motivo del rechazo</h3>
+
+                    <p class="texto-motivo">
+                        {{ certificacion.notasAdmin }}
+                    </p>
+
+                </section>
+
+                }
+
+
+                <!-- ACCIONES DE VERIFICACIÓN -->
+
+                @if (esPendiente(certificacion)) {
+
+                <section class="bloque-resolucion">
+
+                    <h3>Verificar certificación</h3>
+
+                    <p class="texto-secundario">
+                        Revisá los datos y el archivo adjunto antes de tomar una decisión.
+                    </p>
+
+                    <label for="motivoAdmin">
+                        Motivo del rechazo
+                    </label>
+
+                    <textarea id="motivoAdmin" [formControl]="motivoControl" rows="4"
+                        placeholder="Escribí el motivo si decidís rechazar la certificación...">
+              </textarea>
+
+                    <div class="acciones-resolucion">
+
+                        <button type="button" class="boton-rechazar" [disabled]="procesandoAccion"
+                            (click)="rechazarCertificacion()">
+                            Rechazar certificación
+                        </button>
+
+                        <button type="button" class="boton-aprobar" [disabled]="procesandoAccion"
+                            (click)="aprobarCertificacion()">
+                            Aprobar certificación
+                        </button>
+
+                    </div>
+
+                </section>
+
+                } @else {
+
+                <div class="resolucion-finalizada"
+                    [class.rechazada]="certificacion.estadoVerificacion === estadoVerificacion.Rechazado">
+
+                    <span>
+                        {{ certificacion.estadoVerificacion === estadoVerificacion.Aprobado ? '✓' : '!' }}
+                    </span>
+
+                    <p>
+                        @if (certificacion.estadoVerificacion === estadoVerificacion.Aprobado) {
+                        Esta certificación ya fue aprobada.
+                        } @else {
+                        Esta certificación fue rechazada.
+                        }
+                    </p>
+
+                </div>
+
+                }
+
+            </div>
+
+            } @else {
+
+            <div class="sin-seleccion">
+
+                <span>☰</span>
+
+                <h2>Seleccioná una certificación</h2>
+
+                <p>
+                    Elegí una certificación de la lista para consultar sus datos,
+                    revisar el archivo adjunto y gestionar su aprobación.
+                </p>
+
+            </div>
+
+            }
+
+        </section>
+
+    </div>
+
+
+    <!-- VISOR DE IMAGEN -->
+
+    @if (mostrarImagen && certificacionSeleccionada) {
+
+    <div class="visor-imagen" (click)="cerrarImagen()">
+
+        <button type="button" class="cerrar-visor" aria-label="Cerrar imagen" (click)="cerrarImagen()">
+            ×
+        </button>
+
+        <img [src]="obtenerImagen(certificacionSeleccionada)" alt="Certificado ampliado"
+            (click)="$event.stopPropagation()">
+
+    </div>
+
+    }
+
+</div>
