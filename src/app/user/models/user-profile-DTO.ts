@@ -3,8 +3,8 @@ import { RatingResponse } from "../../rating/models/rating-response";
 
 export interface UserProfileDTO{
         uuid: string;
-        tipoImagen: string | null;
-        foto: string | null; // imagen lista para <img src> (data URL) o base64 + tipoImagen
+        tipoImagen?: string | null;
+        fotoBase64?: string | null; // imagen lista para <img src> (data URL) o base64 + tipoImagen
     
         nombre: string;
         apellido: string;

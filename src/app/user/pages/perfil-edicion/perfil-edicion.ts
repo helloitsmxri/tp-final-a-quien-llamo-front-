@@ -5,8 +5,6 @@ import { Router, RouterLink } from '@angular/router';
 import { UsuarioService } from '../../services/user';
 import { UserProfileDTO } from '../../models/user-profile-DTO';
 
-// Mismo tamaño máximo que la edición de técnico.
-// Tiene que coincidir con spring.servlet.multipart.max-file-size del back.
 const TAMANO_MAXIMO_MB = 10;
 
 @Component({
@@ -25,12 +23,11 @@ export class PerfilEdicion implements OnInit, OnDestroy {
   perfil: UserProfileDTO | null = null;
   errorCarga = false;
 
-  // Formulario de edición
   formulario = this.fb.group({
     nombre: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/.*\S.*/)]],
     apellido: ['', [Validators.required, Validators.minLength(2), Validators.pattern(/.*\S.*/)]],
     telefono: ['', [Validators.pattern(/^\d{10}$/)]],
-    sobreMi: ['', [Validators.pattern(/.*\S.*/)]],
+    sobreMi: [''],
   });
 
   // Foto
@@ -48,15 +45,16 @@ export class PerfilEdicion implements OnInit, OnDestroy {
         this.perfil = perfil;
 
         this.formulario.patchValue({
-          nombre: perfil.nombre ?? '',
-          apellido: perfil.apellido ?? '',
-          telefono: perfil.telefono ?? '',
-          sobreMi: perfil.sobreMi ?? '',
+          nombre: perfil.nombre,
+          apellido: perfil.apellido,
+          telefono: perfil.telefono,
+          sobreMi: perfil.sobreMi,
         });
 
         // Igual que en la edición de técnico
-        if (perfil.foto && perfil.tipoImagen) {
-          this.fotoPreview = `data:${perfil.tipoImagen};base64,${perfil.foto}`;
+        if (perfil.fotoBase64 && perfil.tipoImagen) {
+          this.fotoPreview =
+            `data:${perfil.tipoImagen};base64,${perfil.fotoBase64}`;
         }
 
         this.iniciales = (
@@ -69,12 +67,10 @@ export class PerfilEdicion implements OnInit, OnDestroy {
     });
   }
 
-  // Libera la vista previa temporal al salir de la pantalla
   ngOnDestroy(): void {
     this.liberarVistaPrevia();
   }
 
-  // Seleccionar foto
   onFotoSeleccionada(event: Event): void {
     const input = event.target as HTMLInputElement;
     const archivo = input.files?.[0];
@@ -96,8 +92,6 @@ export class PerfilEdicion implements OnInit, OnDestroy {
     }
 
     this.errorFoto = null;
-
-    // Liberar la vista previa anterior si era una URL temporal
     this.liberarVistaPrevia();
 
     this.fotoSeleccionada = archivo;
@@ -110,9 +104,7 @@ export class PerfilEdicion implements OnInit, OnDestroy {
     }
   }
 
-  // Mensajes de validación
   errorMensaje(campo: 'nombre' | 'apellido' | 'telefono' | 'sobreMi'): string | null {
-
     const control = this.formulario.get(campo);
 
     if (!control || !control.touched || !control.errors) {
@@ -134,55 +126,35 @@ export class PerfilEdicion implements OnInit, OnDestroy {
     return 'No puede estar vacío ni tener solo espacios.';
   }
 
-  // Guardar los cambios
   guardar(): void {
+    if (!this.perfil) {
+      return;
+    }
+
     this.formulario.markAllAsTouched();
 
-    if (this.formulario.invalid || this.errorFoto) {
-      return;
-    }
-
-    // Evitar envíos repetidos
-    if (this.guardando) {
-      return;
-    }
-
-    // Si ningún campo cambió y no hay foto nueva, no hay nada que enviar
-    if (!this.formulario.dirty && !this.fotoSeleccionada) {
-      this.errorServidor = 'No realizaste ningún cambio.';
+    if (this.formulario.invalid || this.errorFoto || this.guardando) {
       return;
     }
 
     const v = this.formulario.getRawValue();
-    const campos = this.formulario.controls;
 
-    // Solo se envían los campos que el usuario modificó (concepto de PATCH)
+    this.errorServidor = null;
+    this.guardando = true;
+
+    // Igual que el técnico: se mandan todos los campos
     const datos = new FormData();
 
-    if (campos.nombre.dirty) {
-      datos.append('nombre', (v.nombre ?? '').trim());
-    }
-
-    if (campos.apellido.dirty) {
-      datos.append('apellido', (v.apellido ?? '').trim());
-    }
-
-    if (campos.telefono.dirty) {
-      datos.append('telefono', (v.telefono ?? '').trim());
-    }
-
-    if (campos.sobreMi.dirty) {
-      datos.append('sobreMi', (v.sobreMi ?? '').trim());
-    }
+    datos.append('nombre', (v.nombre ?? '').trim());
+    datos.append('apellido', (v.apellido ?? '').trim());
+    datos.append('telefono', (v.telefono ?? '').trim());
+    datos.append('sobreMi', (v.sobreMi ?? '').trim());
 
     if (this.fotoSeleccionada) {
       datos.append('foto', this.fotoSeleccionada);
     }
 
-    this.errorServidor = null;
-    this.guardando = true;
-
-    this.usuarioService.updateMyProfile(datos).subscribe({
+    this.usuarioService.updateMyProfile(this.perfil.uuid, datos).subscribe({
       next: () => {
         this.guardando = false;
         this.router.navigate(['/mi-perfil']);

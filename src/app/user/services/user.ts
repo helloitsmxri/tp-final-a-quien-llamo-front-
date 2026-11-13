@@ -2,7 +2,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UsuarioModel } from '../models/user-model';
-import { UserPatchModel } from '../../user/models/user-patch-model'
 import { UserProfileDTO } from '../models/user-profile-DTO';
 import { Observable } from 'rxjs';
 
@@ -31,11 +30,10 @@ export class UsuarioService {
     }
     
     // editar perfil
-    // {uuid} -> hay q cambiar esto para q sea así y no con 'actualizar' x el momento lo dejo porq sino hay q tocar el back
     // recibe el FormData directamente desde el componente
-    updateMyProfile(formData: FormData): Observable<UserProfileDTO> {
-    return this.http.patch<UserProfileDTO>(`${this.url}/mi-perfil`, formData);
-    }
+    updateMyProfile(uuid: string, datos: FormData) {
+  return this.http.patch<UserProfileDTO>(`${this.url}/actualizar/${uuid}`, datos);
+}
     
     // eliminar un usuario
     // {uuid} -> hay q cambiar esto para q sea así y no con 'eliminar' x el momento lo dejo porq sino hay q tocar el back
