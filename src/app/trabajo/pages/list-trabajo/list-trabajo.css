@@ -277,6 +277,18 @@
     }
 }
 
+.btn-pagar {
+    background-color: #30294a;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-pagar:hover {
+    background-color: #514575;
+}
+
 /* PARTE INFERIOR */
 .card-inferior {
     display: flex;

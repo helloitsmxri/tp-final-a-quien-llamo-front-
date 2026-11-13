@@ -1,8 +1,10 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { PagoService } from '../../services/pago';
-import { PagoModel } from '../../models/pago-model';
+import { PagoResponseModel } from '../../models/pago-response-model';
+import { DatePipe } from '@angular/common';
 
 type MetodoListadoPago =
   | 'todos'
@@ -14,7 +16,7 @@ type MetodoListadoPago =
 @Component({
   selector: 'app-list-pago',
   standalone: true,
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './list-pago.html',
   styleUrl: './list-pago.css',
 })
@@ -23,7 +25,8 @@ export class ListPago implements OnInit {
   @Input() metodo: MetodoListadoPago = 'todos';
   @Input() filtro: string | null = null;
 
-  pagos: PagoModel[] = [];
+  pagos: PagoResponseModel[] = [];
+
   cargando = false;
   error = false;
 
@@ -46,12 +49,14 @@ export class ListPago implements OnInit {
     let peticion;
 
     switch (this.metodo) {
+
       case 'metodoPago':
         if (!parametro) {
           this.error = true;
           this.cargando = false;
           return;
         }
+
         peticion = this.pService.getByMetodoPago(parametro);
         break;
 
@@ -61,6 +66,7 @@ export class ListPago implements OnInit {
           this.cargando = false;
           return;
         }
+
         peticion = this.pService.getByEstado(parametro);
         break;
 
@@ -70,6 +76,7 @@ export class ListPago implements OnInit {
           this.cargando = false;
           return;
         }
+
         peticion = this.pService.getByCliente(parametro);
         break;
 
@@ -79,6 +86,7 @@ export class ListPago implements OnInit {
           this.cargando = false;
           return;
         }
+
         peticion = this.pService.getByTecnico(parametro);
         break;
 
@@ -89,10 +97,11 @@ export class ListPago implements OnInit {
     }
 
     peticion.subscribe({
-      next: (data: PagoModel[]) => {
+      next: (data: PagoResponseModel[]) => {
         this.pagos = data;
         this.cargando = false;
       },
+
       error: (e) => {
         console.error('Error al obtener los pagos', e);
         this.error = true;

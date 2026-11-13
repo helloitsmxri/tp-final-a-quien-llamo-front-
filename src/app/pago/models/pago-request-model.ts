@@ -1,6 +1,6 @@
 import { MetodoDePago } from "../enum/metodo-de-pago";
 
-export interface FormPagoModel {
+export interface PagoRequestModel {
     uuidTrabajo: string;
     metodoDePago: MetodoDePago;
     buyerFullName: string;

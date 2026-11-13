@@ -1,36 +1,28 @@
 <div class="register-container">
     <div class="register-card">
+
         <h2>Registrar pago</h2>
         <p>Completá los datos para realizar el pago</p>
 
-        <form class="formulario" [formGroup]="formulario"
-            (ngSubmit)="editando ? actualizar() : registrar()">
-
-            <!-- UUID del trabajo -->
-            <fieldset class="form-group">
-                <label for="uuidTrabajo">UUID del trabajo:</label>
-                <input type="text" id="uuidTrabajo"
-                    formControlName="uuidTrabajo"
-                    placeholder="Ingresá el UUID del trabajo">
-
-                @if (uuidTrabajo.invalid && uuidTrabajo.touched) {
-                    <div class="error">
-                        @if (uuidTrabajo.hasError('required')) {
-                            <span>El UUID del trabajo es obligatorio.</span>
-                        }
-                    </div>
-                }
-            </fieldset>
+        <form
+            class="formulario"
+            [formGroup]="formulario"
+            (ngSubmit)="registrar()">
 
             <!-- Método de pago -->
             <fieldset class="form-group">
                 <label for="metodoDePago">Método de pago:</label>
-                <select id="metodoDePago" formControlName="metodoDePago">
+
+                <select
+                    id="metodoDePago"
+                    formControlName="metodoDePago">
+
                     <option value="">Seleccioná un método de pago</option>
-                    <option value="EFECTIVO">Efectivo</option>
-                    <option value="TARJETA_CREDITO">Tarjeta de crédito</option>
-                    <option value="TARJETA_DEBITO">Tarjeta de débito</option>
-                    <option value="TRANSFERENCIA">Transferencia bancaria</option>
+                    <option value="Efectivo">Efectivo</option>
+                    <option value="Credito">Tarjeta de crédito</option>
+                    <option value="Debito">Tarjeta de débito</option>
+                    <option value="Transferencia">Transferencia bancaria</option>
+
                 </select>
 
                 @if (metodoDePago.invalid && metodoDePago.touched) {
@@ -45,7 +37,10 @@
             <!-- Nombre completo -->
             <fieldset class="form-group">
                 <label for="buyerFullName">Nombre completo:</label>
-                <input type="text" id="buyerFullName"
+
+                <input
+                    type="text"
+                    id="buyerFullName"
                     formControlName="buyerFullName"
                     placeholder="Ingresá tu nombre completo">
 
@@ -54,6 +49,7 @@
                         @if (buyerFullName.hasError('required')) {
                             <span>El nombre completo es obligatorio.</span>
                         }
+
                         @if (buyerFullName.hasError('minlength')) {
                             <span>Debe tener al menos 2 caracteres.</span>
                         }
@@ -64,7 +60,10 @@
             <!-- Email -->
             <fieldset class="form-group">
                 <label for="buyerEmail">Correo electrónico:</label>
-                <input type="email" id="buyerEmail"
+
+                <input
+                    type="email"
+                    id="buyerEmail"
                     formControlName="buyerEmail"
                     placeholder="ejemplo@correo.com">
 
@@ -73,6 +72,7 @@
                         @if (buyerEmail.hasError('required')) {
                             <span>El correo electrónico es obligatorio.</span>
                         }
+
                         @if (buyerEmail.hasError('email')) {
                             <span>Ingresá un correo electrónico válido.</span>
                         }
@@ -83,7 +83,10 @@
             <!-- DNI -->
             <fieldset class="form-group">
                 <label for="buyerDNI">DNI:</label>
-                <input type="text" id="buyerDNI"
+
+                <input
+                    type="text"
+                    id="buyerDNI"
                     formControlName="buyerDNI"
                     placeholder="Ingresá tu DNI">
 
@@ -99,7 +102,10 @@
             <!-- Teléfono -->
             <fieldset class="form-group">
                 <label for="buyerPhone">Teléfono:</label>
-                <input type="tel" id="buyerPhone"
+
+                <input
+                    type="tel"
+                    id="buyerPhone"
                     formControlName="buyerPhone"
                     placeholder="Ingresá tu teléfono">
 
@@ -108,18 +114,24 @@
                         @if (buyerPhone.hasError('required')) {
                             <span>El teléfono es obligatorio.</span>
                         }
-                        @if (buyerPhone.hasError('maxlength')) {
-                            <span>El teléfono no debe superar los 10 caracteres.</span>
+
+                        @if (buyerPhone.hasError('pattern')) {
+                            <span>Ingresá un teléfono de exactamente 10 dígitos.</span>
                         }
                     </div>
                 }
             </fieldset>
 
             <!-- Botón -->
-            <button type="submit" [disabled]="formulario.invalid">
-                {{ editando ? 'Actualizar pago' : 'Registrar pago' }}
+            <button
+                type="submit"
+                [disabled]="formulario.invalid || cargando">
+
+                {{ cargando ? 'Registrando...' : 'Registrar pago' }}
+
             </button>
 
         </form>
     </div>
 </div>
+

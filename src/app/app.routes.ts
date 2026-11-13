@@ -98,15 +98,17 @@ export const routes: Routes = [
     // PRESUPUESTOS
     {path: 'mis-presupuestos', component: MisPresupuestos, canActivate: [authGuard]},
 
-    // PAGOS
-    {path: 'pagos', component: FormPago,canActivate: [authGuard]},//los guard entre ellos no se choquen porque no entran 
-    {path: 'pagos/lista', component: ListPago },
-    {path: 'pagos/:uuid', component: DetallePago },
-    {path: 'pagos/metodo/:metodoPago', component: ListPago },
-    {path: 'pagos/estado/:estado', component: ListPago },
-    {path: 'pagos/cliente/:uuid', component: ListPago },
-    {path: 'pagos/tecnico/:uuid', component: ListPago },
-    {path: 'pagos/mercado-pago/:orderId', component: DetallePago },
+// PAGOS
+
+// CREAR PAGO
+{path: 'pagos/nuevo',component: FormPago,canActivate: [authGuard]},
+{path: 'pagos/lista',component: ListPago,canActivate: [authGuard]},
+{path: 'pagos/metodo/:metodoPago',component: ListPago,canActivate: [authGuard]},
+{path: 'pagos/estado/:estado',component: ListPago,canActivate: [authGuard]},
+{path: 'pagos/cliente/:uuid',component: ListPago,canActivate: [authGuard]},
+{path: 'pagos/tecnico/:uuid',component: ListPago,canActivate: [authGuard]},
+{path: 'pagos/mercado-pago/:orderId',component: DetallePago,canActivate: [authGuard]},
+{path: 'pagos/:uuid',component: DetallePago,canActivate: [authGuard]},
 
     // INICIO DE SESIÓN (PÚBLICO)
 

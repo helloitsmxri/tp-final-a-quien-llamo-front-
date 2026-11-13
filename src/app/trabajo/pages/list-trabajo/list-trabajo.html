@@ -122,14 +122,14 @@
                                 }
                             }
 
-                            @if (estaFinalizado(trabajo)) {
+                            @if (estaFinalizado(trabajo) && esClienteDelTrabajo(trabajo)) {
                                 <a
-                                    [routerLink]="['/ratings/nuevo']"
-                                    [queryParams]="{ uuidTrabajo: trabajo.uuid, nombreTrabajo: trabajo.nombreProyecto }"
-                                    class="btn-estado btn-calificar">
-                                    ★ Calificar trabajo
+                                    [routerLink]="['/pagos/nuevo']"
+                                    [queryParams]="{ uuidTrabajo: trabajo.uuid }"
+                                    class="btn-estado btn-pagar">
+                                    $ Pagar trabajo
                                 </a>
-                            }
+                                }
                         </div>
 
                         <span class="precio">

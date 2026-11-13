@@ -2,7 +2,7 @@ import { EstadoPago } from "../enum/estado-pago";
 import { MetodoDePago } from "../enum/metodo-de-pago";
 
 
-export interface PagoModel {
+export interface PagoResponseModel {
     uuid: string;
     uuidTrabajo: string;
     metodoDePago: MetodoDePago;

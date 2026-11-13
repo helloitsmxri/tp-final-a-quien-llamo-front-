@@ -84,15 +84,11 @@
             id="fechaEstimadaFin"
             formControlName="fechaEstimadaFin">
 
-          @if (fechaEstimadaFin.invalid && fechaEstimadaFin.touched) {
-            <div class="error">
-              @if (fechaEstimadaFin.hasError('required')) {
-                <span>La fecha de finalización es obligatoria.</span>
-              }
-            </div>
-          }
-        </fieldset>
-      </div>
+            <button
+                type="submit"
+                [disabled]="formulario.invalid || cargando || !uuidPresupuesto">
+                {{ cargando ? 'Registrando...' : 'Registrar trabajo' }}
+            </button>
 
       <div class="acciones-formulario">
         @if (esModal) {

@@ -1,15 +1,25 @@
+
 <div class="container">
+
     @if (cargando) {
         <p>Cargando pago...</p>
     } @else if (error) {
         <p>No se pudo encontrar el pago.</p>
     } @else if (pago) {
+
         <ul>
             <li>
                 <p>UUID del pago: {{ pago.uuid }}</p>
+
                 <p>UUID del trabajo: {{ pago.uuidTrabajo }}</p>
+
                 <p>Estado del pago: {{ pago.estadoPago }}</p>
-                <p>Fecha de pago: {{ pago.fechaPago }}</p>
+
+                <p>
+                    Fecha de pago:
+                    {{ pago.fechaPago | date:'dd/MM/yyyy HH:mm' }}
+                </p>
+
                 <p>Método de pago: {{ pago.metodoDePago }}</p>
 
                 @if (pago.checkoutUrl) {
@@ -31,7 +41,9 @@
                 }
             </li>
         </ul>
+
     } @else {
         <p>No se encontró el pago.</p>
     }
+
 </div>
