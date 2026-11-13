@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DenunciaService } from '../../services/denuncia';
 import { DenunciaModel } from '../../models/denuncia-model';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-crear-denuncia',
@@ -13,12 +14,34 @@ export class CrearDenuncia {
   private denunciaService = inject(DenunciaService);
 
   // datos q recibe del chat o del perfil:
-  @Input({required: true}) origen!: 'CHAT' | 'PERFIL';
-  @Input({required: true}) uuidReferencia!: string;
+  @Input() origen: 'CHAT' | 'PERFIL' = 'PERFIL';
+@Input() uuidReferencia = '';
 
   // datos q envía al componente padre
   @Output() cancelar = new EventEmitter<void>();
   @Output() denunciaCreada = new EventEmitter<DenunciaModel>();
+
+  private route = inject(ActivatedRoute);
+
+  constructor() {
+  this.route.queryParams.subscribe(params => {
+
+    const uuidChat = params['uuidChat'];
+    const uuidDenunciado = params['uuidDenunciado'];
+
+    if (uuidChat) {
+      this.origen = 'CHAT';
+      this.uuidReferencia = uuidChat;
+    } else {
+      this.origen = 'PERFIL';
+      this.uuidReferencia = uuidDenunciado || '';
+    }
+
+    console.log('Origen de denuncia:', this.origen);
+    console.log('UUID de referencia:', this.uuidReferencia);
+    console.log('UUID denunciado:', uuidDenunciado);
+  });
+}
 
   // form d denuncia
   formulario = new FormGroup({
@@ -81,6 +104,12 @@ export class CrearDenuncia {
 
         const motivo = c.motivoDenuncia.value;
 
+        if (!this.uuidReferencia) {
+  alert('No se pudo identificar al usuario que querés denunciar.');
+  console.error('UUID de referencia:', this.uuidReferencia);
+  return;
+}
+
         this.enviando = true;
 
         // DENUNCIAR DESDE UN CHAT
@@ -121,4 +150,6 @@ export class CrearDenuncia {
     cancelarFormulario() {
         this.cancelar.emit();
     }
+
+
 }
