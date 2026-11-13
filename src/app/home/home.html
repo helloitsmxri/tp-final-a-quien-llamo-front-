@@ -1,3 +1,11 @@
+@if (mostrarError) {
+  <button class="alerta-ruta" (click)="mostrarError = false">
+    ⚠️ Ruta no encontrada. La página que buscás no existe.
+    <span class="cerrar">×</span>
+  </button>
+}
+
+
 <section class="inicio" aria-labelledby="titulo-inicio">
   <img src="íconos/iconos-transparencia/megafono.png" alt="" aria-hidden="true" class="deco deco-megafono">
   <img src="íconos/iconos-transparencia/lupa.png" alt="" aria-hidden="true" class="deco deco-lupa">
@@ -18,7 +26,7 @@
   <label class="campo">
     <img src="íconos/iconos-home/lupa.png" alt="" class="icono-campo">
     <input type="text" name="especialidad" [(ngModel)]="especialidad"
-           placeholder="Especialidad, palabra clave...">
+          placeholder="Especialidad, palabra clave...">
   </label>
 
   <span class="divisor" aria-hidden="true"></span>

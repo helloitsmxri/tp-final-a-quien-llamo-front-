@@ -14,8 +14,12 @@ export class AuthService {
 
     private readonly API_URL_REGISTER = 'http://localhost:8080/auth/register'
     private readonly API_URL_LOGIN = 'http://localhost:8080/auth/login'
-     private readonly API_URL_FORGOT_PASSWORD = 'http://localhost:8080/auth/forgot-password';
+    private readonly API_URL_FORGOT_PASSWORD = 'http://localhost:8080/auth/forgot-password';
     private readonly API_URL_RESET_PASSWORD = 'http://localhost:8080/auth/reset-password';
+    private readonly API_ROLE_SUPER_ADMIN = 'http://localhost:8080/auth/role-super-admin';
+    private readonly API_ROLE_ADMIN = 'http://localhost:8080/auth//role-admin';
+    private readonly API_ROLE_TECNICO = 'http://localhost:8080/auth/role-tecnico';
+    private readonly API_VALIDATE_TOKEN = 'http://localhost:8080/auth/validate-token';
 
 
     usuarios: UsuarioModel[] = [];
@@ -103,4 +107,22 @@ export class AuthService {
             newPassword
         });
     }
+
+    validarToken(): Observable<void> {
+    return this.http.get<void>(this.API_VALIDATE_TOKEN, {});
+  }
+
+  validarSuperAdmin(): Observable<void> {
+      return this.http.get<void>(this.API_ROLE_SUPER_ADMIN, {});
+  }
+
+  validarAdmin(): Observable<void> {
+      return this.http.get<void>(this.API_ROLE_ADMIN, {});
+  }
+
+  validarTecnico(): Observable<void> {
+      return this.http.get<void>(this.API_ROLE_TECNICO, {});
+  }
+
+
 }
