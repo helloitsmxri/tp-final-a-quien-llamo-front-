@@ -137,13 +137,4 @@ export class FormTrabajo implements OnInit {
   cancelar(): void {
     this.cerrar.emit();
   }
-
-  canDeactivate(): boolean {
-    if (this.formulario.dirty) {
-      return window.confirm(
-        '¿Estás seguro de que querés salir del formulario? Los cambios podrían perderse.'
-      );
-    }
-    return true;
-  }
 }

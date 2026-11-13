@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { Home } from './home/home';
 import { Register } from './auth/register/register';
 import { Login } from './auth/login/login';
-import { ListaChat } from './chat/pages/lista-chat/lista-chat';
 import { Planes } from './planes/planes';
 import { ChatView } from './chat/pages/chat-view/chat-view';
 import { DetalleUbicacion } from './ubicacion/pages/detalle-ubicacion/detalle-ubicacion';
@@ -39,6 +38,7 @@ import { AdministradorPortfolio } from './admin/pages/administrador-portfolio/ad
 import { AdministradorBloquearCuenta } from './admin/pages/administrador-bloquear-cuenta/administrador-bloquear-cuenta';
 import { CrearDenuncia } from './denuncia/components/crear-denuncia/crear-denuncia';
 import { outForm } from './auth/guards/out-form';
+import { notFoundGuard } from './auth/guards/not-found-guard';
 
 
 export const routes: Routes = [
@@ -72,13 +72,17 @@ export const routes: Routes = [
 
     // administracion
     {path: 'panel-admin', component: PanelAdmin, canActivate: [authGuard], children: [
-    {path: '', redirectTo: 'denuncias', pathMatch: 'full'},
-    {path: 'denuncias', component: AdministradorDenuncias},
-    {path: 'certificaciones', component: AdministradorCertificaciones },
-    {path: 'portfolios', component: AdministradorPortfolio },
-    {path: 'bloquear-cuenta', component: AdministradorBloquearCuenta},]
-    },
-    
+
+        {path: '', redirectTo: 'denuncias', pathMatch: 'full'},
+        {path: 'denuncias', component: AdministradorDenuncias},
+        {path: 'certificaciones', component: AdministradorCertificaciones },
+        {path: 'portfolios', component: AdministradorPortfolio },
+        {path: 'bloquear-cuenta', component: AdministradorBloquearCuenta},
+
+        {path: 'denuncias', component: AdministradorDenuncias}
+      ]},
+
+
     // USUARIO
     {path: 'perfil-edicion', component: PerfilEdicion, canActivate: [authGuard]},
     {path: 'mi-perfil', component: Perfil, canActivate: [authGuard]},
@@ -127,5 +131,6 @@ export const routes: Routes = [
 {path: 'trabajos/cliente/:uuid', component: ListTrabajo, canActivate: [authGuard]},
 {path: 'trabajos/tecnico/:uuid', component: ListTrabajo, canActivate: [authGuard]},
   
-  
+    // RUTA NO ENCONTRADA
+{path: '**',canActivate: [notFoundGuard],component: Home}
 ];

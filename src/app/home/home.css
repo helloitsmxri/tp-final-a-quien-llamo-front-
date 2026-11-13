@@ -153,6 +153,63 @@ h1 {
   height: 56px;
   object-fit: contain;
 }
+.alerta-ruta {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 14px 26px;
+  min-width: 300px;
+
+  background: #30294a;
+  color: #ffffff;
+
+  border: 1px solid #514575;
+  border-radius: 12px;
+
+  box-shadow: 0 5px 20px rgba(48, 41, 74, 0.25);
+
+  font-family: "Creato Display", sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+
+  animation: desaparecer 2.5s forwards;
+}
+
+.alerta-ruta {
+  cursor: pointer;
+  font-family: "Creato Display", sans-serif;
+  transition: transform 0.2s ease;
+}
+
+.alerta-ruta:hover {
+  transform: translateX(-50%) scale(1.03);
+}
+
+.cerrar {
+  margin-left: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+@keyframes desaparecer {
+  0%, 80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 700px) {
@@ -170,3 +227,4 @@ h1 {
   .deco-megafono { top: 110px; left: 2%; }
   .deco-lupa { top: 20px; right: 2%; }
 }
+
