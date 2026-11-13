@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { DenunciaService } from '../../services/denuncia';
 import { DenunciaModel } from '../../models/denuncia-model';
 import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-crear-denuncia',
@@ -12,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class CrearDenuncia {
   private denunciaService = inject(DenunciaService);
+  private location = inject(Location);
 
   // datos q recibe del chat o del perfil:
   @Input() origen: 'CHAT' | 'PERFIL' = 'PERFIL';
@@ -146,10 +148,9 @@ export class CrearDenuncia {
         });
     }
 
-    // CERRAR FORMULARIO
     cancelarFormulario() {
-        this.cancelar.emit();
-    }
+    this.location.back();
+}
 
 
 }
