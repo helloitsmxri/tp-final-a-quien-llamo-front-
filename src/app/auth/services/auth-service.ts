@@ -95,6 +95,10 @@ export class AuthService {
     return this.getRoles().includes('ROLE_TECNICO');
   }
 
+    esAdministrador(): boolean {
+    return this.getRoles().includes('ROLE_ADMINISTRADOR');
+  }
+
   //solicitar recuperacion de contraseña
     forgotPassword(email: string): Observable<void> {
         return this.http.post<void>(this.API_URL_FORGOT_PASSWORD, { email });

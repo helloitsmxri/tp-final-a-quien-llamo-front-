@@ -63,6 +63,12 @@
           </a>
           }
 
+          @if(authService.esAdministrador()){
+            <a routerLink="/panel-admin" (click)="cerrarMenuUsuario()">
+            Mi panel
+          </a>
+          }
+
           <a routerLink="/chats" (click)="cerrarMenuUsuario()">Mis mensajes</a>
 
           <a routerLink="/mis-trabajos" (click)="cerrarMenuUsuario()">Mis trabajos</a>

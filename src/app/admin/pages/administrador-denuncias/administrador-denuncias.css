@@ -92,7 +92,7 @@
 }
 
 .columna-listado {
-  position: sticky;
+   position: static;
   top: 1.5rem;
 }
 
