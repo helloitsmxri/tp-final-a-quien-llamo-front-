@@ -1,0 +1,120 @@
+.detalle-rating-wrapper {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.detalle-rating-card {
+  background-color: #ffffff;
+  border-radius: 22px;
+  border: 1px solid #e5e0f7;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(81, 54, 137, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.detalle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #ebe7fa;
+}
+
+.sobretitulo {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #7c5dfa;
+  margin-bottom: 0.25rem;
+}
+
+.detalle-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #513689;
+}
+
+.btn-volver-pill {
+  background-color: #f4f2fc;
+  color: #513689;
+  border: 1px solid #dcd5f7;
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-volver-pill:hover {
+  background-color: #e9e1fc;
+}
+
+.detalle-puntaje-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #faf8ff;
+  border: 1px solid #e5dcfa;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+}
+
+.estrellas-grandes {
+  font-size: 1.75rem;
+  color: #d4cce8;
+  letter-spacing: 0.1rem;
+}
+
+.estrellas-grandes .llena {
+  color: #f59e0b;
+}
+
+.numero-puntaje {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #513689;
+}
+
+.detalle-bloque h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #6b6185;
+}
+
+.comentario-texto {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #2d264b;
+}
+
+.chips-contenedor {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip-caracteristica {
+  background-color: #f4f0ff;
+  color: #513689;
+  border: 1px solid #dcd5f7;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.foto-resena {
+  max-width: 100%;
+  max-height: 360px;
+  border-radius: 14px;
+  border: 1px solid #e5e0f7;
+  object-fit: cover;
+}
