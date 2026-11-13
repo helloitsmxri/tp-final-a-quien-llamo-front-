@@ -1,0 +1,223 @@
+:host {
+  display: block;
+  font-family: "Creato Display", sans-serif;
+
+  /* Colores: si querés afinar el tono, se cambia acá */
+  --violeta-enlace: #5b3fd0;
+  --violeta-titulo: #6b4de6;
+  --violeta-seccion: #8b6cf0;
+  --violeta-etiqueta: #7c5ce6;
+  --violeta-oscuro: #4b3bb0;
+  --borde-campo: #d3cdf7;
+}
+
+.pagina-edicion {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  box-sizing: border-box;
+}
+
+/* ← VOLVER A MI PERFIL */
+
+.volver {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--violeta-enlace);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.volver:hover {
+  text-decoration: underline;
+}
+
+/* TARJETA */
+
+.tarjeta {
+  padding: 24px;
+  box-sizing: border-box;
+  background: #f4f3f7;
+  border-radius: 24px;
+  box-shadow: 0 6px 24px rgba(80, 60, 160, 0.12);
+}
+
+.tarjeta h1 {
+  margin: 0 0 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #dddbe4;
+  color: var(--violeta-titulo);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.titulo-seccion {
+  margin: 0 0 12px;
+  color: var(--violeta-seccion);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* FOTO */
+
+.foto-actual {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 18px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 3px solid #d3e6fa;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5b3fd0, #9a7df5);
+  color: #ffffff;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.foto-actual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* CAMPOS */
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.campo label {
+  color: var(--violeta-etiqueta);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.form-control {
+  width: 100%;
+  padding: 7px 12px;
+  box-sizing: border-box;
+  border: 1px solid var(--borde-campo);
+  border-radius: 10px;
+  background: #ffffff;
+  color: #30294a;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+/* El selector de archivo se deja con el botón nativo del navegador, como en el diseño */
+input[type="file"].form-control {
+  padding: 5px 8px;
+  font-size: 13px;
+}
+
+textarea.form-control {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.form-control:focus-visible {
+  outline: none;
+  border-color: var(--violeta-etiqueta);
+  box-shadow: 0 0 0 3px rgba(124, 92, 230, 0.18);
+}
+
+/* Angular marca así los campos con error una vez tocados */
+.form-control.ng-invalid.ng-touched {
+  border-color: #c34b5b;
+}
+
+.ayuda {
+  color: #777184;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.error {
+  display: block;
+  color: #b52e42;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* BOTONES */
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.btn-primario,
+.btn-secundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 92px;
+  padding: 8px 20px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Es un <a>, por eso lleva text-decoration: none */
+.btn-secundario {
+  border: 1.5px solid var(--violeta-oscuro);
+  background: transparent;
+  color: var(--violeta-oscuro);
+  text-decoration: none;
+}
+
+.btn-secundario:hover {
+  background: #ece8ff;
+}
+
+.btn-primario {
+  border: none;
+  background: linear-gradient(90deg, #5b3fd0, #9a7df5);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(91, 63, 208, 0.3);
+}
+
+.btn-primario:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.btn-primario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.estado {
+  padding: 24px;
+  text-align: center;
+  color: #777184;
+  font-size: 14px;
+}
+
+.estado.error {
+  color: #b52e42;
+}
+
+/* CELULAR: la tarjeta se achica, pero los botones siguen lado a lado */
+@media (max-width: 420px) {
+  .tarjeta {
+    padding: 18px;
+    border-radius: 20px;
+  }
+}
