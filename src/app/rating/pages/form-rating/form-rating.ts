@@ -9,13 +9,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { RatingService } from '../../services/rating';
 import { UsuarioService } from '../../../user/services/user';
-import { ChatModel } from '../../../chat/models/chat-model';
+import { TrabajoService } from '../../../trabajo/services/trabajo';
+import { TrabajoModel } from '../../../trabajo/models/trabajo-model';
+import { CaracteristicaService } from '../../../caracteristica/services/caracteristica';
 import { RatingModel } from '../../models/rating-model';
-import { ChatService } from '../../../chat/services/chat-service';
 
-interface ContactoCalificable {
-  uuid: string;
-  nombreCompleto: string;
+interface TrabajoCalificable {
+  uuidTrabajo: string;
+  etiqueta: string;
 }
 
 @Component({
@@ -28,40 +29,40 @@ interface ContactoCalificable {
 export class FormRating implements OnInit {
   private rService = inject(RatingService);
   private usuarioService = inject(UsuarioService);
-  private chatService = inject(ChatService);
+  private trabajoService = inject(TrabajoService);
+  private caracteristicaService = inject(CaracteristicaService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  @Input() uuidDestinatarioPreset: string = '';
-  @Input() nombreDestinatarioPreset: string = '';
+  @Input() uuidTrabajoPreset: string = '';
+  @Input() nombreTrabajoPreset: string = '';
   @Output() ratingCreado = new EventEmitter<void>();
   @Output() cerrar = new EventEmitter<void>();
 
-  uuidRemitente = new FormControl('', [Validators.required]);
-  uuidDestinatario = new FormControl('', [Validators.required]);
+  uuidTrabajo = new FormControl('', [Validators.required]);
   valoracion = new FormControl(5, [
     Validators.required,
     Validators.min(1),
     Validators.max(5)
   ]);
-  descripcion = new FormControl('', [Validators.maxLength(500)]);
+  descripcion = new FormControl('', [Validators.maxLength(2000)]);
   tipoFoto = new FormControl<string | null>(null);
   foto = new FormControl<string | null>(null);
-  caracteristicas = new FormControl<string[]>([], [Validators.required]);
+  uuidCaracteristicas = new FormControl<string[]>([], [Validators.required]);
 
   formulario = new FormGroup({
-    uuidRemitente: this.uuidRemitente,
-    uuidDestinatario: this.uuidDestinatario,
+    uuidTrabajo: this.uuidTrabajo,
     valoracion: this.valoracion,
     descripcion: this.descripcion,
     tipoFoto: this.tipoFoto,
     foto: this.foto,
-    caracteristicas: this.caracteristicas
+    uuidCaracteristicas: this.uuidCaracteristicas
   });
 
-  contactosDisponibles: ContactoCalificable[] = [];
-  nombreFijo = '';
-  cargandoContactos = false;
+  trabajosDisponibles: TrabajoCalificable[] = [];
+  caracteristicasDisponibles: any[] = [];
+  trabajoFijoLabel = '';
+  cargandoTrabajos = false;
   enviando = false;
   estrellasOpciones = [1, 2, 3, 4, 5];
 
@@ -74,58 +75,68 @@ export class FormRating implements OnInit {
   };
 
   ngOnInit(): void {
-    const paramUuid =
-      this.uuidDestinatarioPreset ||
-      this.route.snapshot.queryParamMap.get('uuidDestinatario') ||
+    const paramUuidTrabajo =
+      this.uuidTrabajoPreset ||
+      this.route.snapshot.queryParamMap.get('uuidTrabajo') ||
       '';
 
-    const paramNombre =
-      this.nombreDestinatarioPreset ||
-      this.route.snapshot.queryParamMap.get('nombreDestinatario') ||
+    const paramNombreTrabajo =
+      this.nombreTrabajoPreset ||
+      this.route.snapshot.queryParamMap.get('nombreTrabajo') ||
       '';
 
-    if (paramUuid) {
-      this.uuidDestinatario.setValue(paramUuid);
-      this.nombreFijo = paramNombre || 'Usuario seleccionado';
+    if (paramUuidTrabajo) {
+      this.uuidTrabajo.setValue(paramUuidTrabajo);
+      this.trabajoFijoLabel = paramNombreTrabajo || 'Trabajo seleccionado';
     }
 
+    // Cargar características disponibles desde el backend
+    this.caracteristicaService.getAll().subscribe({
+      next: (lista) => {
+        this.caracteristicasDisponibles = lista;
+      },
+      error: (err) => console.error('Error al cargar características:', err)
+    });
+
+    // Obtener perfil para saber si en cada trabajo soy cliente o técnico
     this.usuarioService.getMyProfile().subscribe({
       next: (perfil) => {
-        this.uuidRemitente.setValue(perfil.uuid);
-        if (!paramUuid) {
-          this.cargarContactosDesdeChats(perfil.uuid);
+        if (!paramUuidTrabajo) {
+          this.cargarMisTrabajos(perfil.uuid);
         }
       },
-      error: (err) => console.error('Error al obtener perfil del usuario:', err)
+      error: (err) => console.error('Error al obtener perfil:', err)
     });
   }
 
-  private cargarContactosDesdeChats(miUuid: string): void {
-    this.cargandoContactos = true;
+  private cargarMisTrabajos(miUuid: string): void {
+    this.cargandoTrabajos = true;
 
-    this.chatService.getMisChats().subscribe({
-      next: (chats: ChatModel[]) => {
-        const mapa = new Map<string, ContactoCalificable>();
+    this.trabajoService.getMyJobs().subscribe({
+      next: (trabajos: TrabajoModel[]) => {
+        // Filtramos solo los finalizados (si querés probar con todos, comentá el .filter)
+        const finalizados = trabajos.filter(
+          (t) => String(t.estadoTrabajo).toUpperCase() === 'FINALIZADO'
+        );
 
-        for (const c of chats) {
-          const soyElCliente = c.uuidUsuario === miUuid;
-          const uuidOtraPersona = soyElCliente ? c.uuidTecnico : c.uuidUsuario;
-          const nombreOtraPersona = soyElCliente ? c.nombreTecnico : c.nombreUsuario;
+        this.trabajosDisponibles = finalizados.map((t) => {
+          const soyElCliente = t.uuidCliente === miUuid;
+          const otraPersona = soyElCliente
+            ? `${t.nombreTecnico} ${t.apellidoTecnico}`.trim()
+            : `${t.nombreCliente} ${t.apellidoCliente}`.trim();
+          const rolOtro = soyElCliente ? 'Técnico' : 'Cliente';
 
-          if (uuidOtraPersona && uuidOtraPersona !== miUuid && !mapa.has(uuidOtraPersona)) {
-            mapa.set(uuidOtraPersona, {
-              uuid: uuidOtraPersona,
-              nombreCompleto: nombreOtraPersona || 'Usuario'
-            });
-          }
-        }
+          return {
+            uuidTrabajo: t.uuid,
+            etiqueta: `${t.nombreProyecto} — ${otraPersona} (${rolOtro})`
+          };
+        });
 
-        this.contactosDisponibles = Array.from(mapa.values());
-        this.cargandoContactos = false;
+        this.cargandoTrabajos = false;
       },
       error: (err) => {
-        console.error('Error al cargar contactos de chats:', err);
-        this.cargandoContactos = false;
+        console.error('Error al cargar trabajos:', err);
+        this.cargandoTrabajos = false;
       }
     });
   }
@@ -135,24 +146,22 @@ export class FormRating implements OnInit {
     this.valoracion.markAsTouched();
   }
 
-  agregarCaracteristicas(texto: string): void {
-    const nuevas = texto
-      .split(',')
-      .map((c) => c.trim())
-      .filter((c) => c.length > 0);
+  toggleCaracteristica(uuid: string): void {
+    const actuales: string[] = [...(this.uuidCaracteristicas.value || [])];
+    const index = actuales.indexOf(uuid);
 
-    if (nuevas.length === 0) return;
+    if (index >= 0) {
+      actuales.splice(index, 1);
+    } else {
+      actuales.push(uuid);
+    }
 
-    const actuales: string[] = this.caracteristicas.value || [];
-    this.caracteristicas.setValue(Array.from(new Set([...actuales, ...nuevas])));
-    this.caracteristicas.markAsTouched();
+    this.uuidCaracteristicas.setValue(actuales);
+    this.uuidCaracteristicas.markAsTouched();
   }
 
-  eliminarCaracteristica(index: number): void {
-    const actuales: string[] = [...(this.caracteristicas.value || [])];
-    actuales.splice(index, 1);
-    this.caracteristicas.setValue(actuales);
-    this.caracteristicas.markAsTouched();
+  estaSeleccionada(uuid: string): boolean {
+    return (this.uuidCaracteristicas.value || []).includes(uuid);
   }
 
   registrar(): void {
@@ -165,13 +174,12 @@ export class FormRating implements OnInit {
     const raw = this.formulario.getRawValue();
 
     const rating: RatingModel = {
-      uuidRemitente: raw.uuidRemitente!,
-      uuidDestinatario: raw.uuidDestinatario!,
+      uuidTrabajo: raw.uuidTrabajo!,
       valoracion: raw.valoracion!,
       descripcion: raw.descripcion?.trim() || undefined,
-      tipoFoto: raw.tipoFoto ?? '',
+      tipoFoto: raw.tipoFoto || undefined,
       foto: raw.foto || null,
-      uuidCaracteristicas: raw.caracteristicas || []
+      uuidCaracteristicas: raw.uuidCaracteristicas || []
     };
 
     this.rService.createRating(rating).subscribe({
@@ -187,7 +195,8 @@ export class FormRating implements OnInit {
       error: (e) => {
         this.enviando = false;
         console.error('Error al registrar la calificación:', e);
-        alert('No se pudo publicar la reseña. Verificá los datos e intentá nuevamente.');
+        const msg = e?.error?.mensaje || 'No se pudo publicar la reseña. Verificá los datos.';
+        alert(msg);
       }
     });
   }
