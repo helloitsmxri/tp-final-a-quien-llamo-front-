@@ -1,28 +1,32 @@
-
+@if (cargando) {
+    <div class="overlay-cargando">
+        <div class="cargando-modal">
+            <span class="spinner"></span>
+            <h3>Registrando trabajo...</h3>
+            <p>Por favor, esperá un momento.</p>
+        </div>
+    </div>
+}
 <div class="register-container">
     <div class="register-card">
         <h2>Registrar trabajo</h2>
         <p>Completá los datos para registrar un trabajo</p>
 
-        <form class="formulario" [formGroup]="formulario" (ngSubmit)="manejarEnvio()">
+        @if (mensajeExito) {
+            <div class="mensaje-exito">
+                {{ mensajeExito }}
+            </div>
+        }
 
-            <!-- UUID del presupuesto -->
-            <fieldset class="form-group">
-                <label for="uuidPresupuesto">Presupuesto:</label>
-                <input
-                    type="text"
-                    id="uuidPresupuesto"
-                    formControlName="uuidPresupuesto"
-                    placeholder="Ingresá el UUID del presupuesto">
+        @if (mensajeError) {
+            <div class="mensaje-error">
+                {{ mensajeError }}
+            </div>
+        }
 
-                @if (uuidPresupuesto.invalid && uuidPresupuesto.touched) {
-                    <div class="error">
-                        @if (uuidPresupuesto.hasError('required')) {
-                            <span>El presupuesto es obligatorio.</span>
-                        }
-                    </div>
-                }
-            </fieldset>
+        <form class="formulario"
+              [formGroup]="formulario"
+              (ngSubmit)="manejarEnvio()">
 
             <!-- Descripción del trabajo -->
             <fieldset class="form-group">
@@ -83,9 +87,8 @@
                 }
             </fieldset>
 
-            <!-- Botón de envío -->
-            <button type="submit" [disabled]="formulario.invalid">
-                Registrar trabajo
+            <button type="submit" [disabled]="formulario.invalid || cargando || !uuidPresupuesto">
+                {{ cargando ? 'Registrando...' : 'Registrar trabajo' }}
             </button>
 
         </form>

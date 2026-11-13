@@ -7,6 +7,9 @@ import {
   Validators
 } from '@angular/forms';
 
+import { ActivatedRoute } from '@angular/router';
+import { forkJoin, timer } from 'rxjs';
+
 import { TrabajoService } from '../../services/trabajo';
 import { TrabajoRequestModel } from '../../models/trabajo-request-model';
 
@@ -19,18 +22,23 @@ import { TrabajoRequestModel } from '../../models/trabajo-request-model';
 })
 export class FormTrabajo {
 
-  uuidPresupuesto: FormControl;
+  // El UUID se obtiene directamente de la URL.
+  uuidPresupuesto = '';
+
   descripcionTrabajo: FormControl;
   fechaEstimadaInicio: FormControl;
   fechaEstimadaFin: FormControl;
 
   formulario: FormGroup;
 
-  constructor(public tService: TrabajoService) {
+  cargando = false;
+  mensajeExito = '';
+  mensajeError = '';
 
-    this.uuidPresupuesto = new FormControl('', [
-      Validators.required
-    ]);
+  constructor(
+    public tService: TrabajoService,
+    private route: ActivatedRoute
+  ) {
 
     this.descripcionTrabajo = new FormControl('', [
       Validators.required,
@@ -47,50 +55,85 @@ export class FormTrabajo {
     ]);
 
     this.formulario = new FormGroup({
-      uuidPresupuesto: this.uuidPresupuesto,
       descripcionTrabajo: this.descripcionTrabajo,
       fechaEstimadaInicio: this.fechaEstimadaInicio,
       fechaEstimadaFin: this.fechaEstimadaFin
     });
+
+    // Recuperar el UUID del presupuesto desde la URL.
+    this.route.paramMap.subscribe(params => {
+      this.uuidPresupuesto = params.get('uuid') ?? '';
+    });
   }
 
   manejarEnvio(): void {
+
+    this.mensajeExito = '';
+    this.mensajeError = '';
 
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       return;
     }
 
+    if (!this.uuidPresupuesto) {
+      this.mensajeError = 'No se recibió el UUID del presupuesto.';
+      return;
+    }
+
     const trabajo: TrabajoRequestModel = {
-      uuidPresupuesto: this.uuidPresupuesto.value,
+      uuidPresupuesto: this.uuidPresupuesto,
       descripcionTrabajo: this.descripcionTrabajo.value,
       fechaEstimadaInicio: this.fechaEstimadaInicio.value,
       fechaEstimadaFin: this.fechaEstimadaFin.value
     };
 
-    if (new Date(trabajo.fechaEstimadaFin) < new Date(trabajo.fechaEstimadaInicio)) {
-      console.error('La fecha de finalizacion no puede ser anterior a la fecha de inicio.');
+    if (
+      new Date(trabajo.fechaEstimadaFin) <
+      new Date(trabajo.fechaEstimadaInicio)
+    ) {
+      this.mensajeError =
+        'La fecha de finalización no puede ser anterior a la fecha de inicio.';
       return;
     }
 
-    this.tService.storeTrabajo(trabajo).subscribe({
-      next: (respuesta) => {
+    this.cargando = true;
+
+    // La petición se ejecuta mientras transcurren los 3 segundos.
+    // Se espera a que ambas operaciones terminen para mostrar el resultado.
+    forkJoin({
+      respuesta: this.tService.storeTrabajo(trabajo),
+      espera: timer(3000)
+    }).subscribe({
+      next: ({ respuesta }) => {
+
         console.log('Trabajo registrado correctamente', respuesta);
 
+        this.cargando = false;
+        this.mensajeExito = '¡Trabajo registrado correctamente!';
+
         this.formulario.reset({
-          uuidPresupuesto: '',
           descripcionTrabajo: '',
           fechaEstimadaInicio: '',
           fechaEstimadaFin: ''
         });
       },
+
       error: (e) => {
+
         console.error('Error al registrar trabajo', e);
+
+        this.cargando = false;
+        this.mensajeError =
+          'No se pudo registrar el trabajo. Intentá nuevamente.';
       }
     });
   }
 
   verSubmit(): void {
-    console.log(this.formulario.value);
+    console.log({
+      uuidPresupuesto: this.uuidPresupuesto,
+      ...this.formulario.value
+    });
   }
 }

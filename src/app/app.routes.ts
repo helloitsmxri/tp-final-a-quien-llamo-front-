@@ -87,7 +87,7 @@ export const routes: Routes = [
 
 
     // TRABAJOS
-{path: 'trabajos', component: FormTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/:uuid', component: FormTrabajo, canActivate: [authGuard]},
 {path: 'trabajos/lista', component: ListTrabajo, canActivate: [authGuard]},
 {path: 'mis-trabajos', component: ListTrabajo, canActivate: [authGuard]},
 {path: 'trabajos/:uuid', component: DetalleTrabajo, canActivate: [authGuard]},
