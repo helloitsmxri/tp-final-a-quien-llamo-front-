@@ -15,8 +15,9 @@
 /* CONTENEDOR PRINCIPAL */
 
 .detalle-denuncia {
-    max-width: 900px;
-    margin: 2rem auto;
+    width: 100%;
+    max-width: none;
+    margin: 0;
     padding: 2.5rem 3rem;
     border-radius: var(--radio-tarjeta);
     background: var(--color-tarjeta);

@@ -15,52 +15,65 @@
         <button type="button" [class.activo]="estadoSeleccionado === estados.Rechazada" [attr.aria-pressed]="estadoSeleccionado === estados.Rechazada" (click)="filtrarPorEstado(estados.Rechazada)">Rechazadas</button>
     </div>
 
-    @if (cargando) {
-        <p class="mensaje" role="status">Cargando denuncias...</p>
-    } @else if (error) {
-        <div class="mensaje-error" role="alert">
-            <p>No se pudieron cargar las denuncias.</p>
-            <button type="button" (click)="cargarDenuncias()">Volver a intentar</button>
-        </div>
-    } @else {
-        @if (denunciasFiltradas.length === 0) {
-            <p class="sin-denuncias">{{ denuncias.length === 0 ? mensajeSinDenuncias : 'No hay denuncias para mostrar con este filtro.' }}</p>
-        } @else {
-            <div class="lista-denuncias">
-                @for (denuncia of denunciasFiltradas; track denuncia.uuid) {
-                    <article class="denuncia-card">
-                        <button type="button" class="boton-denuncia" [class.seleccionada]="denunciaSeleccionada?.uuid === denuncia.uuid" [attr.aria-pressed]="denunciaSeleccionada?.uuid === denuncia.uuid" (click)="seleccionarDenuncia(denuncia)">
-                            <div class="card-superior">
-                                <span class="estado" [attr.data-estado]="denuncia.estadoDenuncia">{{ denuncia.estadoDenuncia.replace('_', ' ') }}</span>
-                                <span class="fecha">{{ denuncia.fechaDenuncia | date:'dd/MM/yyyy' }}</span>
-                            </div>
+    <div class="contenido-denuncias">
 
-                            @if (tipoSeleccionado === 'CREADAS') {
-                                <h2>Denuncia realizada</h2>
-                                <p>Persona denunciada: {{ denuncia.nombreDenunciado }} {{ denuncia.apellidoDenunciado }}</p>
-                            } @else {
-                                <h2>Denuncia recibida</h2>
-                                <p>Persona denunciante: {{ denuncia.nombreDenunciante }} {{ denuncia.apellidoDenunciante }}</p>
-                            }
+        <!-- LISTADO DE DENUNCIAS -->
+        <section class="panel-listado" aria-label="Listado de denuncias">
+            @if (cargando) {
+                <p class="mensaje" role="status">Cargando denuncias...</p>
+            } @else if (error) {
+                <div class="mensaje-error" role="alert">
+                    <p>No se pudieron cargar las denuncias.</p>
+                    <button type="button" (click)="cargarDenuncias()">Volver a intentar</button>
+                </div>
+            } @else {
+                @if (denunciasFiltradas.length === 0) {
+                    <p class="sin-denuncias">{{ denuncias.length === 0 ? mensajeSinDenuncias : 'No hay denuncias para mostrar con este filtro.' }}</p>
+                } @else {
+                    <div class="lista-denuncias">
+                        @for (denuncia of denunciasFiltradas; track denuncia.uuid) {
+                            <article class="denuncia-card">
+                                <button type="button" class="boton-denuncia" [class.seleccionada]="denunciaSeleccionada?.uuid === denuncia.uuid" [attr.aria-pressed]="denunciaSeleccionada?.uuid === denuncia.uuid" (click)="seleccionarDenuncia(denuncia)">
+                                    <div class="card-superior">
+                                        <span class="estado" [attr.data-estado]="denuncia.estadoDenuncia">{{ denuncia.estadoDenuncia.replace('_', ' ') }}</span>
+                                        <span class="fecha">{{ denuncia.fechaDenuncia | date:'dd/MM/yyyy' }}</span>
+                                    </div>
 
-                            <p class="motivo">{{ denuncia.motivoDenuncia }}</p>
+                                    @if (tipoSeleccionado === 'CREADAS') {
+                                        <h2>Denuncia realizada</h2>
+                                        <p>Persona denunciada: {{ denuncia.nombreDenunciado }} {{ denuncia.apellidoDenunciado }}</p>
+                                    } @else {
+                                        <h2>Denuncia recibida</h2>
+                                        <p>Persona denunciante: {{ denuncia.nombreDenunciante }} {{ denuncia.apellidoDenunciante }}</p>
+                                    }
 
-                            @if (denuncia.tieneFoto) {
-                                <span class="tiene-foto"><span aria-hidden="true">📎</span> Tiene una imagen adjunta</span>
-                            }
+                                    <p class="motivo">{{ denuncia.motivoDenuncia }}</p>
 
-                            <span class="ver-detalle">Ver detalle</span>
-                        </button>
-                    </article>
+                                    @if (denuncia.tieneFoto) {
+                                        <span class="tiene-foto"><span aria-hidden="true">📎</span> Tiene una imagen adjunta</span>
+                                    }
+
+                                    <span class="ver-detalle">Ver detalle</span>
+                                </button>
+                            </article>
+                        }
+                    </div>
                 }
-            </div>
-        }
-    }
-
-    <!--Con esto sería q abrimos las denuncias para ver mas información!!! -->
-    @if (denunciaSeleccionada) {
-        <section class="contenedor-detalle" aria-label="Detalle de la denuncia seleccionada">
-            <app-detalle-denuncia [denuncia]="denunciaSeleccionada" />
+            }
         </section>
-    }
+
+        <!-- DETALLE DE LA DENUNCIA -->
+        <section class="panel-detalle" aria-label="Detalle de la denuncia seleccionada">
+            @if (denunciaSeleccionada) {
+                <app-detalle-denuncia [denuncia]="denunciaSeleccionada" />
+            } @else {
+                <div class="detalle-vacio">
+                    <span class="icono-detalle" aria-hidden="true">📋</span>
+                    <h2>Detalle de la denuncia</h2>
+                    <p>Seleccioná una denuncia del listado para consultar toda su información.</p>
+                </div>
+            }
+        </section>
+
+    </div>
 </section>
