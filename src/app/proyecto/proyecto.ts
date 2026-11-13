@@ -184,6 +184,6 @@ export class Proyecto implements OnInit {
   }
 
   volverAlPerfil(): void {
-  this.router.navigate(['/perfil-tecnico', this.uuidTecnico]);
+  this.router.navigate(['/mi-perfil-tecnico']);
 }
 }

@@ -28,7 +28,7 @@ import {
 } from '../../../proyecto/utils/proyecto-texto';
 import { soloLetras, contieneLetras, validarEdad, TIPOS_IMAGEN, MAX_FOTO_MB } from '../../../utils/validadores-texto';
 
-const CLAVE= /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+const CLAVE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/;
 function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
   return grupo.get('clave')?.value === grupo.get('repetirClave')?.value
     ? null
@@ -298,7 +298,7 @@ export class FormularioRegistro {
 
     if (c.hasError('pattern')) {
       switch (campo) {
-        case 'clave': return 'Debe tener mayúscula, minúscula, número y un carácter especial (@$!%*?&).';
+        case 'clave': return 'Debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.';
         case 'dni': return 'El DNI debe tener 8 números.';
         case 'telefono': return 'El teléfono debe tener 10 números, sin guiones ni espacios.';
         case 'cuit': return 'El CUIT debe tener 11 números, sin guiones.';
@@ -445,7 +445,7 @@ export class FormularioRegistro {
       next: (uuidTecnico) => {
         this.enviado = false;
         // la sesion queda iniciada: se va directo al perfil del tecnico (cambiar por '/' si se prefiere el inicio)
-        this.router.navigate(['/perfil-tecnico', uuidTecnico]);
+        this.router.navigate(['/mi-perfil-tecnico']);
       },
       error: (e) => {
         this.enviado = false;

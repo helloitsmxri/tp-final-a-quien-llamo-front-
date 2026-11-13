@@ -1,19 +1,108 @@
-<div class="container">
-    <ul>
-        @if(trabajos){
+
+<section class="mis-trabajos">
+
+    <header class="encabezado">
+        <h1>Mis Trabajos</h1>
+        <p>Consultá y gestioná los trabajos registrados en la plataforma.</p>
+    </header>
+
+    @if (cargando) {
+        <div class="estado-mensaje">
+            <p>Cargando trabajos...</p>
+        </div>
+    }
+    @else if (error) {
+        <div class="estado-mensaje error">
+            <p>No se pudieron cargar los trabajos.</p>
+            <button type="button" (click)="listarTrabajos()">
+                Reintentar
+            </button>
+        </div>
+    }
+    @else if (trabajos.length === 0) {
+        <div class="estado-vacio">
+            <h3>No hay trabajos registrados</h3>
+            <p>Cuando tengas trabajos disponibles, aparecerán en esta sección.</p>
+        </div>
+    }
+    @else {
+        <div class="lista-trabajos">
+
             @for (trabajo of trabajos; track trabajo.uuid) {
-                <li>
-                    <p>presupuesto : {{trabajo.presupuesto}}</p>
-                    <p>descripcionTrabajo : {{trabajo.descripcionTrabajo}}</p>
-                    <p>fechaEstimadaInicio : {{trabajo.fechaEstimadaInicio}}</p>
-                    <p>fechaEstimadaFin : {{trabajo.fechaEstimadaFin}}</p>
-                    <p>estadoTrabajo : {{trabajo.estadoTrabajo}}</p>
-                </li>    
+
+                <article class="trabajo-card">
+
+                    <div class="card-superior">
+
+                        <span class="estado"
+                              [attr.data-estado]="trabajo.estadoTrabajo">
+                            {{ trabajo.estadoTrabajo }}
+                        </span>
+
+                        <span class="fecha">
+                            Inicio: {{ trabajo.fechaEstimadaInicio }}
+                        </span>
+
+                    </div>
+
+                    <div class="card-contenido">
+
+                        <h2>{{ trabajo.nombreProyecto }}</h2>
+
+                        <p class="descripcion">
+                            {{ trabajo.descripcionTrabajo }}
+                        </p>
+
+                        <div class="informacion-trabajo">
+
+                            <div>
+                                <span class="etiqueta">Cliente</span>
+                                <p>
+                                    {{ trabajo.nombreCliente }}
+                                    {{ trabajo.apellidoCliente }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <span class="etiqueta">Técnico</span>
+                                <p>
+                                    {{ trabajo.nombreTecnico }}
+                                    {{ trabajo.apellidoTecnico }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <span class="etiqueta">Fecha estimada de finalización</span>
+                                <p>{{ trabajo.fechaEstimadaFin }}</p>
+                            </div>
+
+                            <div>
+                                <span class="etiqueta">Presupuesto</span>
+                                <p>{{ trabajo.uuidPresupuesto }}</p>
+                            </div>
+
+                            <div>
+                                <span class="etiqueta">Chat</span>
+                                <p>
+                                    {{ trabajo.uuidChat ?? 'No disponible' }}
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <footer class="card-inferior">
+                        <span class="precio">
+                            {{ trabajo.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}
+                        </span>
+                    </footer>
+
+                </article>
+
             }
-        }@else{
-            <li>
-                no se encontraron trabajos!
-            </li>
-        }
-    </ul>
-</div>
+
+        </div>
+    }
+
+</section>

@@ -204,10 +204,18 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   }
 
   onPresupuestoCreado(nuevo: PresupuestoModel): void {
-    this.mostrandoCrearPresupuesto = false;
+  this.mostrandoCrearPresupuesto = false;
+
+  const existe = this.presupuestosDelChat.some(
+    p => p.uuid === nuevo.uuid
+  );
+
+  if (!existe) {
     this.presupuestosDelChat.unshift(nuevo);
-    this.presupuestoSeleccionado = nuevo;
   }
+
+  this.presupuestoSeleccionado = nuevo;
+}
 
   onPresupuestoActualizado(actualizado: PresupuestoModel): void {
     const idx = this.presupuestosDelChat.findIndex((p) => p.uuid === actualizado.uuid);

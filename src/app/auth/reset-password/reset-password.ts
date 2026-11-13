@@ -27,14 +27,15 @@ export class ResetPassword {
   completado = false;
 
   formulario = new FormGroup({
-    newPassword: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8)
-    ]),
-    confirmarPassword: new FormControl('', [
-      Validators.required
-    ])
-  });
+  newPassword: new FormControl('', [
+    Validators.required,
+    Validators.minLength(8),
+    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/)
+  ]),
+  confirmarPassword: new FormControl('', [
+    Validators.required
+  ])
+});
 
   constructor() {
     this.token = this.route.snapshot.queryParamMap.get('token') ?? '';

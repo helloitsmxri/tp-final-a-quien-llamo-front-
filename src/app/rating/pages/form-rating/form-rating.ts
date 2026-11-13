@@ -1,14 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { RatingService } from '../../services/rating';
+import { UsuarioService } from '../../../user/services/user';
+import { TrabajoService } from '../../../trabajo/services/trabajo';
+import { TrabajoModel } from '../../../trabajo/models/trabajo-model';
+import { CaracteristicaService } from '../../../caracteristica/services/caracteristica';
 import { RatingModel } from '../../models/rating-model';
-import { FormRatingModel } from '../../models/form-rating-model';
+
+interface TrabajoCalificable {
+  uuidTrabajo: string;
+  etiqueta: string;
+}
 
 @Component({
   selector: 'app-form-rating',
@@ -17,101 +26,186 @@ import { FormRatingModel } from '../../models/form-rating-model';
   templateUrl: './form-rating.html',
   styleUrl: './form-rating.css',
 })
-export class FormRating {
+export class FormRating implements OnInit {
+  private rService = inject(RatingService);
+  private usuarioService = inject(UsuarioService);
+  private trabajoService = inject(TrabajoService);
+  private caracteristicaService = inject(CaracteristicaService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  uuidRemitente: FormControl;
-  uuidDestinatario: FormControl;
-  usuarioDestinatario: FormControl;
-  valoracion: FormControl;
-  descripcion: FormControl;
-  tipoFoto: FormControl;
-  foto: FormControl;
-  caracteristicas: FormControl;
+  @Input() uuidTrabajoPreset: string = '';
+  @Input() nombreTrabajoPreset: string = '';
+  @Output() ratingCreado = new EventEmitter<void>();
+  @Output() cerrar = new EventEmitter<void>();
 
-  formulario: FormGroup;
+  uuidTrabajo = new FormControl('', [Validators.required]);
+  valoracion = new FormControl(5, [
+    Validators.required,
+    Validators.min(1),
+    Validators.max(5)
+  ]);
+  descripcion = new FormControl('', [Validators.maxLength(2000)]);
+  tipoFoto = new FormControl<string | null>(null);
+  foto = new FormControl<string | null>(null);
+  uuidCaracteristicas = new FormControl<string[]>([], [Validators.required]);
 
-  constructor(public rService: RatingService) {
+  formulario = new FormGroup({
+    uuidTrabajo: this.uuidTrabajo,
+    valoracion: this.valoracion,
+    descripcion: this.descripcion,
+    tipoFoto: this.tipoFoto,
+    foto: this.foto,
+    uuidCaracteristicas: this.uuidCaracteristicas
+  });
 
-    this.uuidRemitente = new FormControl('', [Validators.required]);
+  trabajosDisponibles: TrabajoCalificable[] = [];
+  caracteristicasDisponibles: any[] = [];
+  trabajoFijoLabel = '';
+  cargandoTrabajos = false;
+  enviando = false;
+  estrellasOpciones = [1, 2, 3, 4, 5];
 
-    this.uuidDestinatario = new FormControl('', [Validators.required]);
+  etiquetasEstrellas: Record<number, string> = {
+    1: '1 - Muy mala',
+    2: '2 - Mala',
+    3: '3 - Regular',
+    4: '4 - Buena',
+    5: '5 - Excelente'
+  };
 
-    this.usuarioDestinatario = new FormControl('', [Validators.required]);
+  ngOnInit(): void {
+    const paramUuidTrabajo =
+      this.uuidTrabajoPreset ||
+      this.route.snapshot.queryParamMap.get('uuidTrabajo') ||
+      '';
 
-    this.valoracion = new FormControl(5, [
-      Validators.required,
-      Validators.min(1),
-      Validators.max(5)
-    ]);
+    const paramNombreTrabajo =
+      this.nombreTrabajoPreset ||
+      this.route.snapshot.queryParamMap.get('nombreTrabajo') ||
+      '';
 
-    this.descripcion = new FormControl('', [Validators.maxLength(500)]);
+    if (paramUuidTrabajo) {
+      this.uuidTrabajo.setValue(paramUuidTrabajo);
+      this.trabajoFijoLabel = paramNombreTrabajo || 'Trabajo seleccionado';
+    }
 
-    this.tipoFoto = new FormControl(null);
+    // Cargar características disponibles desde el backend
+    this.caracteristicaService.getAll().subscribe({
+      next: (lista) => {
+        this.caracteristicasDisponibles = lista;
+      },
+      error: (err) => console.error('Error al cargar características:', err)
+    });
 
-    this.foto = new FormControl(null);
-
-    this.caracteristicas = new FormControl([], [Validators.required]);
-
-    this.formulario = new FormGroup({
-      uuidRemitente: this.uuidRemitente,
-      uuidDestinatario: this.uuidDestinatario,
-      usuarioDestinatario: this.usuarioDestinatario,
-      valoracion: this.valoracion,
-      descripcion: this.descripcion,
-      tipoFoto: this.tipoFoto,
-      foto: this.foto,
-      caracteristicas: this.caracteristicas
+    // Obtener perfil para saber si en cada trabajo soy cliente o técnico
+    this.usuarioService.getMyProfile().subscribe({
+      next: (perfil) => {
+        if (!paramUuidTrabajo) {
+          this.cargarMisTrabajos(perfil.uuid);
+        }
+      },
+      error: (err) => console.error('Error al obtener perfil:', err)
     });
   }
 
-  // Suma las características escritas (separadas por coma) a las que ya hay
-  agregarCaracteristicas(texto: string): void {
-    const nuevas = texto
-      .split(',')
-      .map((c) => c.trim())
-      .filter((c) => c.length > 0);
+  private cargarMisTrabajos(miUuid: string): void {
+    this.cargandoTrabajos = true;
 
-    this.caracteristicas.setValue([...this.caracteristicas.value, ...nuevas]);
-    this.caracteristicas.markAsTouched();
-  }
+    this.trabajoService.getMyJobs().subscribe({
+      next: (trabajos: TrabajoModel[]) => {
+        // Filtramos solo los finalizados (si querés probar con todos, comentá el .filter)
+        const finalizados = trabajos.filter(
+          (t) => String(t.estadoTrabajo).toUpperCase() === 'FINALIZADO'
+        );
 
-  registrar(): void {
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      return;
-    }
+        this.trabajosDisponibles = finalizados.map((t) => {
+          const soyElCliente = t.uuidCliente === miUuid;
+          const otraPersona = soyElCliente
+            ? `${t.nombreTecnico} ${t.apellidoTecnico}`.trim()
+            : `${t.nombreCliente} ${t.apellidoCliente}`.trim();
+          const rolOtro = soyElCliente ? 'Técnico' : 'Cliente';
 
-    const form: FormRatingModel = this.formulario.value;
-
-    // El formulario y el back no usan los mismos nombres: se convierte antes de enviar
-    const rating: RatingModel = {
-      uuidRemitente: form.uuidRemitente,
-      uuidDestinatario: form.uuidDestinatario,
-      valoracion: form.valoracion,
-      descripcion: form.descripcion ?? undefined,
-      tipoFoto: form.tipoFoto ?? '',
-      foto: form.foto,
-      uuidCaracteristicas: form.caracteristicas
-    };
-
-    this.rService.createRatings(rating).subscribe({
-      next: (respuesta) => {
-        console.log('Calificación registrada correctamente', respuesta);
-        this.formulario.reset({
-          valoracion: 5,
-          descripcion: '',
-          tipoFoto: null,
-          foto: null,
-          caracteristicas: []
+          return {
+            uuidTrabajo: t.uuid,
+            etiqueta: `${t.nombreProyecto} — ${otraPersona} (${rolOtro})`
+          };
         });
+
+        this.cargandoTrabajos = false;
       },
-      error: (e) => {
-        console.error('Error al registrar la calificación', e);
+      error: (err) => {
+        console.error('Error al cargar trabajos:', err);
+        this.cargandoTrabajos = false;
       }
     });
   }
 
-  verSubmit(): void {
-    console.log(this.formulario.value);
+  seleccionarEstrellas(puntaje: number): void {
+    this.valoracion.setValue(puntaje);
+    this.valoracion.markAsTouched();
+  }
+
+  toggleCaracteristica(uuid: string): void {
+    const actuales: string[] = [...(this.uuidCaracteristicas.value || [])];
+    const index = actuales.indexOf(uuid);
+
+    if (index >= 0) {
+      actuales.splice(index, 1);
+    } else {
+      actuales.push(uuid);
+    }
+
+    this.uuidCaracteristicas.setValue(actuales);
+    this.uuidCaracteristicas.markAsTouched();
+  }
+
+  estaSeleccionada(uuid: string): boolean {
+    return (this.uuidCaracteristicas.value || []).includes(uuid);
+  }
+
+  registrar(): void {
+    if (this.formulario.invalid || this.enviando) {
+      this.formulario.markAllAsTouched();
+      return;
+    }
+
+    this.enviando = true;
+    const raw = this.formulario.getRawValue();
+
+    const rating: RatingModel = {
+      uuidTrabajo: raw.uuidTrabajo!,
+      valoracion: raw.valoracion!,
+      descripcion: raw.descripcion?.trim() || undefined,
+      tipoFoto: raw.tipoFoto || undefined,
+      foto: raw.foto || null,
+      uuidCaracteristicas: raw.uuidCaracteristicas || []
+    };
+
+    this.rService.createRating(rating).subscribe({
+      next: () => {
+        this.enviando = false;
+        alert('¡Reseña publicada con éxito!');
+        if (this.ratingCreado.observed) {
+          this.ratingCreado.emit();
+        } else {
+          this.router.navigate(['/mis-resenas']);
+        }
+      },
+      error: (e) => {
+        this.enviando = false;
+        console.error('Error al registrar la calificación:', e);
+        const msg = e?.error?.mensaje || 'No se pudo publicar la reseña. Verificá los datos.';
+        alert(msg);
+      }
+    });
+  }
+
+  cancelar(): void {
+    if (this.cerrar.observed) {
+      this.cerrar.emit();
+    } else {
+      this.router.navigate(['/mis-resenas']);
+    }
   }
 }
