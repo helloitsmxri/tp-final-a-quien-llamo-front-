@@ -44,6 +44,12 @@ export class ListTrabajo implements OnInit {
     return !!this.miUuid && trabajo.uuidUsuarioTecnico === this.miUuid;
   }
 
+    esClienteDelTrabajo(trabajo: TrabajoModel): boolean {
+    return !!this.miUuid
+      && trabajo.uuidCliente === this.miUuid
+      && !this.esTecnicoDelTrabajo(trabajo);
+  }
+
   estaPendiente(trabajo: TrabajoModel): boolean {
     return String(trabajo.estadoTrabajo) === EstadoTrabajo.Pendiente;
   }

@@ -22,7 +22,7 @@ import { TrabajoRequestModel } from '../../models/trabajo-request-model';
 })
 export class FormTrabajo {
 
-  // El UUID se obtiene directamente de la URL.
+  // UUID interno, no es un campo rellenable.
   uuidPresupuesto = '';
 
   descripcionTrabajo: FormControl;
@@ -60,7 +60,7 @@ export class FormTrabajo {
       fechaEstimadaFin: this.fechaEstimadaFin
     });
 
-    // Recuperar el UUID del presupuesto desde la URL.
+    // Obtener automáticamente el UUID del presupuesto desde la URL.
     this.route.paramMap.subscribe(params => {
       this.uuidPresupuesto = params.get('uuid') ?? '';
     });
@@ -99,8 +99,6 @@ export class FormTrabajo {
 
     this.cargando = true;
 
-    // La petición se ejecuta mientras transcurren los 3 segundos.
-    // Se espera a que ambas operaciones terminen para mostrar el resultado.
     forkJoin({
       respuesta: this.tService.storeTrabajo(trabajo),
       espera: timer(3000)
@@ -112,11 +110,7 @@ export class FormTrabajo {
         this.cargando = false;
         this.mensajeExito = '¡Trabajo registrado correctamente!';
 
-        this.formulario.reset({
-          descripcionTrabajo: '',
-          fechaEstimadaInicio: '',
-          fechaEstimadaFin: ''
-        });
+        this.formulario.reset();
       },
 
       error: (e) => {

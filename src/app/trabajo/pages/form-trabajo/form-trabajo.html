@@ -87,7 +87,9 @@
                 }
             </fieldset>
 
-            <button type="submit" [disabled]="formulario.invalid || cargando || !uuidPresupuesto">
+            <button
+                type="submit"
+                [disabled]="formulario.invalid || cargando || !uuidPresupuesto">
                 {{ cargando ? 'Registrando...' : 'Registrar trabajo' }}
             </button>
 

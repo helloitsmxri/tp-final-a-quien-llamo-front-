@@ -1,8 +1,10 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+
 import { PagoService } from '../../services/pago';
-import { PagoModel } from '../../models/pago-model';
+import { PagoResponseModel } from '../../models/pago-response-model';
+import { DatePipe } from '@angular/common';
 
 type MetodoDetallePago =
   | 'uuid'
@@ -11,7 +13,7 @@ type MetodoDetallePago =
 @Component({
   selector: 'app-detalle-pago',
   standalone: true,
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './detalle-pago.html',
   styleUrl: './detalle-pago.css',
 })
@@ -20,7 +22,8 @@ export class DetallePago implements OnInit {
   @Input() metodo: MetodoDetallePago = 'uuid';
   @Input() identificador: string | null = null;
 
-  pago: PagoModel | undefined;
+  pago: PagoResponseModel | undefined;
+
   cargando = false;
   error = false;
 
@@ -30,6 +33,7 @@ export class DetallePago implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
     const id = this.identificador
       ?? this.route.snapshot.paramMap.get('uuid');
 
@@ -42,6 +46,7 @@ export class DetallePago implements OnInit {
   }
 
   detallePago(id: string): void {
+
     this.cargando = true;
     this.error = false;
 
@@ -50,10 +55,11 @@ export class DetallePago implements OnInit {
       : this.pService.getByUuid(id);
 
     peticion.subscribe({
-      next: (data: PagoModel) => {
+      next: (data: PagoResponseModel) => {
         this.pago = data;
         this.cargando = false;
       },
+
       error: (e) => {
         console.error('Error al obtener el pago', e);
         this.error = true;

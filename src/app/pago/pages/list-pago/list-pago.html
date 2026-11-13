@@ -6,13 +6,21 @@
     } @else if (error) {
         <p>No se pudieron cargar los pagos.</p>
     } @else if (pagos.length > 0) {
+
         <ul>
             @for (pago of pagos; track pago.uuid) {
                 <li>
                     <p>UUID del pago: {{ pago.uuid }}</p>
+
                     <p>UUID del trabajo: {{ pago.uuidTrabajo }}</p>
+
                     <p>Estado del pago: {{ pago.estadoPago }}</p>
-                    <p>Fecha de pago: {{ pago.fechaPago }}</p>
+
+                    <p>
+                        Fecha de pago:
+                        {{ pago.fechaPago | date:'dd/MM/yyyy HH:mm' }}
+                    </p>
+
                     <p>Método de pago: {{ pago.metodoDePago }}</p>
 
                     @if (pago.checkoutUrl) {
@@ -35,6 +43,7 @@
                 </li>
             }
         </ul>
+
     } @else {
         <p>No se encontraron pagos.</p>
     }

@@ -1,14 +1,14 @@
-
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
-import { FormPagoModel } from '../../models/form-pago-model';
-import { PagoModel } from '../../models/pago-model';
+import { PagoRequestModel } from '../../models/pago-request-model';
+import { PagoResponseModel } from '../../models/pago-response-model';
 import { PagoService } from '../../services/pago';
 
 @Component({
@@ -20,6 +20,8 @@ import { PagoService } from '../../services/pago';
 })
 export class FormPago {
 
+  private route = inject(ActivatedRoute);
+
   uuidTrabajo: FormControl;
   metodoDePago: FormControl;
   buyerFullName: FormControl;
@@ -29,8 +31,7 @@ export class FormPago {
 
   formulario: FormGroup;
 
-  uuid: string | null = null;
-  editando = false;
+  cargando = false;
 
   constructor(public pService: PagoService) {
 
@@ -58,7 +59,7 @@ export class FormPago {
 
     this.buyerPhone = new FormControl('', [
       Validators.required,
-      Validators.maxLength(10)
+      Validators.pattern(/^\d{10}$/)
     ]);
 
     this.formulario = new FormGroup({
@@ -69,86 +70,49 @@ export class FormPago {
       buyerDNI: this.buyerDNI,
       buyerPhone: this.buyerPhone
     });
-  }
 
-  cargarPago(uuid: string): void {
-    this.pService.getByUuid(uuid).subscribe({
-      next: (respuesta: PagoModel) => {
-        this.uuid = uuid;
-        this.editando = true;
+    // Obtener automáticamente el UUID del trabajo desde la URL.
+    const uuid = this.route.snapshot.queryParamMap.get('uuidTrabajo');
 
-        this.formulario.patchValue({
-          uuidTrabajo: respuesta.uuidTrabajo,
-          metodoDePago: respuesta.metodoDePago
-        });
-      },
-      error: (e) => {
-        console.error('Error al cargar el pago', e);
-      }
-    });
-  }
-
-  registrar(): void {
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      return;
+    if (uuid) {
+      this.uuidTrabajo.setValue(uuid);
     }
-
-    const pago: FormPagoModel = this.formulario.getRawValue();
-
-    this.pService.store(pago).subscribe({
-      next: (respuesta) => {
-        console.log('Pago registrado correctamente', respuesta);
-
-        this.formulario.reset({
-          uuidTrabajo: '',
-          metodoDePago: '',
-          buyerFullName: '',
-          buyerEmail: '',
-          buyerDNI: '',
-          buyerPhone: ''
-        });
-      },
-      error: (e) => {
-        console.error('Error al registrar el pago', e);
-      }
-    });
   }
 
-  actualizar(): void {
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      return;
-    }
+    registrar(): void {
 
-    if (!this.uuid) {
-      console.error('No se encontró el UUID del pago');
-      return;
-    }
+        if (this.formulario.invalid) {
+            this.formulario.markAllAsTouched();
+            return;
+        }
 
-    const pago: Partial<FormPagoModel> = this.formulario.getRawValue();
+        const pago: PagoRequestModel = this.formulario.getRawValue();
 
-    this.pService.update(this.uuid, pago).subscribe({
-      next: (respuesta) => {
-        console.log('Pago actualizado correctamente', respuesta);
+        this.cargando = true;
 
-        this.formulario.reset({
-          uuidTrabajo: '',
-          metodoDePago: '',
-          buyerFullName: '',
-          buyerEmail: '',
-          buyerDNI: '',
-          buyerPhone: ''
+        this.pService.store(pago).subscribe({
+
+            next: (respuesta: PagoResponseModel) => {
+
+                console.log('Pago registrado correctamente', respuesta);
+
+                this.cargando = false;
+
+                if (respuesta.checkoutUrl) {
+                    window.location.href = respuesta.checkoutUrl;
+                } else {
+                    console.error('No se recibió una URL de Mercado Pago.');
+                }
+
+            },
+
+            error: (e) => {
+                console.error('Error al registrar el pago:', e);
+                this.cargando = false;
+            }
+
         });
-
-        this.uuid = null;
-        this.editando = false;
-      },
-      error: (e) => {
-        console.error('Error al actualizar el pago', e);
-      }
-    });
-  }
+    }
 
   verSubmit(): void {
     console.log(this.formulario.getRawValue());
