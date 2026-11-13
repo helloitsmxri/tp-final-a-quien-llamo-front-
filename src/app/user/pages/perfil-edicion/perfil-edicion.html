@@ -1,28 +1,91 @@
-<div class="container">
-    <h2>Editar Mi Perfil</h2>
+<main class="pagina-edicion">
 
-    <form [formGroup]="formulario" (ngSubmit)="onSubmit()">
-        <div class="dato">
-            <label>Nombre</label>
-            <input type="text" formControlName="nombre" class="form-control">
+  <a routerLink="/mi-perfil" class="volver">← Volver a mi perfil</a>
+
+  @if (errorCarga) {
+
+    <p class="estado error">No se pudo cargar tu perfil.</p>
+
+  } @else if (!perfil) {
+
+    <p class="estado">Cargando...</p>
+
+  } @else {
+
+    <section class="tarjeta" aria-labelledby="titulo-edicion">
+
+      <!-- ENCABEZADO: título a la izquierda, foto actual arriba a la derecha -->
+      <header class="encabezado-tarjeta">
+        <h1 id="titulo-edicion">Editar mi perfil</h1>
+
+        <div class="foto-actual">
+          @if (fotoPreview) {
+            <img [src]="fotoPreview" alt="Tu foto de perfil">
+          } @else {
+            <span aria-hidden="true">{{ iniciales }}</span>
+          }
         </div>
-        <div class="dato">
-            <label>Apellido</label>
-            <input type="text" formControlName="apellido" class="form-control">
-        </div>
-        <div class="dato">
-            <label>Teléfono</label>
-            <input type="text" formControlName="telefono" class="form-control">
-        </div>
-        <div class="dato">
-            <label>Sobre Mí</label>
-            <textarea formControlName="sobreMi" class="form-control"></textarea>
-        </div>
-        <div class="dato">
-            <label>Foto de Perfil</label>
-            <input type="file" (change)="onFileSelected($event)" class="form-control">
+      </header>
+
+      <form [formGroup]="formulario" (ngSubmit)="guardar()">
+
+        <h2 class="titulo-seccion">Datos personales</h2>
+
+        <div class="campo">
+          <label for="foto">Cambiar foto de perfil</label>
+          <input id="foto" type="file" accept="image/*" (change)="onFotoSeleccionada($event)" class="form-control">
+          @if (errorFoto) {
+            <small class="error">{{ errorFoto }}</small>
+          }
         </div>
 
-        <button type="submit" class="btn-primario" [disabled]="formulario.invalid">Guardar Cambios</button>
-    </form>
-</div>
+        <div class="campo">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" type="text" formControlName="nombre" class="form-control">
+          @if (errorMensaje('nombre'); as msg) {
+            <small class="error">{{ msg }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="apellido">Apellido</label>
+          <input id="apellido" type="text" formControlName="apellido" class="form-control">
+          @if (errorMensaje('apellido'); as msg) {
+            <small class="error">{{ msg }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="telefono">Teléfono</label>
+          <input id="telefono" type="tel" formControlName="telefono" class="form-control" inputmode="numeric">
+          @if (errorMensaje('telefono'); as msg) {
+            <small class="error">{{ msg }}</small>
+          }
+        </div>
+
+        <div class="campo">
+          <label for="sobreMi">Sobre mí</label>
+          <textarea id="sobreMi" formControlName="sobreMi" class="form-control"></textarea>
+          @if (errorMensaje('sobreMi'); as msg) {
+            <small class="error">{{ msg }}</small>
+          }
+        </div>
+
+        @if (errorServidor) {
+          <small class="error" role="alert">{{ errorServidor }}</small>
+        }
+
+        <div class="acciones">
+          <a routerLink="/mi-perfil" class="btn-secundario">Cancelar</a>
+          <button type="submit" class="btn-primario" [disabled]="guardando">
+            {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+        </div>
+
+      </form>
+
+    </section>
+
+  }
+
+</main>

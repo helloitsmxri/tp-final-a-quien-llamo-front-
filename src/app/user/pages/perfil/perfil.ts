@@ -88,7 +88,7 @@ export class Perfil implements OnInit{
 
     this.fotoError = false;
     
-    this.fotoSrc = this.armarFoto(perfil.foto, perfil.tipoImagen);
+    this.fotoSrc = this.armarFoto(perfil.fotoBase64, perfil.tipoImagen);
     this.iniciales = this.obtenerIniciales(perfil.nombre, perfil.apellido);
     this.resenas = perfil.calificacionesRecibidas ?? [];
     this.promedio = perfil.promedioCalificaciones ?? this.calcularPromedio();
