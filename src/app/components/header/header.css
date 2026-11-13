@@ -159,7 +159,7 @@
   font-size: clamp(0.95rem, 7cqw, 1.2rem); /*cwq es el porcentual del ancho de la tarjeta*/
   line-height: 1.15;
   text-shadow: 0 1px 8px rgba(48, 34, 100, 0.55); 
-  font-family: ;
+  font-family: Creato Display;
 }
  
 /* el dibujo ocupa toda la tarjeta */
@@ -301,7 +301,7 @@
   border: 1px solid #ddd;
   border-radius: 25px;
   background: white;
-  color: inherit;
+  color: #6c4fe0;
   font: inherit;
   cursor: pointer;
   transition: background 0.2s ease;
