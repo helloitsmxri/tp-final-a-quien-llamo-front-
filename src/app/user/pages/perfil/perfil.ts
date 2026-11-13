@@ -3,6 +3,7 @@ import { UsuarioService } from '../../services/user';
 import { UserProfileDTO } from '../../models/user-profile-DTO';
 import { RatingResponse } from '../../../rating/models/rating-response';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { RatingService } from '../../../rating/services/rating';
 
 @Component({
   selector: 'app-perfil',
@@ -14,6 +15,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 export class Perfil implements OnInit{
   private usuarioService = inject(UsuarioService);
   private route = inject(ActivatedRoute);
+  private ratingService = inject(RatingService)
 
   perfil : UserProfileDTO | null = null;
 
@@ -90,6 +92,20 @@ export class Perfil implements OnInit{
     
     this.fotoSrc = this.armarFoto(perfil.fotoBase64, perfil.tipoImagen);
     this.iniciales = this.obtenerIniciales(perfil.nombre, perfil.apellido);
+    this.ratingService.getRecibidas(perfil.uuid).subscribe({
+      next: (recibidas)=>{
+        this.resenas=recibidas ?? [];
+        this.promedio=this.calcularPromedio()
+        this.imagenEstrellas=this.resenas.length>0 ? this.obtenerImagenEstrellas(this.promedio) : null
+        this.cargando=false
+      },
+      error: ()=>{
+        this.resenas=perfil.calificacionesRecibidas??[]
+        this.promedio=perfil.promedioCalificaciones?? this.calcularPromedio()
+        this.imagenEstrellas=this.resenas.length>0 ? this.obtenerImagenEstrellas(this.promedio): null
+        this.cargando=false
+      }
+    })
     this.resenas = perfil.calificacionesRecibidas ?? [];
     this.promedio = perfil.promedioCalificaciones ?? this.calcularPromedio();
     this.imagenEstrellas = this.resenas.length > 0 ? this.obtenerImagenEstrellas(this.promedio) : null;
