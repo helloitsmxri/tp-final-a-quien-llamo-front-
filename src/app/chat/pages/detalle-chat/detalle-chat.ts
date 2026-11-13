@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { forkJoin, of, Subscription } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { ChatModel } from '../../models/chat-model';
 import { MensajeModel } from '../../../mensaje/models/mensaje-model';
 import { MensajeService } from '../../../mensaje/services/mensaje';
@@ -13,6 +14,8 @@ import { VerPresupuesto } from '../../../presupuesto/pages/ver-presupuesto/ver-p
 import { PresupuestoService } from '../../../presupuesto/services/presupuesto';
 import { PresupuestoModel } from '../../../presupuesto/models/presupuesto-model';
 import { EstadoPresupuesto } from '../../../presupuesto/enum/estado-presupuesto';
+import { TrabajoService } from '../../../trabajo/services/trabajo';
+import { EstadoTrabajo } from '../../../trabajo/enum/estado-trabajo';
 
 const BACKEND = 'http://localhost:8080';
 
@@ -49,6 +52,7 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     private usuarioService: UsuarioService,
     private wsService: WebSocketService,
     private presupuestoService: PresupuestoService,
+    private trabajoService: TrabajoService,
     private router: Router,
     private ngZone: NgZone
   ) {}
@@ -187,9 +191,22 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     this.mostrandoListaPresupuestos = true;
     this.cargandoPresupuestos = true;
 
-    this.presupuestoService.obtenerPresupuestoChat(this.chat.uuidChat).subscribe({
-      next: (lista) => {
-        this.presupuestosDelChat = lista;
+    forkJoin({
+      presupuestos: this.presupuestoService.obtenerPresupuestoChat(this.chat.uuidChat),
+      trabajos: this.trabajoService.getMyJobs().pipe(catchError(() => of([]))),
+    }).subscribe({
+      next: ({ presupuestos, trabajos }) => {
+        // Juntamos los UUID de presupuestos cuyo trabajo ya está Finalizado
+        const presupuestosFinalizados = new Set(
+          trabajos
+            .filter((t) => String(t.estadoTrabajo).toUpperCase() === EstadoTrabajo.Finalizado.toUpperCase())
+            .map((t) => t.uuidPresupuesto)
+        );
+
+        // Ocultamos los presupuestos cuyo trabajo ya finalizó
+        this.presupuestosDelChat = presupuestos.filter(
+          (p) => !presupuestosFinalizados.has(p.uuid)
+        );
         this.cargandoPresupuestos = false;
       },
       error: (err) => {
@@ -204,18 +221,18 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   }
 
   onPresupuestoCreado(nuevo: PresupuestoModel): void {
-  this.mostrandoCrearPresupuesto = false;
+    this.mostrandoCrearPresupuesto = false;
 
-  const existe = this.presupuestosDelChat.some(
-    p => p.uuid === nuevo.uuid
-  );
+    const existe = this.presupuestosDelChat.some(
+      (p) => p.uuid === nuevo.uuid
+    );
 
-  if (!existe) {
-    this.presupuestosDelChat.unshift(nuevo);
+    if (!existe) {
+      this.presupuestosDelChat.unshift(nuevo);
+    }
+
+    this.presupuestoSeleccionado = nuevo;
   }
-
-  this.presupuestoSeleccionado = nuevo;
-}
 
   onPresupuestoActualizado(actualizado: PresupuestoModel): void {
     const idx = this.presupuestosDelChat.findIndex((p) => p.uuid === actualizado.uuid);
