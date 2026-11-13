@@ -26,6 +26,7 @@ import { ListTecnicos } from './tecnico/pages/list-tecnicos/list-tecnicos';
 import { MisDenuncias } from './denuncia/pages/mis-denuncias/mis-denuncias';
 import { RecuperarPassword } from './auth/recuperar-password/recuperar-password';
 import { ResetPassword } from './auth/reset-password/reset-password';
+import { Contacto } from './contacto/contacto';
 
 export const routes: Routes = [
 
@@ -85,4 +86,6 @@ export const routes: Routes = [
     {path: 'iniciar-sesion', component: Login},
     { path: 'recuperar', component: RecuperarPassword },
     { path: 'reset-password', component: ResetPassword },
+
+    { path: 'contacto', component: Contacto }
 ];
