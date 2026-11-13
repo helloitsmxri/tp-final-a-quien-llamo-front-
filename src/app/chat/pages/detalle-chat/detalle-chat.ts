@@ -160,23 +160,33 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   }
 
   get uuidOtroUsuario(): string {
-    if (!this.chat) return '';
-    return this.chat.uuidUsuario === this.miUuid
-      ? (this.chat as any).uuidTecnico || (this.chat as any).uuidUsuarioTecnico || ''
-      : this.chat.uuidUsuario;
-  }
+  if (!this.chat) return '';
+
+  return this.chat.uuidUsuario === this.miUuid
+    ? this.chat.uuidTecnico
+    : this.chat.uuidUsuario;
+}
 
   irADenunciar(): void {
-    if (!this.chat) return;
-    this.menuAbierto = false;
+  if (!this.chat) return;
 
-    this.router.navigate(['/denuncias/nueva'], {
-      queryParams: {
-        uuidChat: this.chat.uuidChat,
-        uuidDenunciado: this.uuidOtroUsuario,
-      },
-    });
+  const uuidDenunciado = this.uuidOtroUsuario;
+
+  if (!uuidDenunciado) {
+    alert('No se pudo identificar al usuario que querés denunciar.');
+    console.error('Chat:', this.chat);
+    return;
   }
+
+  this.menuAbierto = false;
+
+  this.router.navigate(['/crear-denuncia'], {
+    queryParams: {
+      uuidChat: this.chat.uuidChat,
+      uuidDenunciado: uuidDenunciado,
+    },
+  });
+}
 
   abrirCrearPresupuesto(): void {
     this.menuAbierto = false;
