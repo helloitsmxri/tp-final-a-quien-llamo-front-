@@ -15,33 +15,23 @@
 
                 <label for="username">EMAIL</label>
 
-                <input
-                    type="email"
-                    id="username"
-                    formControlName="username"
-                    placeholder="ejemplo@hotmail.com"
-                >
+                <input type="email" id="username" formControlName="username" placeholder="ejemplo@hotmail.com">
 
                 @if (username.invalid && username.touched) {
-                    @if (username.hasError('required')) {
-                        <small>El email es obligatorio.</small>
-                    }
-                    @if (username.hasError('email')) {
-                        <small>Ingresá un email válido.</small>
-                    }
+                @if (username.hasError('required')) {
+                <small>El email es obligatorio.</small>
+                }
+                @if (username.hasError('email')) {
+                <small>Ingresá un email válido.</small>
+                }
                 }
 
                 <label for="password">CLAVE</label>
 
-                <input
-                    type="password"
-                    id="password"
-                    formControlName="password"
-                    placeholder="Ingrese aquí su clave"
-                >
+                <input type="password" id="password" formControlName="password" placeholder="Ingrese aquí su clave">
 
                 @if (password.invalid && password.touched) {
-                    <small>La clave es obligatoria.</small>
+                <small>La clave es obligatoria.</small>
                 }
 
                 <p class="recuperar">
@@ -53,15 +43,36 @@
 
             </div>
 
+
             @if (error) {
-                <p class="error">{{ error }}</p>
+            @if (error.toLowerCase().includes('suspendido')) {
+            <div class="alerta-suspension">
+                <div class="icono-alerta">!</div>
+
+                <div class="contenido-alerta">
+                    <h3>Cuenta suspendida</h3>
+
+                    <p>
+                        Tu cuenta se encuentra suspendida temporalmente.
+                        No podés iniciar sesión mientras dure la suspensión.
+                    </p>
+
+                    <p class="detalle-suspension">
+                        {{ error }}
+                    </p>
+
+                    <p class="contacto-suspension">
+                        Si necesitás más información, contactate con el administrador.
+                    </p>
+                </div>
+            </div>
+            } @else {
+            <p class="error">{{ error }}</p>
+            }
             }
 
-            <button
-                class="iniciar-sesion"
-                type="submit"
-                [disabled]="cargando"
-            >
+
+            <button class="iniciar-sesion" type="submit" [disabled]="cargando">
                 {{ cargando ? 'Ingresando...' : 'Ingresar' }}
                 <span class="flecha">→</span>
             </button>

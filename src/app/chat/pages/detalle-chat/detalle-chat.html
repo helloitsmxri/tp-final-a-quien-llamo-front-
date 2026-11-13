@@ -127,9 +127,12 @@
 
         @if (soyElTecnico && presupuestoSeleccionado.estado === EstadoPresupuesto.Aceptado) {
           <div class="accion-trabajo-modal">
-            <a [routerLink]="['/trabajos', presupuestoSeleccionado.uuid]" class="btn-registrar-trabajo" (click)="cerrarPanelesPresupuesto()">
+            <button
+              type="button"
+              class="btn-registrar-trabajo"
+              (click)="abrirRegistrarTrabajo(presupuestoSeleccionado.uuid)">
               🛠️ Registrar trabajo a partir de este presupuesto
-            </a>
+            </button>
           </div>
         }
       } @else {
@@ -173,6 +176,25 @@
           }
         </div>
       }
+    </div>
+  </div>
+}
+
+<!-- MODAL PARA REGISTRAR TRABAJO -->
+@if (uuidPresupuestoParaTrabajo) {
+  <div class="overlay-modal">
+    <div class="modal-contenido">
+      <div class="barra-superior-detalle">
+        <span class="etiqueta-vista">Registrar trabajo</span>
+        <button type="button" class="btn-cerrar-modal" (click)="cerrarPanelesPresupuesto()">✕</button>
+      </div>
+
+      <app-form-trabajo
+        [uuidPresupuestoPreset]="uuidPresupuestoParaTrabajo"
+        [esModal]="true"
+        (trabajoCreado)="onTrabajoCreado()"
+        (cerrar)="cerrarPanelesPresupuesto()"
+      />
     </div>
   </div>
 }

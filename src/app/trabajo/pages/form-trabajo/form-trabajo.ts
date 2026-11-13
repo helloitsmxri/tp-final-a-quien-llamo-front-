@@ -1,5 +1,4 @@
-
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -12,6 +11,7 @@ import { forkJoin, timer } from 'rxjs';
 
 import { TrabajoService } from '../../services/trabajo';
 import { TrabajoRequestModel } from '../../models/trabajo-request-model';
+import { TrabajoModel } from '../../models/trabajo-model';
 
 @Component({
   selector: 'app-form-trabajo',
@@ -20,7 +20,13 @@ import { TrabajoRequestModel } from '../../models/trabajo-request-model';
   templateUrl: './form-trabajo.html',
   styleUrl: './form-trabajo.css',
 })
-export class FormTrabajo {
+export class FormTrabajo implements OnInit {
+
+  @Input() uuidPresupuestoPreset = '';
+  @Input() esModal = false;
+
+  @Output() trabajoCreado = new EventEmitter<TrabajoModel>();
+  @Output() cerrar = new EventEmitter<void>();
 
   // UUID interno, no es un campo rellenable.
   uuidPresupuesto = '';
@@ -39,7 +45,6 @@ export class FormTrabajo {
     public tService: TrabajoService,
     private route: ActivatedRoute
   ) {
-
     this.descripcionTrabajo = new FormControl('', [
       Validators.required,
       Validators.minLength(50),
@@ -59,6 +64,7 @@ export class FormTrabajo {
       fechaEstimadaInicio: this.fechaEstimadaInicio,
       fechaEstimadaFin: this.fechaEstimadaFin
     });
+  }
 
     // Obtener automáticamente el UUID del presupuesto desde la URL.
     this.route.paramMap.subscribe(params => {
@@ -67,7 +73,6 @@ export class FormTrabajo {
   }
 
   manejarEnvio(): void {
-
     this.mensajeExito = '';
     this.mensajeError = '';
 
@@ -101,33 +106,29 @@ export class FormTrabajo {
 
     forkJoin({
       respuesta: this.tService.storeTrabajo(trabajo),
-      espera: timer(3000)
+      espera: timer(1500)
     }).subscribe({
       next: ({ respuesta }) => {
-
-        console.log('Trabajo registrado correctamente', respuesta);
-
         this.cargando = false;
         this.mensajeExito = '¡Trabajo registrado correctamente!';
 
         this.formulario.reset();
       },
 
+        if (this.trabajoCreado.observed) {
+          this.trabajoCreado.emit(respuesta);
+        }
+      },
       error: (e) => {
-
         console.error('Error al registrar trabajo', e);
-
         this.cargando = false;
         this.mensajeError =
-          'No se pudo registrar el trabajo. Intentá nuevamente.';
+          e?.error?.mensaje || 'No se pudo registrar el trabajo. Intentá nuevamente.';
       }
     });
   }
 
-  verSubmit(): void {
-    console.log({
-      uuidPresupuesto: this.uuidPresupuesto,
-      ...this.formulario.value
-    });
+  cancelar(): void {
+    this.cerrar.emit();
   }
 }

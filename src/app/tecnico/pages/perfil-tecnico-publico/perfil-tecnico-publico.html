@@ -98,13 +98,14 @@
           </div>
 
           <div class="col-right">
-
             <h3>Certificaciones</h3>
 
             @if (certificaciones.length) {
-              <ul class="styled-list">
+              <ul class="credenciales-list">
                 @for (c of certificaciones; track c.uuid) {
-                  <li>{{ c.titulo }}</li>
+                  <li class="credencial-item">
+                    {{ c.titulo }}
+                  </li>
                 }
               </ul>
             } @else {
@@ -116,9 +117,11 @@
             <h3>Portfolio</h3>
 
             @if (portfolios.length) {
-              <ul class="styled-list">
+              <ul class="credenciales-list">
                 @for (p of portfolios; track p.uuid) {
-                  <li>{{ p.titulo }}</li>
+                  <li class="credencial-item">
+                    {{ p.titulo }}
+                  </li>
                 }
               </ul>
             } @else {
@@ -181,7 +184,7 @@
 
               </div>
 
-              @if (r.caracteristicas?.length) {
+              @if (r.caracteristicas.length) {
                 <div class="pills-container">
                   @for (c of r.caracteristicas; track c) {
                     <span class="pill pill-soft">{{ c }}</span>
