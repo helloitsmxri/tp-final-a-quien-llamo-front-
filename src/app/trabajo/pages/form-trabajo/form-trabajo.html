@@ -1,96 +1,111 @@
 @if (cargando) {
-    <div class="overlay-cargando">
-        <div class="cargando-modal">
-            <span class="spinner"></span>
-            <h3>Registrando trabajo...</h3>
-            <p>Por favor, esperá un momento.</p>
-        </div>
+  <div class="overlay-cargando">
+    <div class="cargando-modal">
+      <span class="spinner"></span>
+      <h3>Registrando trabajo...</h3>
+      <p>Por favor, esperá un momento.</p>
     </div>
+  </div>
 }
-<div class="register-container">
-    <div class="register-card">
-        <h2>Registrar trabajo</h2>
-        <p>Completá los datos para registrar un trabajo</p>
 
-        @if (mensajeExito) {
-            <div class="mensaje-exito">
-                {{ mensajeExito }}
+<div class="register-container" [class.modo-modal]="esModal">
+  <div class="register-card" [class.card-modal]="esModal">
+    @if (!esModal) {
+      <h2>Registrar trabajo</h2>
+      <p>Completá los datos para registrar un trabajo</p>
+    } @else {
+      <p class="subtitulo-modal">Completá los datos para iniciar la planificación del trabajo aceptado.</p>
+    }
+
+    @if (mensajeExito) {
+      <div class="mensaje-exito">
+        {{ mensajeExito }}
+      </div>
+    }
+
+    @if (mensajeError) {
+      <div class="mensaje-error">
+        {{ mensajeError }}
+      </div>
+    }
+
+    <form class="formulario"
+          [formGroup]="formulario"
+          (ngSubmit)="manejarEnvio()">
+
+      <!-- Descripción del trabajo -->
+      <fieldset class="form-group">
+        <label for="descripcionTrabajo">Descripción del trabajo:</label>
+        <textarea
+          id="descripcionTrabajo"
+          formControlName="descripcionTrabajo"
+          placeholder="Describí el trabajo a realizar (mínimo 50 caracteres)..."
+          rows="4">
+        </textarea>
+
+        @if (descripcionTrabajo.invalid && descripcionTrabajo.touched) {
+          <div class="error">
+            @if (descripcionTrabajo.hasError('required')) {
+              <span>La descripción es obligatoria.</span>
+            }
+            @if (descripcionTrabajo.hasError('minlength')) {
+              <span>La descripción debe tener al menos 50 caracteres.</span>
+            }
+            @if (descripcionTrabajo.hasError('maxlength')) {
+              <span>La descripción no debe superar los 1000 caracteres.</span>
+            }
+          </div>
+        }
+      </fieldset>
+
+      <div class="fila-fechas">
+        <!-- Fecha estimada de inicio -->
+        <fieldset class="form-group">
+          <label for="fechaEstimadaInicio">Fecha estimada de inicio:</label>
+          <input
+            type="date"
+            id="fechaEstimadaInicio"
+            formControlName="fechaEstimadaInicio">
+
+          @if (fechaEstimadaInicio.invalid && fechaEstimadaInicio.touched) {
+            <div class="error">
+              @if (fechaEstimadaInicio.hasError('required')) {
+                <span>La fecha de inicio es obligatoria.</span>
+              }
             </div>
+          }
+        </fieldset>
+
+        <!-- Fecha estimada de finalización -->
+        <fieldset class="form-group">
+          <label for="fechaEstimadaFin">Fecha estimada de finalización:</label>
+          <input
+            type="date"
+            id="fechaEstimadaFin"
+            formControlName="fechaEstimadaFin">
+
+          @if (fechaEstimadaFin.invalid && fechaEstimadaFin.touched) {
+            <div class="error">
+              @if (fechaEstimadaFin.hasError('required')) {
+                <span>La fecha de finalización es obligatoria.</span>
+              }
+            </div>
+          }
+        </fieldset>
+      </div>
+
+      <div class="acciones-formulario">
+        @if (esModal) {
+          <button type="button" class="btn-secundario" (click)="cancelar()" [disabled]="cargando">
+            Cancelar
+          </button>
         }
 
-        @if (mensajeError) {
-            <div class="mensaje-error">
-                {{ mensajeError }}
-            </div>
-        }
+        <button type="submit" class="btn-principal" [disabled]="formulario.invalid || cargando || !uuidPresupuesto">
+          {{ cargando ? 'Registrando...' : 'Registrar trabajo' }}
+        </button>
+      </div>
 
-        <form class="formulario"
-              [formGroup]="formulario"
-              (ngSubmit)="manejarEnvio()">
-
-            <!-- Descripción del trabajo -->
-            <fieldset class="form-group">
-                <label for="descripcionTrabajo">Descripción del trabajo:</label>
-                <textarea
-                    id="descripcionTrabajo"
-                    formControlName="descripcionTrabajo"
-                    placeholder="Describí el trabajo a realizar..."
-                    rows="4">
-                </textarea>
-
-                @if (descripcionTrabajo.invalid && descripcionTrabajo.touched) {
-                    <div class="error">
-                        @if (descripcionTrabajo.hasError('required')) {
-                            <span>La descripción es obligatoria.</span>
-                        }
-                        @if (descripcionTrabajo.hasError('minlength')) {
-                            <span>La descripción debe tener al menos 50 caracteres.</span>
-                        }
-                        @if (descripcionTrabajo.hasError('maxlength')) {
-                            <span>La descripción no debe superar los 1000 caracteres.</span>
-                        }
-                    </div>
-                }
-            </fieldset>
-
-            <!-- Fecha estimada de inicio -->
-            <fieldset class="form-group">
-                <label for="fechaEstimadaInicio">Fecha estimada de inicio:</label>
-                <input
-                    type="date"
-                    id="fechaEstimadaInicio"
-                    formControlName="fechaEstimadaInicio">
-
-                @if (fechaEstimadaInicio.invalid && fechaEstimadaInicio.touched) {
-                    <div class="error">
-                        @if (fechaEstimadaInicio.hasError('required')) {
-                            <span>La fecha de inicio es obligatoria.</span>
-                        }
-                    </div>
-                }
-            </fieldset>
-
-            <!-- Fecha estimada de finalización -->
-            <fieldset class="form-group">
-                <label for="fechaEstimadaFin">Fecha estimada de finalización:</label>
-                <input
-                    type="date"
-                    id="fechaEstimadaFin"
-                    formControlName="fechaEstimadaFin">
-
-                @if (fechaEstimadaFin.invalid && fechaEstimadaFin.touched) {
-                    <div class="error">
-                        @if (fechaEstimadaFin.hasError('required')) {
-                            <span>La fecha de finalización es obligatoria.</span>
-                        }
-                    </div>
-                }
-            </fieldset>
-
-            <button type="submit" [disabled]="formulario.invalid || cargando || !uuidPresupuesto">
-                {{ cargando ? 'Registrando...' : 'Registrar trabajo' }}
-            </button>
-
-        </form>
-    </div>
+    </form>
+  </div>
 </div>

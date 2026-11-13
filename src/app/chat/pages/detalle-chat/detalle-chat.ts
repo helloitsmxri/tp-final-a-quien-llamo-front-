@@ -11,6 +11,7 @@ import { UsuarioService } from '../../../user/services/user';
 import { WebSocketService } from '../../services/web-socket-service';
 import { CrearPresupuesto } from '../../../presupuesto/pages/crear-presupuesto/crear-presupuesto';
 import { VerPresupuesto } from '../../../presupuesto/pages/ver-presupuesto/ver-presupuesto';
+import { FormTrabajo } from '../../../trabajo/pages/form-trabajo/form-trabajo';
 import { PresupuestoService } from '../../../presupuesto/services/presupuesto';
 import { PresupuestoModel } from '../../../presupuesto/models/presupuesto-model';
 import { EstadoPresupuesto } from '../../../presupuesto/enum/estado-presupuesto';
@@ -21,7 +22,7 @@ const BACKEND = 'http://localhost:8080';
 
 @Component({
   selector: 'app-detalle-chat',
-  imports: [CommonModule, FormsModule, RouterModule, CrearPresupuesto, VerPresupuesto],
+  imports: [CommonModule, FormsModule, RouterModule, CrearPresupuesto, VerPresupuesto, FormTrabajo],
   templateUrl: './detalle-chat.html',
   styleUrl: './detalle-chat.css',
 })
@@ -37,11 +38,12 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
   miUuid = '';
   menuAbierto = false;
 
-  // Variables para mostrar los componentes de presupuesto
+  // Variables para mostrar los modales de presupuesto y trabajo
   mostrandoCrearPresupuesto = false;
   mostrandoListaPresupuestos = false;
   presupuestosDelChat: PresupuestoModel[] = [];
   presupuestoSeleccionado: PresupuestoModel | null = null;
+  uuidPresupuestoParaTrabajo: string | null = null;
   cargandoPresupuestos = false;
   EstadoPresupuesto = EstadoPresupuesto;
 
@@ -180,6 +182,7 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     this.menuAbierto = false;
     this.mostrandoListaPresupuestos = false;
     this.presupuestoSeleccionado = null;
+    this.uuidPresupuestoParaTrabajo = null;
     this.mostrandoCrearPresupuesto = true;
   }
 
@@ -188,6 +191,7 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     this.menuAbierto = false;
     this.mostrandoCrearPresupuesto = false;
     this.presupuestoSeleccionado = null;
+    this.uuidPresupuestoParaTrabajo = null;
     this.mostrandoListaPresupuestos = true;
     this.cargandoPresupuestos = true;
 
@@ -196,14 +200,12 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
       trabajos: this.trabajoService.getMyJobs().pipe(catchError(() => of([]))),
     }).subscribe({
       next: ({ presupuestos, trabajos }) => {
-        // Juntamos los UUID de presupuestos cuyo trabajo ya está Finalizado
         const presupuestosFinalizados = new Set(
           trabajos
             .filter((t) => String(t.estadoTrabajo).toUpperCase() === EstadoTrabajo.Finalizado.toUpperCase())
             .map((t) => t.uuidPresupuesto)
         );
 
-        // Ocultamos los presupuestos cuyo trabajo ya finalizó
         this.presupuestosDelChat = presupuestos.filter(
           (p) => !presupuestosFinalizados.has(p.uuid)
         );
@@ -218,6 +220,17 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
 
   seleccionarPresupuesto(p: PresupuestoModel): void {
     this.presupuestoSeleccionado = p;
+  }
+
+  abrirRegistrarTrabajo(uuidPresupuesto: string): void {
+    this.mostrandoListaPresupuestos = false;
+    this.presupuestoSeleccionado = null;
+    this.uuidPresupuestoParaTrabajo = uuidPresupuesto;
+  }
+
+  onTrabajoCreado(): void {
+    this.cerrarPanelesPresupuesto();
+    alert('¡Trabajo registrado correctamente! Ya podés gestionarlo en "Mis Trabajos".');
   }
 
   onPresupuestoCreado(nuevo: PresupuestoModel): void {
@@ -246,6 +259,7 @@ export class DetalleChat implements OnChanges, OnInit, OnDestroy {
     this.mostrandoCrearPresupuesto = false;
     this.mostrandoListaPresupuestos = false;
     this.presupuestoSeleccionado = null;
+    this.uuidPresupuestoParaTrabajo = null;
   }
 
   private scrollToBottom(): void {
