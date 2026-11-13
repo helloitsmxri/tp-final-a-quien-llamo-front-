@@ -127,8 +127,17 @@
                                     [routerLink]="['/pagos/nuevo']"
                                     [queryParams]="{ uuidTrabajo: trabajo.uuid }"
                                     class="btn-estado btn-pagar">
-                                    $ Pagar trabajo
+                                    Pagar trabajo
                                 </a>
+                                }
+
+                            @if (estaFinalizado(trabajo)) {
+                                    <a
+                                        [routerLink]="['/ratings/nuevo']"
+                                        [queryParams]="{ uuidTrabajo: trabajo.uuid }"
+                                        class="btn-estado btn-resena">
+                                        ★ Dejar reseña
+                                    </a>
                                 }
                         </div>
 
