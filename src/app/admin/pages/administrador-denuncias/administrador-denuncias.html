@@ -1,0 +1,441 @@
+
+<div class="administrador-denuncias">
+
+  <header class="encabezado">
+    <div>
+      <h1>Gestión de denuncias</h1>
+      <p>Revisá, asigná y gestioná las denuncias de la plataforma.</p>
+    </div>
+
+    <button type="button" class="boton-actualizar" [disabled]="buscando" (click)="cargarDenuncias()"> ↻ Actualizar</button>
+  </header>
+
+  <div class="contenido-denuncias">
+    <section class="columna-listado">
+      <div class="titulo-listado">
+        <h2>Denuncias</h2>
+        <span class="contador">{{ denunciasFiltradas.length }}</span>
+      </div>
+
+      <div class="filtros">
+        <button type="button" [class.activo]="filtroActual === 'TODAS'" (click)="cambiarFiltro('TODAS')">Todas</button>
+        <button type="button" [class.activo]="filtroActual === 'SIN_ASIGNAR'" (click)="cambiarFiltro('SIN_ASIGNAR')">Sin asignar</button>
+        <button type="button" [class.activo]="filtroActual === 'ASIGNADAS'" (click)="cambiarFiltro('ASIGNADAS')">Asignadas</button>
+        <button type="button" [class.activo]="filtroActual === 'MIS_CASOS'" (click)="cambiarFiltro('MIS_CASOS')">Mis casos</button>
+        <button type="button" [class.activo]="filtroActual === 'RESUELTAS'" (click)="cambiarFiltro('RESUELTAS')">Resueltas</button>
+      </div>
+
+      <div class="buscador">
+        <span>⌕</span>
+        <input type="text" [formControl]="busquedaControl" placeholder="Buscar por usuario o UUID...">
+      </div>
+
+      @if (buscando || (filtroActual === 'MIS_CASOS' && cargandoMisCasos)) {
+        <div class="estado-listado">
+          Cargando denuncias...
+        </div>
+      }
+
+      @if (!buscando && !(filtroActual === 'MIS_CASOS' && cargandoMisCasos)) {
+        @if (denunciasFiltradas.length > 0) {
+          <div class="lista-denuncias">
+            @for (denuncia of denunciasFiltradas; track denuncia.uuid) {
+              <button type="button" class="denuncia-card" [class.seleccionada]="denunciaSeleccionada?.uuid === denuncia.uuid" (click)="seleccionarDenuncia(denuncia)">
+                <div class="card-superior">
+                  <span class="identificador">
+                    Denuncia #{{ denuncia.uuid.slice(0, 8) }}
+                  </span>
+
+                  <span class="estado" [attr.data-estado]="denuncia.estadoDenuncia">
+                    {{ denuncia.estadoDenuncia }}
+                  </span>
+
+                </div>
+
+                <h3>
+                  {{ denuncia.nombreDenunciado }}
+                  {{ denuncia.apellidoDenunciado }}
+                </h3>
+
+                <p class="denunciante">
+                  Denunciado por:
+                  {{ denuncia.nombreDenunciante }}
+                  {{ denuncia.apellidoDenunciante }}
+                </p>
+
+                <div class="card-inferior">
+                  <span>
+                    {{ formatearFecha(denuncia.fechaDenuncia) }}
+                  </span>
+
+                  @if (denuncia.uuidAdministrador === null) {
+                    <span class="asignacion sin-asignar">
+                      Sin asignar
+                    </span>
+                  } @else {
+                    <span class="asignacion asignada">
+                      Asignada
+                    </span>
+                  }
+                </div>
+              </button>
+            }
+          </div>
+        } @else { 
+          <div class="sin-denuncias">
+            <span class="icono-vacio">✓</span>
+            <h3>No hay denuncias</h3>
+            <p>No se encontraron denuncias para este filtro.</p>
+          </div>
+        }
+      }
+    </section>
+
+    <section class="columna-detalle">
+      @if (denunciaSeleccionada; as denuncia) {
+
+        <!-- ENCABEZADO DEL DETALLE -->
+
+        <div class="detalle-encabezado">
+
+          <div>
+            <span class="subtitulo">DETALLE DE LA DENUNCIA</span>
+            <h2>Información del caso</h2>
+          </div>
+
+          <span
+            class="estado"
+            [attr.data-estado]="denuncia.estadoDenuncia">
+            {{ denuncia.estadoDenuncia }}
+          </span>
+
+        </div>
+
+
+        <div class="detalle-contenido">
+
+          <!-- INFORMACIÓN GENERAL -->
+
+          <section class="bloque-detalle">
+
+            <h3>Información general</h3>
+
+            <div class="dato">
+              <span>Identificador</span>
+              <p>{{ denuncia.uuid }}</p>
+            </div>
+
+            <div class="dato">
+              <span>Fecha de denuncia</span>
+              <p>{{ formatearFecha(denuncia.fechaDenuncia) }}</p>
+            </div>
+
+          </section>
+
+
+          <!-- DENUNCIANTE -->
+
+          <section class="bloque-detalle">
+
+            <h3>Persona denunciante</h3>
+
+            <div class="dato">
+              <span>Nombre completo</span>
+              <p>
+                {{ denuncia.nombreDenunciante }}
+                {{ denuncia.apellidoDenunciante }}
+              </p>
+            </div>
+
+            <div class="dato">
+              <span>Correo electrónico</span>
+              <p>{{ denuncia.emailDenunciante }}</p>
+            </div>
+
+            <div class="dato">
+              <span>UUID</span>
+              <p>{{ denuncia.uuidDenunciante }}</p>
+            </div>
+
+          </section>
+
+
+          <!-- DENUNCIADO -->
+
+          <section class="bloque-detalle">
+
+            <h3>Persona denunciada</h3>
+
+            <div class="dato">
+              <span>Nombre completo</span>
+              <p>
+                {{ denuncia.nombreDenunciado }}
+                {{ denuncia.apellidoDenunciado }}
+              </p>
+            </div>
+
+            <div class="dato">
+              <span>Correo electrónico</span>
+              <p>{{ denuncia.emailDenunciado }}</p>
+            </div>
+
+            <div class="dato">
+              <span>UUID</span>
+              <p>{{ denuncia.uuidDenunciado }}</p>
+            </div>
+
+          </section>
+
+
+          <!-- MOTIVO -->
+
+          <section class="bloque-detalle">
+
+            <h3>Motivo de la denuncia</h3>
+
+            <p class="texto-motivo">
+              {{ denuncia.motivoDenuncia }}
+            </p>
+
+          </section>
+
+
+          <!-- FOTOGRAFÍA -->
+
+          <section class="bloque-detalle">
+
+            <h3>Prueba adjunta</h3>
+
+            @if (denuncia.tieneFoto) {
+
+              @if (cargandoFoto) {
+
+                <p class="texto-secundario">
+                  Cargando fotografía...
+                </p>
+
+              } @else if (fotoUrl) {
+
+                <button
+                  type="button"
+                  class="foto-miniatura"
+                  (click)="abrirFoto()">
+
+                  <img
+                    [src]="fotoUrl"
+                    alt="Fotografía adjunta a la denuncia">
+
+                  <span>Ver fotografía ampliada</span>
+
+                </button>
+
+              } @else {
+
+                <p class="texto-secundario">
+                  No se pudo mostrar la fotografía.
+                </p>
+
+              }
+
+            } @else {
+
+              <p class="texto-secundario">
+                Esta denuncia no contiene fotografías.
+              </p>
+
+            }
+
+          </section>
+
+
+          <!-- ASIGNACIÓN -->
+
+          <section class="bloque-detalle">
+
+            <h3>Asignación</h3>
+
+            @if (denuncia.uuidAdministrador !== null) {
+
+              <div class="dato">
+                <span>Administrador responsable</span>
+                <p>{{ denuncia.nombreAdministrador }}</p>
+              </div>
+
+            } @else {
+
+              <p class="texto-secundario">
+                Esta denuncia todavía no tiene administrador asignado.
+              </p>
+
+            }
+
+
+            @if (!denuncia.uuidAdministrador && !esResuelta(denuncia)) {
+
+              <div class="asignar-formulario">
+
+                <label for="administrador">
+                  Asignar a un administrador
+                </label>
+
+                <select
+                  id="administrador"
+                  [formControl]="administradorControl">
+
+                  <option value="">
+                    Seleccioná un administrador
+                  </option>
+
+                  @for (admin of administradores; track admin.uuid) {
+
+                    <option [value]="admin.uuid">
+                      {{ admin.nombreUsuario }}
+                      {{ admin.apellidoUsuario }}
+                    </option>
+
+                  }
+
+                </select>
+
+                <button
+                  type="button"
+                  class="boton-secundario"
+                  [disabled]="
+                    procesandoAccion ||
+                    cargandoAdministradores ||
+                    administradores.length === 0
+                  "
+                  (click)="asignarAdministrador()">
+
+                  Asignar denuncia
+
+                </button>
+
+              </div>
+
+            }
+
+          </section>
+
+
+          <!-- NOTA ANTERIOR -->
+
+          @if (denuncia.notaDelAdmin) {
+
+            <section class="bloque-detalle">
+
+              <h3>Nota del administrador</h3>
+
+              <p class="texto-motivo">
+                {{ denuncia.notaDelAdmin }}
+              </p>
+
+            </section>
+
+          }
+
+
+          <!-- RESOLUCIÓN -->
+
+          @if (!esResuelta(denuncia)) {
+
+            <section class="bloque-resolucion">
+
+              <h3>Resolver denuncia</h3>
+
+              <label for="notaAdmin">
+                Nota del administrador
+              </label>
+
+              <textarea
+                id="notaAdmin"
+                [formControl]="notaControl"
+                rows="4"
+                placeholder="Escribí una explicación sobre la resolución...">
+              </textarea>
+
+              <div class="acciones-resolucion">
+
+                <button
+                  type="button"
+                  class="boton-rechazar"
+                  [disabled]="procesandoAccion"
+                  (click)="rechazarDenuncia()">
+
+                  Rechazar denuncia
+
+                </button>
+
+                <button
+                  type="button"
+                  class="boton-aprobar"
+                  [disabled]="procesandoAccion"
+                  (click)="aprobarDenuncia()">
+
+                  Aprobar denuncia
+
+                </button>
+
+              </div>
+
+            </section>
+
+          } @else {
+
+            <div class="resolucion-finalizada">
+              <span>✓</span>
+              <p>Esta denuncia ya fue resuelta.</p>
+            </div>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="sin-seleccion">
+
+          <span>☰</span>
+
+          <h2>Seleccioná una denuncia</h2>
+
+          <p>
+            Elegí un caso de la lista para consultar su información
+            y gestionar su resolución.
+          </p>
+
+        </div>
+
+      }
+
+    </section>
+
+  </div>
+
+
+  <!-- VISOR DE FOTOGRAFÍA -->
+
+  @if (mostrarFoto && fotoUrl) {
+
+    <div
+      class="visor-foto"
+      (click)="cerrarFoto()">
+
+      <button
+        type="button"
+        class="cerrar-visor"
+        aria-label="Cerrar fotografía"
+        (click)="cerrarFoto()">
+        ×
+      </button>
+
+      <img
+        [src]="fotoUrl"
+        alt="Fotografía adjunta ampliada"
+        (click)="$event.stopPropagation()">
+
+    </div>
+
+  }
+
+</div>

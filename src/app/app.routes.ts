@@ -26,6 +26,8 @@ import { ListTecnicos } from './tecnico/pages/list-tecnicos/list-tecnicos';
 import { MisDenuncias } from './denuncia/pages/mis-denuncias/mis-denuncias';
 import { RecuperarPassword } from './auth/recuperar-password/recuperar-password';
 import { ResetPassword } from './auth/reset-password/reset-password';
+import { AdministradorDenuncias } from './admin/pages/administrador-denuncias/administrador-denuncias';
+import { PanelAdmin } from './admin/pages/panel-admin/panel-admin';
 
 export const routes: Routes = [
 
@@ -54,6 +56,12 @@ export const routes: Routes = [
 
     // mis denuncias
     {path : 'mis-denuncias', component: MisDenuncias, canActivate : [authGuard]},
+
+    // administracion
+    {path: 'panel-admin', component: PanelAdmin, canActivate: [authGuard], children: [
+    {path: '', redirectTo: 'denuncias', pathMatch: 'full'},
+    {path: 'denuncias', component: AdministradorDenuncias}]
+    },
     
     // USUARIO
     {path: 'perfil-edicion', component: PerfilEdicion, canActivate: [authGuard]},
