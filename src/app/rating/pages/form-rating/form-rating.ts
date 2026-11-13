@@ -17,6 +17,7 @@ import { RatingModel } from '../../models/rating-model';
 interface TrabajoCalificable {
   uuidTrabajo: string;
   etiqueta: string;
+  esClienteElDestinatario: boolean;
 }
 
 @Component({
@@ -62,7 +63,9 @@ export class FormRating implements OnInit {
   trabajosDisponibles: TrabajoCalificable[] = [];
   caracteristicasDisponibles: any[] = [];
   trabajoFijoLabel = '';
+  calificandoACliente = false;
   cargandoTrabajos = false;
+  cargandoCaracteristicas = true;
   enviando = false;
   estrellasOpciones = [1, 2, 3, 4, 5];
 
@@ -90,31 +93,42 @@ export class FormRating implements OnInit {
       this.trabajoFijoLabel = paramNombreTrabajo || 'Trabajo seleccionado';
     }
 
+    // Actualizar textos dinámicamente cuando cambia el trabajo en el select
+    this.uuidTrabajo.valueChanges.subscribe((uuidSeleccionado) => {
+      const encontrado = this.trabajosDisponibles.find(
+        (t) => t.uuidTrabajo === uuidSeleccionado
+      );
+      if (encontrado) {
+        this.calificandoACliente = encontrado.esClienteElDestinatario;
+      }
+    });
+
     // Cargar características disponibles desde el backend
     this.caracteristicaService.getAll().subscribe({
       next: (lista) => {
         this.caracteristicasDisponibles = lista;
+        this.cargandoCaracteristicas = false;
       },
-      error: (err) => console.error('Error al cargar características:', err)
+      error: (err) => {
+        console.error('Error al cargar características:', err);
+        this.cargandoCaracteristicas = false;
+      }
     });
 
     // Obtener perfil para saber si en cada trabajo soy cliente o técnico
     this.usuarioService.getMyProfile().subscribe({
       next: (perfil) => {
-        if (!paramUuidTrabajo) {
-          this.cargarMisTrabajos(perfil.uuid);
-        }
+        this.cargarMisTrabajos(perfil.uuid, paramUuidTrabajo);
       },
       error: (err) => console.error('Error al obtener perfil:', err)
     });
   }
 
-  private cargarMisTrabajos(miUuid: string): void {
+  private cargarMisTrabajos(miUuid: string, uuidPreset: string): void {
     this.cargandoTrabajos = true;
 
     this.trabajoService.getMyJobs().subscribe({
       next: (trabajos: TrabajoModel[]) => {
-        // Filtramos solo los finalizados (si querés probar con todos, comentá el .filter)
         const finalizados = trabajos.filter(
           (t) => String(t.estadoTrabajo).toUpperCase() === 'FINALIZADO'
         );
@@ -128,9 +142,26 @@ export class FormRating implements OnInit {
 
           return {
             uuidTrabajo: t.uuid,
-            etiqueta: `${t.nombreProyecto} — ${otraPersona} (${rolOtro})`
+            etiqueta: `${t.nombreProyecto} — ${otraPersona} (${rolOtro})`,
+            esClienteElDestinatario: !soyElCliente
           };
         });
+
+        // Si vino preseleccionado por queryParam, sincronizamos el rol y la etiqueta completa
+        if (uuidPreset) {
+          const preset = this.trabajosDisponibles.find(
+            (t) => t.uuidTrabajo === uuidPreset
+          );
+          if (preset) {
+            this.calificandoACliente = preset.esClienteElDestinatario;
+            this.trabajoFijoLabel = preset.etiqueta;
+          }
+        } else if (this.trabajosDisponibles.length > 0) {
+          // Seleccionar automáticamente el primero para que los textos ya arranquen bien
+          const primero = this.trabajosDisponibles[0];
+          this.uuidTrabajo.setValue(primero.uuidTrabajo);
+          this.calificandoACliente = primero.esClienteElDestinatario;
+        }
 
         this.cargandoTrabajos = false;
       },

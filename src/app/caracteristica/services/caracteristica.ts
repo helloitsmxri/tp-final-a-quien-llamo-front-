@@ -8,7 +8,7 @@ import { CaracteristicaModel } from '../models/caracteristica-model';
 @Injectable({providedIn: 'root'})
 export class CaracteristicaService {
 
-    private readonly API_URL = 'http://localhost:8080/api/caracteristicas';
+    private readonly API_URL = 'http://localhost:8080/caracteristicas';
     
         caracteristicas: CaracteristicaModel[];
         caracteristica !: CaracteristicaModel;
