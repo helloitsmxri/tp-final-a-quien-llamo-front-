@@ -34,6 +34,7 @@ import { PanelAdmin } from './admin/pages/panel-admin/panel-admin';
 import { ListRating } from './rating/pages/list-rating/list-rating';
 import { FormRating } from './rating/pages/form-rating/form-rating';
 import { Contacto } from './contacto/contacto';
+import { outForm } from './auth/guards/out-form';
 
 export const routes: Routes = [
 
@@ -109,7 +110,7 @@ export const routes: Routes = [
     { path: 'contacto', component: Contacto },
 
     // TRABAJOS
-{path: 'trabajos/:uuid', component: FormTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/:uuid', component: FormTrabajo, canActivate: [authGuard],canDeactivate: [outForm]},
 {path: 'trabajos/lista', component: ListTrabajo, canActivate: [authGuard]},
 {path: 'mis-trabajos', component: ListTrabajo, canActivate: [authGuard]},
 {path: 'trabajos/:uuid', component: DetalleTrabajo, canActivate: [authGuard]},

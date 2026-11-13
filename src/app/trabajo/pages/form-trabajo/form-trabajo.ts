@@ -136,4 +136,15 @@ export class FormTrabajo {
       ...this.formulario.value
     });
   }
+
+  canDeactivate(): boolean {
+    if (this.formulario.dirty) {
+      return window.confirm(
+        '¿Estás seguro de que querés salir del formulario? Los cambios podrían perderse.'
+      );
+    }
+
+    return true;
+  }
+
 }
