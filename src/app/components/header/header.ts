@@ -32,14 +32,14 @@ export class Header {
   // OJO: "ruta" también es el nombre del área en la grilla del CSS. Si cambio uno, tengo q cambiar el otro
   // TODO: cambiar las rutas de imagen por mis dibujos (mejor en .webp q pesan menos)
   categorias = [
-    { nombre: 'Hogar',        ruta: 'hogar',        imagen: '/iconos/categorias/hogar.webp' },
-    { nombre: 'Construcción', ruta: 'construccion', imagen: '/iconos/categorias/construccion.webp' },
-    { nombre: 'Tecnología',   ruta: 'tecnologia',   imagen: '/iconos/categorias/tecnologia.webp' },
-    { nombre: 'Diseño',       ruta: 'diseno',       imagen: '/iconos/categorias/diseno.webp' },
-    { nombre: 'Transporte',   ruta: 'transporte',   imagen: '/iconos/categorias/transporte.webp' },
-    { nombre: 'Educación',    ruta: 'educacion',    imagen: '/iconos/categorias/educacion.webp' },
-    { nombre: 'Mascotas',     ruta: 'mascotas',     imagen: '/iconos/categorias/mascotas.webp' },
-    { nombre: 'Eventos',      ruta: 'eventos',      imagen: '/iconos/categorias/eventos.webp' },
+    { nombre: 'Hogar',        ruta: 'hogar',        imagen: '/ilustraciones/menu-categoria/hogar.png' },
+    { nombre: 'Construcción', ruta: 'construccion', imagen: '/ilustraciones/menu-categoria/construccion.png' },
+    { nombre: 'Tecnología',   ruta: 'tecnologia',   imagen: '/ilustraciones/menu-categoria/tecnologia.png' },
+    { nombre: 'Diseño',       ruta: 'diseno',       imagen: '/ilustraciones/menu-categoria/design.png' },
+    { nombre: 'Transporte',   ruta: 'transporte',   imagen: '/ilustraciones/menu-categoria/transporte.png' },
+    { nombre: 'Educación',    ruta: 'educacion',    imagen: '/ilustraciones/menu-categoria/educacion.png' },
+    { nombre: 'Mascotas',     ruta: 'mascotas',     imagen: '/ilustraciones/menu-categoria/pets.png' },
+    { nombre: 'Eventos',      ruta: 'eventos',      imagen: '/ilustraciones/menu-categoria/eventos.png' },
   ];
  
   constructor() {

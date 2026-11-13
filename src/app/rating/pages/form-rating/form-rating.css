@@ -255,3 +255,26 @@
   opacity: 0.55;
   cursor: not-allowed;
 }
+
+.chip-seleccionable {
+  background-color: #f4f2fc;
+  color: #513689;
+  border: 1px solid #dcd5f7;
+  padding: 0.45rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chip-seleccionable:hover {
+  background-color: #e9e1fc;
+}
+
+.chip-seleccionable.seleccionado {
+  background-color: #7c5dfa;
+  color: #ffffff;
+  border-color: #7c5dfa;
+  box-shadow: 0 3px 10px rgba(124, 93, 250, 0.25);
+}

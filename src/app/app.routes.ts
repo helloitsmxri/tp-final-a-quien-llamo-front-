@@ -26,6 +26,9 @@ import { ListTecnicos } from './tecnico/pages/list-tecnicos/list-tecnicos';
 import { MisDenuncias } from './denuncia/pages/mis-denuncias/mis-denuncias';
 import { RecuperarPassword } from './auth/recuperar-password/recuperar-password';
 import { ResetPassword } from './auth/reset-password/reset-password';
+import { ListTrabajo } from './trabajo/pages/list-trabajo/list-trabajo';
+import { DetalleTrabajo } from './trabajo/pages/detalle-trabajo/detalle-trabajo';
+import { FormTrabajo } from './trabajo/pages/form-trabajo/form-trabajo';
 import { AdministradorDenuncias } from './admin/pages/administrador-denuncias/administrador-denuncias';
 import { PanelAdmin } from './admin/pages/panel-admin/panel-admin';
 import { ListRating } from './rating/pages/list-rating/list-rating';
@@ -35,6 +38,8 @@ import { AdministradorCertificaciones } from './admin/pages/administrador-certif
 import { AdministradorPortfolio } from './admin/pages/administrador-portfolio/administrador-portfolio';
 import { AdministradorBloquearCuenta } from './admin/pages/administrador-bloquear-cuenta/administrador-bloquear-cuenta';
 import { CrearDenuncia } from './denuncia/components/crear-denuncia/crear-denuncia';
+import { outForm } from './auth/guards/out-form';
+
 
 export const routes: Routes = [
 
@@ -104,24 +109,23 @@ export const routes: Routes = [
     {path: 'iniciar-sesion', component: Login},
     { path: 'recuperar', component: RecuperarPassword },
     { path: 'reset-password', component: ResetPassword },
+
 // Reseñas del usuario logueado (enlace desde el header / perfil)
-  {
-    path: 'mis-resenas',
-    component: ListRating,
-    canActivate: [authGuard],
-  },
+  {path: 'mis-resenas',component: ListRating,canActivate: [authGuard],},
   // Crear nueva reseña (botón "★ Crear reseña" en ListRating)
-  {
-    path: 'ratings/nuevo',
-    component: FormRating,
-    canActivate: [authGuard],
-  },
+  {path: 'ratings/nuevo',component: FormRating,canActivate: [authGuard],},
   // Ver reseñas públicas de un usuario/técnico específico por su UUID
-  {
-    path: 'ratings/:uuid',
-    component: ListRating,
-  },
+  {path: 'ratings/:uuid',component: ListRating,},
+    { path: 'contacto', component: Contacto },
 
-
-    { path: 'contacto', component: Contacto }
+    // TRABAJOS
+{path: 'trabajos/:uuid', component: FormTrabajo, canActivate: [authGuard],canDeactivate: [outForm]},
+{path: 'trabajos/lista', component: ListTrabajo, canActivate: [authGuard]},
+{path: 'mis-trabajos', component: ListTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/:uuid', component: DetalleTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/estado/:estadoTrabajo', component: ListTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/cliente/:uuid', component: ListTrabajo, canActivate: [authGuard]},
+{path: 'trabajos/tecnico/:uuid', component: ListTrabajo, canActivate: [authGuard]},
+  
+  
 ];

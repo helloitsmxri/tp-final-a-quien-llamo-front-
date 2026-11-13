@@ -55,7 +55,7 @@ export class DenunciaService {
   }
 
   // obtener denuncias q aun no tienen un admin asignadooo
-  obtenerSinAsignar (estado: EstadoDenuncia){
+  obtenerSinAsignar (){
     return this.http.get<DenunciaModel[]>(`${this.url}/sin-asignar`);
   }
 

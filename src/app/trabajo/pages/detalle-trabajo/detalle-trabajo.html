@@ -1,20 +1,111 @@
-<div class="container">
-    <ul>
-        @if(trabajo){
-                <li>
-                    @if(trabajo.idTrabajo){
-                        <p>presupuesto : {{trabajo.idTrabajo}}</p>
-                    }
-                    <p>presupuesto : {{trabajo.presupuesto}}</p>
-                    <p>descripcionTrabajo : {{trabajo.descripcionTrabajo}}</p>
-                    <p>fechaEstimadaInicio : {{trabajo.fechaEstimadaInicio}}</p>
-                    <p>fechaEstimadaFin : {{trabajo.fechaEstimadaFin}}</p>
-                    <p>estadoTrabajo : {{trabajo.estadoTrabajo}}</p>
-                </li>    
-        }@else{
-            <li>
-                no se encontro el trabajo!
-            </li>
-        }
-    </ul>
-</div>
+
+<section class="detalle-trabajo">
+
+    <header class="encabezado">
+        <h1>Detalle del trabajo</h1>
+        <p>Información completa del trabajo registrado.</p>
+    </header>
+
+    @if (cargando) {
+        <div class="estado-mensaje">
+            <p>Cargando información del trabajo...</p>
+        </div>
+    }
+    @else if (error) {
+        <div class="estado-mensaje error">
+            <p>No se pudo obtener la información del trabajo.</p>
+        </div>
+    }
+    @else if (trabajo) {
+
+        <article class="trabajo-card">
+
+            <div class="card-superior">
+                <span class="estado"
+                      [attr.data-estado]="trabajo.estadoTrabajo">
+                    {{ trabajo.estadoTrabajo }}
+                </span>
+
+                <span class="fecha">
+                    UUID: {{ trabajo.uuid }}
+                </span>
+            </div>
+
+            <div class="card-contenido">
+
+                <h2>{{ trabajo.nombreProyecto }}</h2>
+
+                <p class="descripcion">
+                    {{ trabajo.descripcionTrabajo }}
+                </p>
+
+                <div class="informacion-trabajo">
+
+                    <div>
+                        <span class="etiqueta">Cliente</span>
+                        <p>
+                            {{ trabajo.nombreCliente }}
+                            {{ trabajo.apellidoCliente }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <span class="etiqueta">Técnico</span>
+                        <p>
+                            {{ trabajo.nombreTecnico }}
+                            {{ trabajo.apellidoTecnico }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <span class="etiqueta">UUID del cliente</span>
+                        <p>{{ trabajo.uuidCliente }}</p>
+                    </div>
+
+                    <div>
+                        <span class="etiqueta">UUID del técnico</span>
+                        <p>{{ trabajo.uuidUsuarioTecnico }}</p>
+                    </div>
+
+                    <div>
+                        <span class="etiqueta">Presupuesto asociado</span>
+                        <p>{{ trabajo.uuidPresupuesto }}</p>
+                    </div>
+
+                    <div>
+                        <span class="etiqueta">Chat asociado</span>
+                        <p>{{ trabajo.uuidChat ?? 'No disponible' }}</p>
+                    </div>
+
+                    <div>
+                        <span class="etiqueta">Fecha estimada de inicio</span>
+                        <p>{{ trabajo.fechaEstimadaInicio | date:'dd/MM/yyyy' }}</p>
+                    </div>
+
+                    <div>
+                        <span class="etiqueta">Fecha estimada de finalización</span>
+                        <p>{{ trabajo.fechaEstimadaFin | date:'dd/MM/yyyy' }}</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <footer class="card-inferior">
+                <span class="etiqueta">Precio estimado</span>
+                <span class="precio">
+                    {{ trabajo.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}
+                </span>
+            </footer>
+
+        </article>
+
+    }
+    @else {
+        <div class="estado-vacio">
+            <h3>Trabajo no encontrado</h3>
+            <p>No se encontró un trabajo asociado al identificador proporcionado.</p>
+        </div>
+    }
+
+</section>
