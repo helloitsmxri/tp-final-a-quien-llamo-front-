@@ -187,6 +187,6 @@ export class PerfilTecnico implements OnInit {
       return;
     }
 
-    this.router.navigate(['/usuario', uuid]);
+    this.router.navigate(['/perfil', uuid]);
   }
 }

@@ -20,7 +20,7 @@ export class UsuarioService {
     // obtener un perfil de usuario
     // perfil/{uuid}
     getProfile(uuid : string){
-        return this.http.get<UserProfileDTO>(`${this.url}/${uuid}`);
+        return this.http.get<UserProfileDTO>(`${this.url}/perfil/${uuid}`);
     }
 
     // ver mi perfil
