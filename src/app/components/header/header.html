@@ -25,10 +25,9 @@
       <li class="menu-desplegable" (pointerenter)="entrar($event)">
         <!-- es un <button> y no un link xq no lleva a ningún lado, solo abre y cierra el panel.
             aria-expanded le avisa al lector si está abierto o cerrado, aria-controls dice a qué panel se refiere -->
-        <button type="button" class="dropdown-toggle" [class.activo]="abierto() || enCategorias()"
-          [attr.aria-expanded]="abierto()" aria-controls="menu-categorias" (click)="clic()">
+        <a class="dropdown-toggle" [routerLink]="['/tecnicos']" routerLinkActive="activo" (click)="cerrar()">
           Categorías
-        </button>
+        </a>
       </li>
     </ul>
 
@@ -58,7 +57,7 @@
           <a routerLink="/mis-certificaciones" (click)="cerrarMenuUsuario()">
             Mis certificaciones
           </a>
-          
+
 
           <a routerLink="/mis-portfolios" (click)="cerrarMenuUsuario()">
             Mis portfolios
@@ -72,6 +71,8 @@
           <a routerLink="/mis-presupuestos" (click)="cerrarMenuUsuario()">Mis presupuestos</a>
 
           <a routerLink="/mis-resenas" (click)="cerrarMenuUsuario()">Mis reseñas</a>
+
+          <a routerLink="/mis-denuncias" (click)="cerrarMenuUsuario()">Mis denuncias</a>
 
           <button type="button" class="boton-cerrar-sesion" (click)="cerrarSesion()">
             Cerrar sesión

@@ -1,14 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { RatingService } from '../../services/rating';
+import { UsuarioService } from '../../../user/services/user';
+import { ChatModel } from '../../../chat/models/chat-model';
 import { RatingModel } from '../../models/rating-model';
-import { FormRatingModel } from '../../models/form-rating-model';
+import { ChatService } from '../../../chat/services/chat-service';
+
+interface ContactoCalificable {
+  uuid: string;
+  nombreCompleto: string;
+}
 
 @Component({
   selector: 'app-form-rating',
@@ -17,101 +25,178 @@ import { FormRatingModel } from '../../models/form-rating-model';
   templateUrl: './form-rating.html',
   styleUrl: './form-rating.css',
 })
-export class FormRating {
+export class FormRating implements OnInit {
+  private rService = inject(RatingService);
+  private usuarioService = inject(UsuarioService);
+  private chatService = inject(ChatService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  uuidRemitente: FormControl;
-  uuidDestinatario: FormControl;
-  usuarioDestinatario: FormControl;
-  valoracion: FormControl;
-  descripcion: FormControl;
-  tipoFoto: FormControl;
-  foto: FormControl;
-  caracteristicas: FormControl;
+  @Input() uuidDestinatarioPreset: string = '';
+  @Input() nombreDestinatarioPreset: string = '';
+  @Output() ratingCreado = new EventEmitter<void>();
+  @Output() cerrar = new EventEmitter<void>();
 
-  formulario: FormGroup;
+  uuidRemitente = new FormControl('', [Validators.required]);
+  uuidDestinatario = new FormControl('', [Validators.required]);
+  valoracion = new FormControl(5, [
+    Validators.required,
+    Validators.min(1),
+    Validators.max(5)
+  ]);
+  descripcion = new FormControl('', [Validators.maxLength(500)]);
+  tipoFoto = new FormControl<string | null>(null);
+  foto = new FormControl<string | null>(null);
+  caracteristicas = new FormControl<string[]>([], [Validators.required]);
 
-  constructor(public rService: RatingService) {
+  formulario = new FormGroup({
+    uuidRemitente: this.uuidRemitente,
+    uuidDestinatario: this.uuidDestinatario,
+    valoracion: this.valoracion,
+    descripcion: this.descripcion,
+    tipoFoto: this.tipoFoto,
+    foto: this.foto,
+    caracteristicas: this.caracteristicas
+  });
 
-    this.uuidRemitente = new FormControl('', [Validators.required]);
+  contactosDisponibles: ContactoCalificable[] = [];
+  nombreFijo = '';
+  cargandoContactos = false;
+  enviando = false;
+  estrellasOpciones = [1, 2, 3, 4, 5];
 
-    this.uuidDestinatario = new FormControl('', [Validators.required]);
+  etiquetasEstrellas: Record<number, string> = {
+    1: '1 - Muy mala',
+    2: '2 - Mala',
+    3: '3 - Regular',
+    4: '4 - Buena',
+    5: '5 - Excelente'
+  };
 
-    this.usuarioDestinatario = new FormControl('', [Validators.required]);
+  ngOnInit(): void {
+    const paramUuid =
+      this.uuidDestinatarioPreset ||
+      this.route.snapshot.queryParamMap.get('uuidDestinatario') ||
+      '';
 
-    this.valoracion = new FormControl(5, [
-      Validators.required,
-      Validators.min(1),
-      Validators.max(5)
-    ]);
+    const paramNombre =
+      this.nombreDestinatarioPreset ||
+      this.route.snapshot.queryParamMap.get('nombreDestinatario') ||
+      '';
 
-    this.descripcion = new FormControl('', [Validators.maxLength(500)]);
+    if (paramUuid) {
+      this.uuidDestinatario.setValue(paramUuid);
+      this.nombreFijo = paramNombre || 'Usuario seleccionado';
+    }
 
-    this.tipoFoto = new FormControl(null);
-
-    this.foto = new FormControl(null);
-
-    this.caracteristicas = new FormControl([], [Validators.required]);
-
-    this.formulario = new FormGroup({
-      uuidRemitente: this.uuidRemitente,
-      uuidDestinatario: this.uuidDestinatario,
-      usuarioDestinatario: this.usuarioDestinatario,
-      valoracion: this.valoracion,
-      descripcion: this.descripcion,
-      tipoFoto: this.tipoFoto,
-      foto: this.foto,
-      caracteristicas: this.caracteristicas
+    this.usuarioService.getMyProfile().subscribe({
+      next: (perfil) => {
+        this.uuidRemitente.setValue(perfil.uuid);
+        if (!paramUuid) {
+          this.cargarContactosDesdeChats(perfil.uuid);
+        }
+      },
+      error: (err) => console.error('Error al obtener perfil del usuario:', err)
     });
   }
 
-  // Suma las características escritas (separadas por coma) a las que ya hay
+  private cargarContactosDesdeChats(miUuid: string): void {
+    this.cargandoContactos = true;
+
+    this.chatService.getMisChats().subscribe({
+      next: (chats: ChatModel[]) => {
+        const mapa = new Map<string, ContactoCalificable>();
+
+        for (const c of chats) {
+          const soyElCliente = c.uuidUsuario === miUuid;
+          const uuidOtraPersona = soyElCliente ? c.uuidTecnico : c.uuidUsuario;
+          const nombreOtraPersona = soyElCliente ? c.nombreTecnico : c.nombreUsuario;
+
+          if (uuidOtraPersona && uuidOtraPersona !== miUuid && !mapa.has(uuidOtraPersona)) {
+            mapa.set(uuidOtraPersona, {
+              uuid: uuidOtraPersona,
+              nombreCompleto: nombreOtraPersona || 'Usuario'
+            });
+          }
+        }
+
+        this.contactosDisponibles = Array.from(mapa.values());
+        this.cargandoContactos = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar contactos de chats:', err);
+        this.cargandoContactos = false;
+      }
+    });
+  }
+
+  seleccionarEstrellas(puntaje: number): void {
+    this.valoracion.setValue(puntaje);
+    this.valoracion.markAsTouched();
+  }
+
   agregarCaracteristicas(texto: string): void {
     const nuevas = texto
       .split(',')
       .map((c) => c.trim())
       .filter((c) => c.length > 0);
 
-    this.caracteristicas.setValue([...this.caracteristicas.value, ...nuevas]);
+    if (nuevas.length === 0) return;
+
+    const actuales: string[] = this.caracteristicas.value || [];
+    this.caracteristicas.setValue(Array.from(new Set([...actuales, ...nuevas])));
+    this.caracteristicas.markAsTouched();
+  }
+
+  eliminarCaracteristica(index: number): void {
+    const actuales: string[] = [...(this.caracteristicas.value || [])];
+    actuales.splice(index, 1);
+    this.caracteristicas.setValue(actuales);
     this.caracteristicas.markAsTouched();
   }
 
   registrar(): void {
-    if (this.formulario.invalid) {
+    if (this.formulario.invalid || this.enviando) {
       this.formulario.markAllAsTouched();
       return;
     }
 
-    const form: FormRatingModel = this.formulario.value;
+    this.enviando = true;
+    const raw = this.formulario.getRawValue();
 
-    // El formulario y el back no usan los mismos nombres: se convierte antes de enviar
     const rating: RatingModel = {
-      uuidRemitente: form.uuidRemitente,
-      uuidDestinatario: form.uuidDestinatario,
-      valoracion: form.valoracion,
-      descripcion: form.descripcion ?? undefined,
-      tipoFoto: form.tipoFoto ?? '',
-      foto: form.foto,
-      uuidCaracteristicas: form.caracteristicas
+      uuidRemitente: raw.uuidRemitente!,
+      uuidDestinatario: raw.uuidDestinatario!,
+      valoracion: raw.valoracion!,
+      descripcion: raw.descripcion?.trim() || undefined,
+      tipoFoto: raw.tipoFoto ?? '',
+      foto: raw.foto || null,
+      uuidCaracteristicas: raw.caracteristicas || []
     };
 
-    this.rService.createRatings(rating).subscribe({
-      next: (respuesta) => {
-        console.log('Calificación registrada correctamente', respuesta);
-        this.formulario.reset({
-          valoracion: 5,
-          descripcion: '',
-          tipoFoto: null,
-          foto: null,
-          caracteristicas: []
-        });
+    this.rService.createRating(rating).subscribe({
+      next: () => {
+        this.enviando = false;
+        alert('¡Reseña publicada con éxito!');
+        if (this.ratingCreado.observed) {
+          this.ratingCreado.emit();
+        } else {
+          this.router.navigate(['/mis-resenas']);
+        }
       },
       error: (e) => {
-        console.error('Error al registrar la calificación', e);
+        this.enviando = false;
+        console.error('Error al registrar la calificación:', e);
+        alert('No se pudo publicar la reseña. Verificá los datos e intentá nuevamente.');
       }
     });
   }
 
-  verSubmit(): void {
-    console.log(this.formulario.value);
+  cancelar(): void {
+    if (this.cerrar.observed) {
+      this.cerrar.emit();
+    } else {
+      this.router.navigate(['/mis-resenas']);
+    }
   }
 }

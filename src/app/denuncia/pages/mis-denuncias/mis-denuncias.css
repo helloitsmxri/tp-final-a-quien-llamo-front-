@@ -1,0 +1,355 @@
+
+:host {
+    display: block;
+    font-family: "Creato Display", Arial, sans-serif;
+    color: var(--color-texto);
+}
+
+.mis-denuncias,
+.mis-denuncias * {
+    box-sizing: border-box;
+}
+
+.mis-denuncias {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 3rem;
+}
+
+/* TÍTULO */
+
+.mis-denuncias h1 {
+    display: inline-block;
+    margin: 0 0 2rem;
+    font-size: 2.4rem;
+    line-height: 1.2;
+    font-weight: 800;
+    background: var(--degrade-texto);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* PESTAÑAS */
+
+.pestanas {
+    display: flex;
+    gap: 2rem;
+    border-bottom: 1px solid var(--color-borde);
+    margin-bottom: 1.5rem;
+}
+
+.pestanas button {
+    padding: 0.8rem 0.3rem;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    background: transparent;
+    color: var(--color-texto-secundario);
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.pestanas button:hover {
+    color: var(--color-acento);
+}
+
+.pestanas button.activa {
+    color: var(--color-acento);
+    border-bottom-color: var(--color-acento);
+    font-weight: 800;
+}
+
+/* FILTROS POR ESTADO */
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin-bottom: 2rem;
+}
+
+.filtros button {
+    padding: 0.5rem 1.1rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 999px;
+    background: var(--color-blanco);
+    color: var(--color-texto-secundario);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.filtros button:hover {
+    border-color: var(--color-acento);
+    background: #f7f4ff;
+}
+
+.filtros button.activo {
+    border-color: var(--color-acento);
+    background: var(--degrade-boton);
+    color: white;
+    font-weight: 800;
+}
+
+/* LISTA DE DENUNCIAS */
+
+.lista-denuncias {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* TARJETAS */
+
+.denuncia-card {
+    padding: 0;
+    border: 1px solid #e7e3ef;
+    border-radius: var(--radio-tarjeta);
+    background: var(--color-tarjeta);
+    box-shadow: var(--sombra-tarjeta);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.denuncia-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 9px 24px rgba(90, 70, 160, 0.13);
+}
+
+.boton-denuncia {
+    display: block;
+    width: 100%;
+    padding: 1.5rem 1.7rem;
+    border: 2px solid transparent;
+    border-radius: var(--radio-tarjeta);
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.boton-denuncia.seleccionada {
+    border-color: var(--color-acento);
+}
+
+/* INFORMACIÓN SUPERIOR */
+
+.card-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+}
+
+/* ESTADOS */
+
+.estado {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 800;
+}
+
+.estado[data-estado="Pendiente"] {
+    background: #fff1d6;
+    color: #805600;
+}
+
+.estado[data-estado="En_proceso"] {
+    background: #dceaff;
+    color: #17477e;
+}
+
+.estado[data-estado="Aprobada"] {
+    background: #e1f2e5;
+    color: #23653a;
+}
+
+.estado[data-estado="Rechazada"] {
+    background: #fbe5e5;
+    color: #982e38;
+}
+
+/* FECHA */
+
+.fecha {
+    color: var(--color-texto-secundario);
+    font-size: 0.9rem;
+}
+
+/* TÍTULO DE LA TARJETA */
+
+.denuncia-card h2 {
+    margin: 0 0 0.9rem;
+    color: #40336e;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+/* DATOS DE LA DENUNCIA */
+
+.denuncia-card p {
+    margin: 0.5rem 0;
+    color: var(--color-texto-secundario);
+    font-size: 0.98rem;
+    line-height: 1.5;
+}
+
+.denuncia-card .motivo {
+    margin-top: 0.8rem;
+    color: var(--color-texto);
+    overflow-wrap: anywhere;
+}
+
+/* FOTO ADJUNTA */
+
+.tiene-foto {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.8rem;
+    color: var(--color-texto-secundario);
+    font-size: 0.9rem;
+}
+
+/* VER DETALLE */
+
+.ver-detalle {
+    display: block;
+    margin-top: 1.2rem;
+    color: var(--color-acento);
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+/* SIN DENUNCIAS */
+
+.sin-denuncias {
+    padding: 3rem 1rem;
+    border: 1px dashed #cfc5eb;
+    border-radius: var(--radio-tarjeta);
+    background: #faf9fd;
+    color: var(--color-texto-secundario);
+    text-align: center;
+    font-size: 1rem;
+}
+
+/* DETALLE SELECCIONADO */
+
+.contenedor-detalle {
+    margin-top: 2.5rem;
+    scroll-margin-top: 2rem;
+}
+
+/* MENSAJES Y REINTENTO */
+
+.mensaje {
+    line-height: 1.5;
+}
+
+.mensaje-error {
+    padding: 1.5rem;
+    border: 1px solid #f0caca;
+    border-radius: var(--radio-tarjeta);
+    background: #fff7f7;
+    color: #982e38;
+}
+
+.mensaje-error p {
+    margin: 0 0 1rem;
+    line-height: 1.5;
+}
+
+.mensaje-error button {
+    padding: 0.65rem 1.5rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--degrade-boton);
+    color: white;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.mensaje-error button:hover {
+    box-shadow: 0 5px 14px rgba(108, 79, 224, 0.25);
+}
+
+/* FOCO VISIBLE */
+
+.mis-denuncias button:focus-visible {
+    outline: 3px solid var(--color-acento);
+    outline-offset: 4px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .mis-denuncias {
+        padding: 2rem 1.3rem;
+    }
+
+    .mis-denuncias h1 {
+        font-size: 2rem;
+    }
+
+    .pestanas {
+        gap: 1.2rem;
+    }
+
+    .filtros {
+        gap: 0.5rem;
+    }
+
+    .boton-denuncia {
+        padding: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .mis-denuncias {
+        padding: 1.5rem 1rem;
+    }
+
+    .mis-denuncias h1 {
+        font-size: 1.8rem;
+    }
+
+    .pestanas button {
+        font-size: 0.95rem;
+    }
+
+    .card-superior {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+/* MOVIMIENTO REDUCIDO */
+
+@media (prefers-reduced-motion: reduce) {
+    .denuncia-card,
+    .boton-denuncia,
+    .pestanas button,
+    .filtros button {
+        transition: none;
+    }
+
+    .denuncia-card:hover {
+        transform: none;
+    }
+}

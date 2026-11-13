@@ -1,51 +1,99 @@
 
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
 import { DenunciaModel } from '../models/denuncia-model';
+import { EstadoDenuncia } from '../enum/estado-denuncia';
 
 @Injectable({ providedIn: 'root' })
 export class DenunciaService {
 
-    private readonly API_URL = 'http://localhost:8080/api/denuncias';
+  private url = 'http://localhost:8080/aquienllamo/denuncias';
+  private http = inject(HttpClient);
 
-    denuncias: DenunciaModel[] = [];
-    denuncia!: DenunciaModel;
+  // consultar denuncias como administrador - TODAS -
+  obtenerTodasLasDenuncias() {
+    return this.http.get<DenunciaModel[]>(this.url);
+  }
 
-    constructor(private http: HttpClient) {}
+  // obtener una denuncia específica
+  obtenerDenuncia(uuid : string){
+    return this.http.get<DenunciaModel>(`${this.url}/${uuid}`);
+  }
 
-  // READ: obtener todas las denuncias
-    getAll(): Observable<DenunciaModel[]> {
-        return this.http.get<DenunciaModel[]>(this.API_URL);
+  // crear denuncia desde un chat
+  crearDenunciaChat(uuidChat : string, motivoDenuncia: string, foto ?: File){
+    // revisar esto con pau
+    const formData = new FormData();
+    formData.append('motivoDenuncia', motivoDenuncia);
+    if (foto){
+      formData.append('foto', foto);
     }
 
-  // READ: obtener una denuncia por UUID
-    getByUuid(uuid: string): Observable<DenunciaModel> {
-        return this.http.get<DenunciaModel>(
-        `${this.API_URL}/${uuid}`
-        );
+    return this.http.post<DenunciaModel>(`${this.url}/crear/chat/${uuidChat}`, formData);
+  }
+
+  // crear denuncia desde un perfil
+  crearDenunciaPerfil (uuidDenunciado : string, motivoDenuncia : string, foto ?: File){
+    const formData = new FormData;
+
+    formData.append('motivoDenuncia', motivoDenuncia);
+    if (foto){
+      formData.append('foto', foto);
     }
 
-  // CREATE: crear una denuncia
-    store(denuncia: Partial<DenunciaModel>): Observable<DenunciaModel> {
-        return this.http.post<DenunciaModel>(
-        this.API_URL,
-        denuncia
-        );
+    return this.http.post<DenunciaModel>(`${this.url}/crear/perfil/${uuidDenunciado}`, formData);
+  }
+
+  // obtener foto de la denuncia
+  obtenerFoto(uuid: string){
+    return this.http.get(`${this.url}/${uuid}/foto`, {responseType: 'blob'});
+  }
+
+  // obtener denunciais por estado siendo ADMIN
+  obtenerPorEstado(estado: EstadoDenuncia){
+    return this.http.get<DenunciaModel[]>(`${this.url}/estado/${estado}`);
+  }
+
+  // obtener denuncias q aun no tienen un admin asignadooo
+  obtenerSinAsignar (estado: EstadoDenuncia){
+    return this.http.get<DenunciaModel[]>(`${this.url}/sin-asignar`);
+  }
+
+  // obtener MIS denuncias
+  obtenerMisDenuncias(tipo: 'CREADAS' | 'RECIBIDAS'){
+    if (tipo === 'CREADAS'){
+      return this.http.get<DenunciaModel[]>(`${this.url}/mis-denuncias/creadas`);
     }
 
-  // UPDATE: actualizar una denuncia
-    update(uuid: string,denuncia: Partial<DenunciaModel>): Observable<DenunciaModel> {
-        return this.http.put<DenunciaModel>(
-        `${this.API_URL}/${uuid}`,
-        denuncia
-        );
+    return this.http.get<DenunciaModel[]>(`${this.url}/mis-denuncias/recibidas`);
+  }
+
+  // asignar UN ADMIN p una denuncia
+  asignarAdministrador(uuidDenuncia : string, uuidAdministrador : string){
+    return this.http.patch<DenunciaModel>(`${this.url}/${uuidDenuncia}/asignar-administrador/${uuidAdministrador}`,{});
+  }
+
+  // aprobar una denuncia
+  aprobarDenuncia(uuid: string, mensaje : string){
+    return this.http.patch<DenunciaModel>(`${this.url}/${uuid}/aprobar`, null, {params : {mensaje} });
+  }
+
+  // rechazar la denuncia 
+  rechazarDenuncia (uuid : string, mensaje : string){
+    return this.http.patch<DenunciaModel>(`${this.url}/${uuid}/rechazar`, null, { params : {mensaje}});
+  }
+
+  // obtener denuncias asignadas al admin:
+  obtenerMisDenunciasAdmin(estado ?: EstadoDenuncia){
+    if (estado){
+      return this.http.get<DenunciaModel[]>(`${this.url}/mis-denuncias`, {params : {estado}});
     }
 
-  // DELETE: eliminar una denuncia
-    delete(uuid: string): Observable<void> {
-        return this.http.delete<void>(
-        `${this.API_URL}/${uuid}`
-        );
-    }
+    return this.http.get<DenunciaModel[]>(`${this.url}/mis-denuncias`);
+  }
+
+  // ordenar x fecha -mas viejas mas nuevas-
+  ordenarDenuncias(orden : 'asc' | 'desc' = 'desc'){
+    return this.http.get<DenunciaModel[]>(`${this.url}/ordenar`, {params : {orden}});
+  }
 }

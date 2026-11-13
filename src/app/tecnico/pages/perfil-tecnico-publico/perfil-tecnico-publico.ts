@@ -6,6 +6,7 @@ import { ItemPublico, TecnicoService } from '../../services/tecnico';
 import { RatingService } from '../../../rating/services/rating';
 import { PerfilTecnicoModel } from '../../models/PerfilTecnicoModel';
 import { RatingResponse } from '../../../rating/models/rating-response';
+import { AuthService } from '../../../auth/services/auth-service';
 
 interface ItemDetalle {
   titulo: string;
@@ -27,6 +28,7 @@ export class PerfilTecnicoPublico implements OnInit {
   private ratingService = inject(RatingService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private authService = inject(AuthService);
 
   tecnico: PerfilTecnicoModel | null = null;
   errorCarga = false;
@@ -90,13 +92,22 @@ export class PerfilTecnicoPublico implements OnInit {
   }
 
   // Contactar al técnico
-  contactar(): void {
-    if (!this.tecnico) return;
+contactar(): void {
+  if (!this.tecnico) return;
 
-    this.router.navigate(['/chats'], {
-      queryParams: { tecnico: this.tecnico.uuid },
+  if (!this.authService.hasToken()) {
+    this.router.navigate(['/iniciar-sesion'], {
+      queryParams: {
+        returnUrl: this.router.url
+      }
     });
+    return;
   }
+
+  this.router.navigate(['/chats'], {
+    queryParams: { tecnico: this.tecnico.uuid },
+  });
+}
 
   // Foto del técnico
   get fotoSrc(): string | null {

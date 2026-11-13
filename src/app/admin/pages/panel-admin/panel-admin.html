@@ -1,0 +1,32 @@
+<div class="panel-admin">
+
+  <aside class="menu-admin">
+
+    <div class="logo-admin">
+      <span class="subtitulo">PANEL DE ADMINISTRACIÓN</span>
+    </div>
+
+    <nav class="opciones-admin">
+        <a routerLink="denuncias" routerLinkActive="activo" class="opcion-admin">
+        <span>▤</span><span>Denuncias</span>
+      </a>
+
+      <a routerLink="certificaciones" routerLinkActive="activo" class="opcion-admin">
+        <span>✓</span><span>Certificaciones</span>
+      </a>
+
+      <a routerLink="bloquear-cuenta" routerLinkActive="activo" class="opcion-admin">
+        <span>⊘</span><span>Bloquear cuenta</span>
+      </a>
+
+      <div class="opcion-admin deshabilitado">
+        <span>$</span><span>Ganancias</span>
+        <small>No disponible</small>
+      </div>
+
+    </nav>
+  </aside>
+  <main class="contenido-admin">
+    <router-outlet></router-outlet>
+  </main>
+</div>
