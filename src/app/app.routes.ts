@@ -106,7 +106,7 @@ export const routes: Routes = [
   {path: 'ratings/nuevo',component: FormRating,canActivate: [authGuard],},
   // Ver reseñas públicas de un usuario/técnico específico por su UUID
   {path: 'ratings/:uuid',component: ListRating,},
-    { path: 'contacto', component: Contacto }
+    { path: 'contacto', component: Contacto },
 
     // TRABAJOS
 {path: 'trabajos/:uuid', component: FormTrabajo, canActivate: [authGuard]},
