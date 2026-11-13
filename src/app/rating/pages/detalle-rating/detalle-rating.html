@@ -1,15 +1,55 @@
-<div class="container">
-    <ul>
-        @for (rating of ratings; track $index) {
-            <li>
-                <p>remitente : {{ rating.nombreRemitente }} {{ rating.apellidoRemitente }}</p>
-                <p>destinatario : {{ rating.nombreDestinatario }}</p>
-                <p>valoracion : {{ rating.valoracion }}</p>
-                <p>descripcion : {{ rating.descripcion }}</p>
-                <p>caracteristicas : {{ rating.caracteristicas.join(', ') }}</p>
-            </li>
-        } @empty {
-            <li>no se encontraron reseñas!</li>
+<div class="detalle-rating-wrapper">
+  <div class="detalle-rating-card">
+    <div class="detalle-header">
+      <div>
+        <span class="sobretitulo">DETALLE DE RESEÑA</span>
+        <h2>
+          @if (esRecibida) {
+            Reseña de {{ ratingSeleccionado.nombreRemitente }} {{ ratingSeleccionado.apellidoRemitente }}
+          } @else {
+            Reseña para {{ ratingSeleccionado.nombreDestinatario }}
+          }
+        </h2>
+      </div>
+      <button type="button" class="btn-volver-pill" (click)="volverALista()">← Volver</button>
+    </div>
+
+    <div class="detalle-puntaje-box">
+      <div class="estrellas-grandes">
+        @for (e of estrellasArray; track e) {
+          <span [class.llena]="ratingSeleccionado.valoracion >= e">★</span>
         }
-    </ul>
+      </div>
+      <span class="numero-puntaje">{{ ratingSeleccionado.valoracion }}.0 / 5.0</span>
+    </div>
+
+    @if (ratingSeleccionado.descripcion) {
+      <div class="detalle-bloque">
+        <h4>Comentario</h4>
+        <p class="comentario-texto">{{ ratingSeleccionado.descripcion }}</p>
+      </div>
+    }
+
+    @if (ratingSeleccionado.caracteristicas && ratingSeleccionado.caracteristicas.length > 0) {
+      <div class="detalle-bloque">
+        <h4>Características destacadas</h4>
+        <div class="chips-contenedor">
+          @for (car of ratingSeleccionado.caracteristicas; track $index) {
+            <span class="chip-caracteristica">{{ car }}</span>
+          }
+        </div>
+      </div>
+    }
+
+    @if (ratingSeleccionado.foto) {
+      <div class="detalle-bloque">
+        <h4>Evidencia adjunta</h4>
+        <img
+          [src]="ratingSeleccionado.foto"
+          [alt]="ratingSeleccionado.tipoFoto || 'Foto de la reseña'"
+          class="foto-resena"
+        />
+      </div>
+    }
+  </div>
 </div>

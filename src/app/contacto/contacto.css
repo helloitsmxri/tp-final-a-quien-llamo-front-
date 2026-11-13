@@ -1,0 +1,97 @@
+:host {
+  display: block;
+  padding: 40px 20px;
+  font-family: "Creato Display", Arial, sans-serif;
+}
+
+.contacto-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+}
+
+.contacto-card {
+  width: 100%;
+  max-width: 550px;
+  padding: 40px 36px;
+  background: #f1f1f1;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(90, 70, 160, 0.25);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+h2 {
+  margin: 0 0 10px;
+  font-size: 2.4rem;
+  line-height: 1.1;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.descripcion {
+  margin: 12px 0 30px;
+  color: #666;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.contacto-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5b3fd6;
+}
+
+.contacto-texto h3 {
+  margin: 0 0 8px;
+  color: #5b3fd6;
+  font-size: 1.15rem;
+}
+
+.contacto-texto a {
+  color: #555;
+  font-size: 0.95rem;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: color 0.2s;
+}
+
+.contacto-texto a:hover {
+  color: #5b3fd6;
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  :host {
+    padding: 24px 12px;
+  }
+
+  .contacto-card {
+    padding: 30px 22px;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  .contacto-info {
+    padding: 18px 12px;
+    gap: 12px;
+  }
+}

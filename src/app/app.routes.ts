@@ -28,6 +28,9 @@ import { RecuperarPassword } from './auth/recuperar-password/recuperar-password'
 import { ResetPassword } from './auth/reset-password/reset-password';
 import { AdministradorDenuncias } from './admin/pages/administrador-denuncias/administrador-denuncias';
 import { PanelAdmin } from './admin/pages/panel-admin/panel-admin';
+import { ListRating } from './rating/pages/list-rating/list-rating';
+import { FormRating } from './rating/pages/form-rating/form-rating';
+import { Contacto } from './contacto/contacto';
 
 export const routes: Routes = [
 
@@ -42,7 +45,7 @@ export const routes: Routes = [
 
     // PERFILES (AUTHGUARD)
     // TÉCNICO
-    {path: 'perfil-tecnico/:uuid', component: PerfilTecnicoPublico, canActivate: [authGuard]},
+    {path: 'perfil-tecnico/:uuid', component: PerfilTecnicoPublico},
     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico', component: PerfilTecnico, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico/editar', component: EditarTecnico, canActivate: [authGuard]},
@@ -93,4 +96,24 @@ export const routes: Routes = [
     {path: 'iniciar-sesion', component: Login},
     { path: 'recuperar', component: RecuperarPassword },
     { path: 'reset-password', component: ResetPassword },
+// Reseñas del usuario logueado (enlace desde el header / perfil)
+  {
+    path: 'mis-resenas',
+    component: ListRating,
+    canActivate: [authGuard],
+  },
+  // Crear nueva reseña (botón "★ Crear reseña" en ListRating)
+  {
+    path: 'ratings/nuevo',
+    component: FormRating,
+    canActivate: [authGuard],
+  },
+  // Ver reseñas públicas de un usuario/técnico específico por su UUID
+  {
+    path: 'ratings/:uuid',
+    component: ListRating,
+  },
+
+
+    { path: 'contacto', component: Contacto }
 ];
