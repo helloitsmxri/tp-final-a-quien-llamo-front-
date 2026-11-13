@@ -1,157 +1,247 @@
 
+:host {
+    display: block;
+    width: 100%;
+    font-family: "Creato Display", sans-serif;
+    color: #29243a;
+}
+
+/* CONTENEDOR PRINCIPAL */
 .register-container {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 30px 15px;
-  background-color: #f3f4f6;
-  box-sizing: border-box;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5rem 1.5rem;
+    background: #faf9fc;
+    box-sizing: border-box;
+
+    --color-texto: #29243a;
+    --color-texto-secundario: #777187;
+    --color-borde: #e7e3ef;
+    --color-acento: #7952c7;
+    --degrade-texto: linear-gradient(90deg, #7952c7, #a16de0);
+    --degrade-boton: linear-gradient(90deg, #7952c7, #9664d6);
 }
 
+/* TARJETA */
 .register-card {
-  width: 100%;
-  max-width: 520px;
-  padding: 30px;
-  background-color: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e5e7eb;
-  box-sizing: border-box;
+    width: 100%;
+    max-width: 520px;
+    padding: 2.5rem;
+    background: #ffffff;
+    border: 1px solid var(--color-borde);
+    border-radius: 18px;
+    box-shadow: 0 6px 24px rgba(42, 30, 70, 0.08);
+    box-sizing: border-box;
 }
 
+/* TÍTULO */
 .register-card h2 {
-  margin: 0 0 10px;
-  color: #1f2937;
-  font-size: 26px;
-  text-align: center;
+    margin: 0 0 0.7rem;
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
+    background: var(--degrade-texto);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
+/* DESCRIPCIÓN */
 .register-card > p {
-  margin: 0 0 25px;
-  color: #6b7280;
-  font-size: 15px;
-  text-align: center;
-  line-height: 1.5;
+    margin: 0 0 2rem;
+    color: var(--color-texto-secundario);
+    font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.6;
 }
 
+/* FORMULARIO */
 .formulario {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
 }
 
+/* GRUPOS */
 .form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
 }
 
+/* LABELS */
 .form-group label {
-  color: #374151;
-  font-size: 14px;
-  font-weight: 600;
+    color: var(--color-texto);
+    font-size: 0.9rem;
+    font-weight: 700;
 }
 
+/* INPUTS Y SELECTS */
 .form-group input,
 .form-group select {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  background-color: #ffffff;
-  color: #1f2937;
-  font-size: 15px;
-  font-family: inherit;
-  box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+    padding: 0.85rem 1rem;
+
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: var(--color-texto);
+
+    font-size: 0.95rem;
+    font-family: inherit;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
 }
 
+/* PLACEHOLDER */
 .form-group input::placeholder {
-  color: #9ca3af;
+    color: #aaa5b5;
 }
 
+/* FOCUS */
 .form-group input:focus,
 .form-group select:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    outline: none;
+    border-color: var(--color-acento);
+    box-shadow: 0 0 0 3px rgba(121, 82, 199, 0.13);
+    background: #fdfcff;
 }
 
+/* SELECT */
 .form-group select {
-  cursor: pointer;
+    cursor: pointer;
 }
 
+/* ERRORES */
 .error {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  color: #dc2626;
-  font-size: 13px;
-  line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    color: #c03952;
+    font-size: 0.82rem;
+    line-height: 1.4;
 }
 
+/* BOTÓN */
 .formulario button {
-  width: 100%;
-  margin-top: 5px;
-  padding: 13px 18px;
-  border: none;
-  border-radius: 8px;
-  background-color: #2563eb;
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+    width: 100%;
+    margin-top: 0.4rem;
+    padding: 0.9rem 1.2rem;
+
+    border: none;
+    border-radius: 999px;
+
+    background: var(--degrade-boton);
+    color: #ffffff;
+
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+
+    cursor: pointer;
+
+    box-shadow: 0 4px 12px rgba(121, 82, 199, 0.22);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
 }
 
+/* HOVER */
 .formulario button:hover:not(:disabled) {
-  background-color: #1d4ed8;
-  transform: translateY(-2px);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 17px rgba(121, 82, 199, 0.3);
 }
 
+/* ACTIVE */
+.formulario button:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(121, 82, 199, 0.2);
+}
+
+/* FOCUS */
 .formulario button:focus-visible {
-  outline: 3px solid #93c5fd;
-  outline-offset: 3px;
+    outline: 3px solid rgba(121, 82, 199, 0.3);
+    outline-offset: 3px;
 }
 
+/* DISABLED */
 .formulario button:disabled {
-  background-color: #9ca3af;
-  cursor: not-allowed;
-  transform: none;
+    background: #c8bfd9;
+    color: #ffffff;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }
 
-/* Adaptación para celulares */
+/* RESPONSIVE TABLET Y CELULAR */
+@media (max-width: 768px) {
+    .register-container {
+        padding: 2rem 1.2rem;
+    }
+
+    .register-card {
+        padding: 2rem;
+    }
+}
+
+/* RESPONSIVE CELULARES */
 @media (max-width: 480px) {
-  .register-container {
-    padding: 20px 12px;
-    align-items: flex-start;
-  }
+    .register-container {
+        min-height: 100vh;
+        padding: 1.5rem 1rem;
+        align-items: flex-start;
+    }
 
-  .register-card {
-    padding: 22px 18px;
-  }
+    .register-card {
+        padding: 1.6rem 1.2rem;
+        border-radius: 15px;
+    }
 
-  .register-card h2 {
-    font-size: 23px;
-  }
+    .register-card h2 {
+        font-size: 1.7rem;
+    }
 
-  .register-card > p {
-    font-size: 14px;
-  }
+    .register-card > p {
+        font-size: 0.88rem;
+        margin-bottom: 1.5rem;
+    }
 
-  .formulario {
-    gap: 16px;
-  }
+    .formulario {
+        gap: 1rem;
+    }
 
-  .form-group input,
-  .form-group select {
-    padding: 11px 12px;
-    font-size: 14px;
-  }
+    .form-group input,
+    .form-group select {
+        padding: 0.75rem 0.85rem;
+        font-size: 0.9rem;
+    }
+
+    .formulario button {
+        padding: 0.85rem 1rem;
+        font-size: 0.95rem;
+    }
+}
+
+/* ACCESIBILIDAD */
+@media (prefers-reduced-motion: reduce) {
+    .formulario button,
+    .form-group input,
+    .form-group select {
+        transition: none;
+    }
 }
