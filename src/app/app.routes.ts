@@ -40,7 +40,7 @@ export const routes: Routes = [
 
     // PERFILES (AUTHGUARD)
     // TÉCNICO
-    {path: 'perfil-tecnico/:uuid', component: PerfilTecnicoPublico, canActivate: [authGuard]},
+    {path: 'perfil-tecnico/:uuid', component: PerfilTecnicoPublico},
     {path: 'perfil-tecnico/:uuid/proyectos', component: Proyecto, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico', component: PerfilTecnico, canActivate: [authGuard]},
     {path: 'mi-perfil-tecnico/editar', component: EditarTecnico, canActivate: [authGuard]},
