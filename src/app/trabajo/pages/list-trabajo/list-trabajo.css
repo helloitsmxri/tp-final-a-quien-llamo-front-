@@ -1,3 +1,395 @@
+/* CONTENEDOR PRINCIPAL */
+.mis-trabajos {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 3rem;
+    font-family: Creato Display;
+
+    --color-texto: #29243a;
+    --color-borde: #e7e3ef;
+    --color-texto-secundario: #777187;
+    --color-acento: #7952c7;
+    --color-blanco: #ffffff;
+    --color-tarjeta: #ffffff;
+    --radio-tarjeta: 16px;
+    --sombra-tarjeta: 0 4px 15px rgba(42, 30, 70, 0.07);
+    --degrade-texto: linear-gradient(90deg, #7952c7, #a16de0);
+    --degrade-boton: linear-gradient(90deg, #7952c7, #9664d6);
+}
+
+/* ENCABEZADO */
+.encabezado {
+    margin-bottom: 2rem;
+}
+
+.encabezado h1 {
+    margin: 0 0 0.6rem;
+    font-size: 2.4rem;
+    font-weight: 800;
+    background: var(--degrade-texto);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.encabezado p {
+    margin: 0;
+    color: var(--color-texto-secundario);
+    font-size: 1rem;
+}
+
+/* LISTADO */
+.lista-trabajos {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* TARJETAS */
+.trabajo-card {
+    padding: 1.5rem 1.7rem;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-tarjeta);
+    background: var(--color-tarjeta);
+    box-shadow: var(--sombra-tarjeta);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.trabajo-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(42, 30, 70, 0.12);
+}
+
+/* PARTE SUPERIOR */
+.card-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+}
+
+/* ESTADOS */
+.estado {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+/* PENDIENTE */
+.estado[data-estado="Pendiente"] {
+    color: #946200;
+    background: #fff2cc;
+}
+
+/* EN PROCESO */
+.estado[data-estado="En_proceso"] {
+    color: #2459a6;
+    background: #e0edff;
+}
+
+/* FINALIZADO */
+.estado[data-estado="Finalizado"] {
+    color: #237347;
+    background: #dcf5e7;
+}
+
+/* CANCELADO */
+.estado[data-estado="Cancelado"] {
+    color: #a83232;
+    background: #ffe2e2;
+}
+
+/* FECHA */
+.fecha {
+    color: var(--color-texto-secundario);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* CONTENIDO */
+.card-contenido h2 {
+    margin: 0 0 0.8rem;
+    color: var(--color-texto);
+    font-size: 1.35rem;
+    font-weight: 750;
+}
+
+/* DESCRIPCIÓN */
+.descripcion {
+    margin: 0 0 1.5rem;
+    color: var(--color-texto-secundario);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+/* INFORMACIÓN DEL TRABAJO */
+.informacion-trabajo {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem 2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--color-borde);
+}
+
+.informacion-trabajo > div {
+    min-width: 0;
+}
+
+.etiqueta {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--color-texto-secundario);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.informacion-trabajo p {
+    margin: 0;
+    color: var(--color-texto);
+    font-size: 0.9rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+/* PARTE INFERIOR */
+.card-inferior {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 1.4rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-borde);
+}
+
+.precio {
+    color: var(--color-acento);
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+/* ESTADOS DE CARGA Y ERROR */
+.estado-mensaje {
+    padding: 2rem;
+    text-align: center;
+    color: var(--color-texto-secundario);
+    background: var(--color-tarjeta);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-tarjeta);
+}
+
+.estado-mensaje.error {
+    color: #a83232;
+}
+
+.estado-mensaje button {
+    margin-top: 0.8rem;
+    padding: 0.7rem 1.4rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--degrade-boton);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.estado-mensaje button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* LISTADO VACÍO */
+.estado-vacio {
+    padding: 3rem 2rem;
+    text-align: center;
+    border: 2px dashed var(--color-borde);
+    border-radius: var(--radio-tarjeta);
+    background: #faf9fc;
+}
+
+.estado-vacio h3 {
+    margin: 0 0 0.6rem;
+    color: var(--color-texto);
+    font-size: 1.2rem;
+}
+
+.estado-vacio p {
+    margin: 0;
+    color: var(--color-texto-secundario);
+    font-size: 0.95rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .mis-trabajos {
+        padding: 2rem 1.5rem;
+    }
+
+    .encabezado h1 {
+        font-size: 2rem;
+    }
+
+    .trabajo-card {
+        padding: 1.3rem;
+    }
+
+    .informacion-trabajo {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .mis-trabajos {
+        padding: 1.5rem 1rem;
+    }
+
+    .encabezado h1 {
+        font-size: 1.7rem;
+    }
+
+    .card-superior {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .informacion-trabajo {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .trabajo-card {
+        padding: 1.1rem;
+    }
+
+    .card-contenido h2 {
+        font-size: 1.15rem;
+    }
+
+    .precio {
+        font-size: 1.1rem;
+    }
+}
+
+.btn-pagar {
+    background-color: #30294a;
+    color: white;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-pagar:hover {
+    background-color: #514575;
+}
+
+/* PARTE INFERIOR */
+.card-inferior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.4rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-borde);
+}
+
+.acciones-trabajo {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.btn-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.55rem 1.15rem;
+    border: none;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-estado:hover:not(:disabled) {
+    transform: translateY(-1px);
+    opacity: 0.92;
+}
+
+.btn-estado:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-proceso {
+    background-color: #e0edff;
+    color: #2459a6;
+}
+
+.btn-finalizar {
+    background-color: #16a34a;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.22);
+}
+
+.btn-calificar {
+    background: var(--degrade-boton);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(121, 82, 199, 0.25);
+}
+
+/* Estado "En proceso" cuando viene con espacio desde el backend */
+.estado[data-estado="En proceso"] {
+    color: #2459a6;
+    background: #e0edff;
+}
+.btn-cancelar {
+    background-color: #ffe2e2;
+    color: #a83232;
+}
+
+.btn-cancelar:hover:not(:disabled) {
+    background-color: #fecaca;
+}
+.estado[data-estado="Pendiente"] {
+  color: #946200;
+  background: #fff2cc;
+}
+
+.estado[data-estado="En proceso"],
+.estado[data-estado="En_proceso"] {
+  color: #5b3da3;
+  background: #ebe4fc;
+}
+
+.estado[data-estado="Finalizado"] {
+  color: #237347;
+  background: #dcf5e7;
+}
+
+.estado[data-estado="Cancelado"] {
+  color: #a83232;
+  background: #ffe2e2;
+}
+/* ACCESIBILIDAD */
+@media (prefers-reduced-motion: reduce) {
+    .trabajo-card,
+    .estado-mensaje button {
+        transition: none;
+    }
+}
+
 /* BOTÓN PAGAR */
 .btn-pagar {
     display: inline-flex;
