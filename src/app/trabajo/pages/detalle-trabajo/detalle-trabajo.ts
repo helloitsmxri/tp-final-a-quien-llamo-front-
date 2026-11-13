@@ -1,27 +1,60 @@
+
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { TrabajoService } from '../../services/trabajo';
 import { ActivatedRoute } from '@angular/router';
 import { TrabajoModel } from '../../models/trabajo-model';
 
 @Component({
-  imports: [],
   selector: 'app-detalle-trabajo',
+  standalone: true,
+  imports: [CommonModule],
   styleUrl: './detalle-trabajo.css',
   templateUrl: './detalle-trabajo.html',
 })
 export class DetalleTrabajo implements OnInit {
-  trabajo:TrabajoModel | undefined
-  constructor(public tService:TrabajoService, public route:ActivatedRoute){}
 
-  ngOnInit(): void {  
-    const uuid = this.route.snapshot.paramMap.get('uuid');
-    this.detalleTrabajo(uuid)
+  trabajo: TrabajoModel | undefined;
+
+  cargando: boolean;
+  error: boolean;
+
+  constructor(
+    public tService: TrabajoService,
+    public route: ActivatedRoute
+  ) {
+    this.cargando = true;
+    this.error = false;
   }
 
-  detalleTrabajo(uuid : string|null){
+  ngOnInit(): void {
+    const uuid = this.route.snapshot.paramMap.get('uuid');
+
+    if (uuid) {
+      this.detalleTrabajo(uuid);
+    } else {
+      this.cargando = false;
+      this.error = true;
+      console.error('No se proporcionó un UUID de trabajo.');
+    }
+  }
+
+  detalleTrabajo(uuid: string): void {
+
+    this.cargando = true;
+    this.error = false;
+
     this.tService.getByUuid(uuid).subscribe({
-      next:(data)=>(this.trabajo=data),
-      error:(e)=>(console.log(e))
-    })
+      next: (data: TrabajoModel) => {
+        this.trabajo = data;
+        this.cargando = false;
+      },
+      error: (e) => {
+        console.error('Error al obtener el detalle del trabajo:', e);
+        this.error = true;
+        this.cargando = false;
+      }
+    });
   }
 }
+
