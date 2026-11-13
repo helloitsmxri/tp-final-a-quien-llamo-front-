@@ -4,38 +4,38 @@
       <div>
         <span class="sobretitulo">NUEVA VALORACIÓN</span>
         <h2>Crear reseña</h2>
-        <p>Elegí la persona con la que interactuaste y compartí tu experiencia.</p>
+        <p>Seleccioná un trabajo finalizado y calificá tu experiencia.</p>
       </div>
       <button type="button" class="btn-volver-pill" (click)="cancelar()">✕ Cancelar</button>
     </div>
 
     <form class="formulario" [formGroup]="formulario" (ngSubmit)="registrar()">
 
-      <!-- Selector por nombre (sin pedir UUID) -->
+      <!-- Selector de trabajo finalizado -->
       <fieldset class="form-group">
-        <label for="destinatario">¿A quién querés calificar? *</label>
+        <label for="trabajo">Trabajo realizado *</label>
 
-        @if (nombreFijo) {
+        @if (trabajoFijoLabel) {
           <div class="persona-fija-badge">
-            👤 <strong>{{ nombreFijo }}</strong>
+            🛠️ <strong>{{ trabajoFijoLabel }}</strong>
           </div>
-        } @else if (cargandoContactos) {
-          <p class="info-carga">Cargando personas con las que chateaste...</p>
-        } @else if (contactosDisponibles.length > 0) {
-          <select id="destinatario" formControlName="uuidDestinatario" class="select-estilizado">
-            <option value="" disabled selected>Seleccioná una persona...</option>
-            @for (c of contactosDisponibles; track c.uuid) {
-              <option [value]="c.uuid">{{ c.nombreCompleto }}</option>
+        } @else if (cargandoTrabajos) {
+          <p class="info-carga">Cargando tus trabajos finalizados...</p>
+        } @else if (trabajosDisponibles.length > 0) {
+          <select id="trabajo" formControlName="uuidTrabajo" class="select-estilizado">
+            <option value="" disabled selected>Seleccioná un trabajo...</option>
+            @for (t of trabajosDisponibles; track t.uuidTrabajo) {
+              <option [value]="t.uuidTrabajo">{{ t.etiqueta }}</option>
             }
           </select>
         } @else {
           <div class="aviso-sin-trabajos">
-            Todavía no tenés conversaciones registradas para calificar a otro usuario.
+            Todavía no tenés trabajos finalizados para calificar.
           </div>
         }
 
-        @if (uuidDestinatario.invalid && uuidDestinatario.touched) {
-          <span class="error">Tenés que seleccionar una persona para calificar.</span>
+        @if (uuidTrabajo.invalid && uuidTrabajo.touched) {
+          <span class="error">Tenés que seleccionar un trabajo finalizado.</span>
         }
       </fieldset>
 
@@ -58,80 +58,47 @@
         </div>
       </fieldset>
 
+      <!-- Características seleccionables desde BD -->
+      <fieldset class="form-group">
+        <label>Características destacadas * (elegí al menos una)</label>
+
+        @if (caracteristicasDisponibles.length > 0) {
+          <div class="chips-contenedor">
+            @for (car of caracteristicasDisponibles; track car.uuid) {
+              <button
+                type="button"
+                class="chip-seleccionable"
+                [class.seleccionado]="estaSeleccionada(car.uuid)"
+                (click)="toggleCaracteristica(car.uuid)"
+              >
+                {{ estaSeleccionada(car.uuid) ? '✓ ' : '+ ' }}{{ car.nombre || car.descripcion }}
+              </button>
+            }
+          </div>
+        } @else {
+          <p class="info-carga">Cargando características disponibles...</p>
+        }
+
+        @if (uuidCaracteristicas.invalid && uuidCaracteristicas.touched) {
+          <span class="error">Seleccioná al menos una característica.</span>
+        }
+      </fieldset>
+
       <!-- Descripción -->
       <fieldset class="form-group">
         <label for="descripcion">
-          Comentario sobre el servicio ({{ descripcion.value?.length || 0 }}/500)
+          Comentario ({{ descripcion.value?.length || 0 }}/2000)
         </label>
         <textarea
           id="descripcion"
           formControlName="descripcion"
-          placeholder="Contá cómo fue la atención, puntualidad y calidad del trabajo..."
+          placeholder="Contá cómo fue la experiencia, puntualidad y calidad del trabajo..."
           rows="4"
         ></textarea>
         @if (descripcion.invalid && descripcion.touched) {
-          <span class="error">La descripción no debe superar los 500 caracteres.</span>
+          <span class="error">La descripción no debe superar los 2000 caracteres.</span>
         }
       </fieldset>
-
-      <!-- Características -->
-      <fieldset class="form-group">
-        <label for="caracteristicas">Características destacadas *</label>
-        <div class="input-caracteristicas-row">
-          <input
-            type="text"
-            id="caracteristicas"
-            #caracteristicasInput
-            placeholder="Ej: Puntual, Prolijo, Buena comunicación (separadas por coma)"
-            (keydown.enter)="$event.preventDefault(); agregarCaracteristicas(caracteristicasInput.value); caracteristicasInput.value = ''"
-          />
-          <button
-            type="button"
-            class="btn-agregar-chip"
-            (click)="agregarCaracteristicas(caracteristicasInput.value); caracteristicasInput.value = ''"
-          >
-            + Agregar
-          </button>
-        </div>
-
-        @if ((caracteristicas.value?.length || 0) > 0) {
-          <div class="chips-contenedor">
-            @for (caracteristica of caracteristicas.value; track $index) {
-              <span class="chip-caracteristica">
-                {{ caracteristica }}
-                <button type="button" (click)="eliminarCaracteristica($index)">✕</button>
-              </span>
-            }
-          </div>
-        }
-
-        @if (caracteristicas.invalid && caracteristicas.touched) {
-          <span class="error">Agregá al menos una característica.</span>
-        }
-      </fieldset>
-
-      <!-- Foto opcional -->
-      <div class="grid-dos-columnas">
-        <fieldset class="form-group">
-          <label for="foto">URL de foto (opcional)</label>
-          <input
-            type="text"
-            id="foto"
-            formControlName="foto"
-            placeholder="https://..."
-          />
-        </fieldset>
-
-        <fieldset class="form-group">
-          <label for="tipoFoto">Tipo de foto (opcional)</label>
-          <input
-            type="text"
-            id="tipoFoto"
-            formControlName="tipoFoto"
-            placeholder="Ej: Trabajo terminado"
-          />
-        </fieldset>
-      </div>
 
       <!-- Botón Enviar -->
       <div class="form-actions">
