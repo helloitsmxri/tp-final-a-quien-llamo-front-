@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth-service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,6 +8,7 @@ import { AuthLoginModel } from '../models/auth-login-model';
   imports: [RouterLink, ReactiveFormsModule],
   selector: 'app-login',
   styleUrl: './login.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './login.html',
 })
 export class Login {

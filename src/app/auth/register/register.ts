@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators} from '@angular/forms';
 import { Calendario } from '../../components/calendario/calendario';
 import { AuthService } from '../services/auth-service';
@@ -37,6 +37,7 @@ function validarEdad(control : AbstractControl) : ValidationErrors | null{
   standalone: true,
   imports: [ReactiveFormsModule, Calendario],
   templateUrl: './register.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './register.css',
 })
 export class Register {

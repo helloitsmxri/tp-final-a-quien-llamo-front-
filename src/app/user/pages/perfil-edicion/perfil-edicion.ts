@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -12,6 +12,7 @@ const TAMANO_MAXIMO_MB = 10;
   standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './perfil-edicion.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './perfil-edicion.css',
 })
 export class PerfilEdicion implements OnInit, OnDestroy {

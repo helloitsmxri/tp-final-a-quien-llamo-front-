@@ -1,4 +1,4 @@
-import { Component, ElementRef, forwardRef, inject, HostListener, Input} from '@angular/core';
+import { Component, ElementRef, forwardRef, inject, HostListener, Input, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Dia } from './model/Dia';
 
@@ -8,6 +8,7 @@ import { Dia } from './model/Dia';
   imports: [],
   templateUrl: './calendario.html',
   styleUrl: './calendario.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers:[{provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Calendario), multi:true}]
 })
 export class Calendario implements ControlValueAccessor{

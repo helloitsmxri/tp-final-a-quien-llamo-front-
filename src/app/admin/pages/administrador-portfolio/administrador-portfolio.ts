@@ -1,5 +1,5 @@
 
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
@@ -15,6 +15,7 @@ type FiltroPortfolio = 'TODAS' | 'PENDIENTES' | 'APROBADAS' | 'RECHAZADAS';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './administrador-portfolio.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './administrador-portfolio.css'
 })
 export class AdministradorPortfolio implements OnInit {

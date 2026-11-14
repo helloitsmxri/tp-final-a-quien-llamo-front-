@@ -1,4 +1,4 @@
-import { Component, QueryList, ViewChildren, inject } from '@angular/core';
+import { Component, QueryList, ViewChildren, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DetalleHabilidad } from '../../../habilidad/pages/detalle-habilidad/detalle-habilidad';
 import { DetalleEspecialidad } from '../../../especialidad/pages/detalle-especialidad/detalle-especialidad';
 import { DetalleRubro } from '../../../rubro/pages/detalle-rubro/detalle-rubro';
@@ -57,6 +57,7 @@ type PasoDocumentacion = {
   selector: 'app-formulario-registro',
   imports: [ReactiveFormsModule, SelectorServicios, Calendario, CertificacionForm, FormPortfolio],
   templateUrl: './formulario-registro.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './formulario-registro.css',
 })
 export class FormularioRegistro {

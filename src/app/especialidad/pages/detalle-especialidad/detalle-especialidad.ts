@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 import { EspecialidadService } from '../../services/especialidad';
 import { EspecialidadModel } from '../../models/especialidad-model';
 
@@ -6,6 +6,7 @@ import { EspecialidadModel } from '../../models/especialidad-model';
   imports: [],
   selector: 'app-detalle-especialidad',
   styleUrl: './detalle-especialidad.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './detalle-especialidad.html',
 })
 export class DetalleEspecialidad implements OnInit, OnChanges {

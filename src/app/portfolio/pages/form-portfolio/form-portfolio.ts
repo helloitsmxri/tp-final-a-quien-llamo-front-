@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PortfolioDatos } from '../../models/portfolio-datos';
 import { PortfolioService } from '../../services/portfolio';
@@ -9,6 +9,7 @@ import { contieneLetras } from '../../../utils/validadores-texto';
   selector: 'app-form-portfolio',
   imports: [ReactiveFormsModule],
   templateUrl: './form-portfolio.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './form-portfolio.css',
 })
 export class FormPortfolio implements OnChanges {

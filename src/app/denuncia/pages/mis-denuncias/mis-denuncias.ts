@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { DenunciaService } from '../../services/denuncia';
 import { EstadoDenuncia } from '../../enum/estado-denuncia';
 import { DenunciaModel } from '../../models/denuncia-model';
@@ -9,6 +9,7 @@ import { DetalleDenuncia } from '../../components/detalle-denuncia/detalle-denun
   selector: 'app-mis-denuncias',
   imports: [DatePipe, DetalleDenuncia],
   templateUrl: './mis-denuncias.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mis-denuncias.css',
 })
 export class MisDenuncias {

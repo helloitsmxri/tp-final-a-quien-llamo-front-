@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, NgZone, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin, of, Subscription } from 'rxjs';
@@ -24,6 +24,7 @@ const BACKEND = 'http://localhost:8080';
   selector: 'app-detalle-chat',
   imports: [CommonModule, FormsModule, RouterModule, CrearPresupuesto, VerPresupuesto, FormTrabajo],
   templateUrl: './detalle-chat.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './detalle-chat.css',
 })
 export class DetalleChat implements OnChanges, OnInit, OnDestroy {

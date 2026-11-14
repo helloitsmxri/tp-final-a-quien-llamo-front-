@@ -1,5 +1,5 @@
 
-import { Component, inject, Input, OnChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { PortfolioService } from '../../services/portfolio';
 import { PortfolioUsuarioModel } from '../../models/portfolio-usuario';
 import { EstadoVerificacion } from '../../enum/estado-verificacion';
@@ -7,6 +7,7 @@ import { EstadoVerificacion } from '../../enum/estado-verificacion';
 @Component({
   selector: 'app-detalle-portfolio',
   templateUrl: './detalle-portfolio.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './detalle-portfolio.css',
 })
 export class DetallePortfolio implements OnChanges {

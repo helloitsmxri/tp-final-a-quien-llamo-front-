@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import {RouterOutlet } from '@angular/router';
 import { Plan } from './models/Plan';
 import { Router } from '@angular/router';
@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
   selector: 'app-planes',
   imports: [RouterOutlet],
   templateUrl: './planes.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './planes.css',
 })
 export class Planes {

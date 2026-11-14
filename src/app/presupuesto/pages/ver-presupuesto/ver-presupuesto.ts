@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { PresupuestoService } from '../../services/presupuesto';
@@ -10,6 +10,7 @@ import { EstadoPresupuesto } from '../../enum/estado-presupuesto';
   standalone: true,
   imports: [CurrencyPipe, DatePipe],
   templateUrl: './ver-presupuesto.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './ver-presupuesto.css'
 })
 export class VerPresupuesto {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { RatingResponse } from '../../models/rating-response';
 
 @Component({
@@ -6,6 +6,7 @@ import { RatingResponse } from '../../models/rating-response';
   standalone: true,
   imports: [],
   templateUrl: './detalle-rating.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './detalle-rating.css',
 })
 export class DetalleRating {

@@ -1,5 +1,5 @@
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { PortfolioUsuarioModel } from '../../models/portfolio-usuario';
@@ -11,6 +11,7 @@ import { EstadoVerificacion } from '../../enum/estado-verificacion';
   selector: 'app-portfolio-list',
   imports: [],
   templateUrl: './portfolio-list.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './portfolio-list.css',
 })
 export class PortfolioList {

@@ -1,5 +1,5 @@
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ItemPublico, TecnicoService } from '../../services/tecnico';
@@ -17,6 +17,7 @@ interface ItemDetalle {
   selector: 'app-perfil-tecnico-publico',
   imports: [],
   templateUrl: './perfil-tecnico-publico.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: [
     '../perfil-tecnico/perfil-tecnico.css',
     './perfil-tecnico-publico.css',

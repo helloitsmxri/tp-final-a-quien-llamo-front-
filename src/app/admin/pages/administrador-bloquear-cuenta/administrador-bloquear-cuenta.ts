@@ -1,6 +1,6 @@
 
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../services/admin-service';
 
@@ -9,6 +9,7 @@ import { AdminService } from '../../services/admin-service';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './administrador-bloquear-cuenta.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './administrador-bloquear-cuenta.css',
 })
 export class AdministradorBloquearCuenta {

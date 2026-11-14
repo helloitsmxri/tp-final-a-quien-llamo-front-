@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { RatingResponse } from '../../models/rating-response';
 import { RatingService } from '../../services/rating';
@@ -10,6 +10,7 @@ import { DetalleRating } from '../detalle-rating/detalle-rating';
   standalone: true,
   imports: [RouterModule, DetalleRating],
   templateUrl: './list-rating.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-rating.css',
 })
 export class ListRating implements OnInit {

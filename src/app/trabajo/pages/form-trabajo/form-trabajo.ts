@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -18,6 +18,7 @@ import { TrabajoModel } from '../../models/trabajo-model';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './form-trabajo.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './form-trabajo.css',
 })
 export class FormTrabajo implements OnInit {

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UsuarioService } from '../../services/user';
 import { UserProfileDTO } from '../../models/user-profile-DTO';
 import { RatingResponse } from '../../../rating/models/rating-response';
@@ -9,6 +9,7 @@ import { RatingService } from '../../../rating/services/rating';
   selector: 'app-perfil',
   imports: [RouterLink],
   templateUrl: './perfil.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './perfil.css',
 })
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -25,6 +25,7 @@ interface TrabajoCalificable {
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './form-rating.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './form-rating.css',
 })
 export class FormRating implements OnInit {

@@ -1,5 +1,5 @@
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { PagoService } from '../../services/pago';
@@ -15,6 +15,7 @@ type MetodoDetallePago =
   standalone: true,
   imports: [DatePipe],
   templateUrl: './detalle-pago.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './detalle-pago.css',
 })
 export class DetallePago implements OnInit {

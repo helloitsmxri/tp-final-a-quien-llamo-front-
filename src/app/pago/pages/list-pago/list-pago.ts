@@ -1,5 +1,5 @@
 
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { PagoService } from '../../services/pago';
@@ -18,6 +18,7 @@ type MetodoListadoPago =
   standalone: true,
   imports: [DatePipe],
   templateUrl: './list-pago.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-pago.css',
 })
 export class ListPago implements OnInit {

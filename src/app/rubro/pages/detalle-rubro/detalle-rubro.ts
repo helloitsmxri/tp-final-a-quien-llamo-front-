@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { RubroService } from '../../services/rubro';
 import { RubroModel } from '../../models/rubro-model';
 
@@ -6,6 +6,7 @@ import { RubroModel } from '../../models/rubro-model';
   imports: [],
   selector: 'app-detalle-rubro',
   styleUrl: './detalle-rubro.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './detalle-rubro.html',
 })
 export class DetalleRubro implements OnInit {

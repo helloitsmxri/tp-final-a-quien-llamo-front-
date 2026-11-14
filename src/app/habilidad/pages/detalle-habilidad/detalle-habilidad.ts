@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges, OnChanges} from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, SimpleChanges, OnChanges, ChangeDetectionStrategy } from '@angular/core';
 import { HabilidadModel } from '../../models/habilidad-model';
 import { HabilidadService } from '../../services/habilidad';
 
@@ -6,6 +6,7 @@ import { HabilidadService } from '../../services/habilidad';
   imports: [],
   selector: 'app-detalle-habilidad',
   styleUrl: './detalle-habilidad.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './detalle-habilidad.html',
 })
 export class DetalleHabilidad implements OnInit, OnChanges{

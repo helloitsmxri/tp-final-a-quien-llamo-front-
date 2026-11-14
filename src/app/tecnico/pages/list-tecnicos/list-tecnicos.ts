@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { RubroModel } from '../../../rubro/models/rubro-model';
   standalone: true,
   imports: [FormsModule],
   templateUrl: './list-tecnicos.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-tecnicos.css'
 })
 

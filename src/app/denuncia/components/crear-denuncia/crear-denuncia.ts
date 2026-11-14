@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DenunciaService } from '../../services/denuncia';
 import { DenunciaModel } from '../../models/denuncia-model';
@@ -9,6 +9,7 @@ import { Location } from '@angular/common';
   selector: 'app-crear-denuncia',
   imports: [ReactiveFormsModule],
   templateUrl: './crear-denuncia.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './crear-denuncia.css',
 })
 export class CrearDenuncia {

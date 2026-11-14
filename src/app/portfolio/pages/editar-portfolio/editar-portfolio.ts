@@ -4,7 +4,8 @@ import {
   ElementRef,
   OnInit,
   ViewChild,
-  inject
+  inject,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import {
@@ -30,6 +31,7 @@ import { EstadoVerificacion } from '../../enum/estado-verificacion';
   selector: 'app-editar-portfolio',
   imports: [ReactiveFormsModule],
   templateUrl: './editar-portfolio.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './editar-portfolio.css',
 })
 export class EditarPortfolio implements OnInit {

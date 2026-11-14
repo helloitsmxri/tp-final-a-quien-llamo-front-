@@ -1,5 +1,5 @@
 
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ListaChat } from '../lista-chat/lista-chat';
 import { DetalleChat } from '../detalle-chat/detalle-chat';
 import { ChatModel } from '../../models/chat-model';
@@ -9,6 +9,7 @@ import { ChatModel } from '../../models/chat-model';
   standalone: true,
   imports: [ListaChat, DetalleChat],
   templateUrl: './chat-view.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './chat-view.css',
 })
 export class ChatView {

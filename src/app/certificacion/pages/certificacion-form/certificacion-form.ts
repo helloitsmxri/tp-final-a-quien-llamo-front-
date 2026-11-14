@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Input, OnChanges, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CertificacionService } from '../../services/certificacion';
 import { CertificacionDatos } from '../../models/certificacion-datos';
@@ -13,6 +13,7 @@ type Campo = 'titulo' | 'uuidEspecialidad' | 'numMatricula' | 'enteOtorgador' | 
   selector: 'app-certificacion-form',
   imports: [ReactiveFormsModule, Calendario],
   templateUrl: './certificacion-form.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './certificacion-form.css',
 })
 export class CertificacionForm implements OnChanges {

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -16,6 +16,7 @@ import { PagoService } from '../../services/pago';
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './form-pago.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './form-pago.css',
 })
 export class FormPago {

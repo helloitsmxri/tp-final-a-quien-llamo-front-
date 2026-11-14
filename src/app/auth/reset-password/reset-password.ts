@@ -1,5 +1,5 @@
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -13,6 +13,7 @@ import { AuthService } from '../services/auth-service';
   selector: 'app-reset-password',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './reset-password.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './reset-password.css'
 })
 export class ResetPassword {

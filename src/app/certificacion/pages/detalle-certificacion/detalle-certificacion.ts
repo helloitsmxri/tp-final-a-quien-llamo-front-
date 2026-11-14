@@ -1,5 +1,5 @@
 
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CertificacionModel } from '../../models/certificacion-model';
 import { CertificacionService } from '../../services/certificacion';
 import { EstadoVerificacion } from '../../enum/estado-verificacion';
@@ -7,6 +7,7 @@ import { EstadoVerificacion } from '../../enum/estado-verificacion';
 @Component({
   selector: 'app-detalle-certificacion',
   templateUrl: './detalle-certificacion.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './detalle-certificacion.css',
 })
 export class DetalleCertificacion {

@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
@@ -12,6 +12,7 @@ import { UsuarioService } from '../../../user/services/user';
   selector: 'app-lista-chat',
   imports: [FormsModule],
   templateUrl: './lista-chat.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './lista-chat.css',
 })
 export class ListaChat implements OnInit {

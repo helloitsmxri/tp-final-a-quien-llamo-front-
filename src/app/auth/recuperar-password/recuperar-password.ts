@@ -1,5 +1,5 @@
 
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -14,6 +14,7 @@ import { AuthService } from '../services/auth-service';
   selector: 'app-recuperar-password',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './recuperar-password.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './recuperar-password.css'
 })
 export class RecuperarPassword {

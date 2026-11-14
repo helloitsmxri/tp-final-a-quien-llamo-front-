@@ -1,5 +1,5 @@
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { TecnicoService } from '../../services/tecnico';
@@ -19,6 +19,7 @@ interface ItemDetalle {
   selector: 'app-perfil-tecnico',
   imports: [DetalleCertificacion, DetallePortfolio, RouterLink],
   templateUrl: './perfil-tecnico.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './perfil-tecnico.css',
 })
 export class PerfilTecnico implements OnInit {

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { TecnicoService } from '../../../tecnico/services/tecnico';
 import { CertificacionService } from '../../services/certificacion';
 import { CertificacionModel } from '../../models/certificacion-model';
@@ -10,6 +10,7 @@ import { EditarCertificacion } from '../editar-certificacion/editar-certificacio
   selector: 'app-certificacion-list',
   imports: [DatePipe, EditarCertificacion],
   templateUrl: './certificacion-list.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './certificacion-list.css',
 })
 export class CertificacionList implements OnInit {

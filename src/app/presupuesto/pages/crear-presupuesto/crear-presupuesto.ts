@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -19,6 +19,7 @@ import { CurrencyPipe } from '@angular/common';
   standalone: true,
   imports: [ReactiveFormsModule, CurrencyPipe],
   templateUrl: './crear-presupuesto.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './crear-presupuesto.css',
 })
 export class CrearPresupuesto {

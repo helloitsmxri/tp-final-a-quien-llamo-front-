@@ -1,5 +1,5 @@
 
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { EspecialidadModel } from '../../../especialidad/models/especialidad-model';
 import { FormPortfolio } from '../../../portfolio/pages/form-portfolio/form-portfolio';
 import { CertificacionForm } from '../../../certificacion/pages/certificacion-form/certificacion-form';
@@ -26,6 +26,7 @@ type Pendiente = {
     FormPortfolio
   ],
   templateUrl: './editar-tecnico.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './editar-tecnico.css',
 })
 export class EditarTecnico implements OnInit {

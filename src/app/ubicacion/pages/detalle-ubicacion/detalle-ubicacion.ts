@@ -1,5 +1,5 @@
 
-import { AfterViewInit, Component, NgZone, OnInit } from '@angular/core';
+import { AfterViewInit, Component, NgZone, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { UbicacionModel } from '../../models/ubicacion-model';
@@ -19,6 +19,7 @@ const CIUDAD_POR_DEFECTO = 'Mar del Plata';
   imports: [FormsModule],
   selector: 'app-detalle-ubicacion',
   styleUrl: './detalle-ubicacion.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './detalle-ubicacion.html',
 })
 export class DetalleUbicacion implements OnInit, AfterViewInit {

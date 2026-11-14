@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, ElementRef, HostListener, inject, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { DenunciaService } from '../../services/denuncia';
 import { DenunciaModel } from '../../models/denuncia-model';
 import { Subscription } from 'rxjs';
@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [DatePipe],
   templateUrl: './detalle-denuncia.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './detalle-denuncia.css',
 })
 export class DetalleDenuncia implements OnChanges, OnDestroy {

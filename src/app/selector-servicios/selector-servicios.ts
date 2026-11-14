@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject, ChangeDetectionStrategy } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { RubroService } from '../rubro/services/rubro';
 import { EspecialidadService } from '../especialidad/services/especialidad';
@@ -13,6 +13,7 @@ import { HabilidadModel } from '../habilidad/models/habilidad-model';
   selector: 'app-selector-servicios',
   imports: [],
   templateUrl: './selector-servicios.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './selector-servicios.css',
 })
 export class SelectorServicios implements OnInit {

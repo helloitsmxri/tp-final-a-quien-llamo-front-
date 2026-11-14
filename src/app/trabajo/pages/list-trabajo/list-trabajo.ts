@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { TrabajoService } from '../../services/trabajo';
 import { UsuarioService } from '../../../user/services/user';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './list-trabajo.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-trabajo.css',
 })
 export class ListTrabajo implements OnInit {

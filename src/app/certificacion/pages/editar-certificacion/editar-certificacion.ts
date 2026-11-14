@@ -7,7 +7,8 @@ import {
   OnChanges,
   Output,
   SimpleChanges,
-  ViewChild
+  ViewChild,
+  ChangeDetectionStrategy
 } from '@angular/core';
 
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -31,6 +32,7 @@ type Campo =
   selector: 'app-editar-certificacion',
   imports: [ReactiveFormsModule, Calendario],
   templateUrl: './editar-certificacion.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './editar-certificacion.css',
 })
 export class EditarCertificacion implements OnChanges {

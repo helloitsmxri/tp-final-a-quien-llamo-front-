@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -22,6 +22,7 @@ function sinSeparador(control: AbstractControl): ValidationErrors | null {
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: './proyecto.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './proyecto.css',
 })
 

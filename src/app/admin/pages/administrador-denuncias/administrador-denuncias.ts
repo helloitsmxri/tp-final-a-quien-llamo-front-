@@ -1,5 +1,5 @@
 
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EstadoDenuncia } from '../../../denuncia/enum/estado-denuncia';
 import { DenunciaModel } from '../../../denuncia/models/denuncia-model';
@@ -19,6 +19,7 @@ type FiltroDenuncia =
   selector: 'app-administrador-denuncias',
   imports: [ReactiveFormsModule],
   templateUrl: './administrador-denuncias.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './administrador-denuncias.css',
 })
 export class AdministradorDenuncias {

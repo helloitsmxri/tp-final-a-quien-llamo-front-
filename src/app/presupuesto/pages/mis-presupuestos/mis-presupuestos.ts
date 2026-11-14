@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { PresupuestoService } from '../../services/presupuesto';
 import { PresupuestoModel } from '../../models/presupuesto-model';
 import { EstadoPresupuesto } from '../../enum/estado-presupuesto';
@@ -8,6 +8,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
   selector: 'app-mis-presupuestos',
   imports: [CurrencyPipe, DatePipe],
   templateUrl: './mis-presupuestos.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './mis-presupuestos.css',
 })
 export class MisPresupuestos implements OnInit{

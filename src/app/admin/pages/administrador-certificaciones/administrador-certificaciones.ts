@@ -1,6 +1,6 @@
 
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { EstadoVerificacion } from '../../../certificacion/enum/estado-verificacion';
@@ -17,6 +17,7 @@ type FiltroCertificacion =
   selector: 'app-administrador-certificaciones',
   imports: [ReactiveFormsModule],
   templateUrl: './administrador-certificaciones.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './administrador-certificaciones.css',
 })
 export class AdministradorCertificaciones implements OnInit {

@@ -1,5 +1,5 @@
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TrabajoService } from '../../services/trabajo';
 import { ActivatedRoute } from '@angular/router';
@@ -10,6 +10,7 @@ import { TrabajoModel } from '../../models/trabajo-model';
   standalone: true,
   imports: [CommonModule],
   styleUrl: './detalle-trabajo.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './detalle-trabajo.html',
 })
 export class DetalleTrabajo implements OnInit {
