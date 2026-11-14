@@ -1,6 +1,6 @@
 
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
@@ -13,7 +13,7 @@ type FiltroPortfolio = 'TODAS' | 'PENDIENTES' | 'APROBADAS' | 'RECHAZADAS';
 @Component({
   selector: 'app-administrador-portfolios',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './administrador-portfolio.html',
   styleUrl: './administrador-portfolio.css'
 })

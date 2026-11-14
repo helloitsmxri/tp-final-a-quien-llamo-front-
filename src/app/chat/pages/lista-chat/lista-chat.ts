@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -10,7 +10,7 @@ import { UsuarioService } from '../../../user/services/user';
 
 @Component({
   selector: 'app-lista-chat',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './lista-chat.html',
   styleUrl: './lista-chat.css',
 })

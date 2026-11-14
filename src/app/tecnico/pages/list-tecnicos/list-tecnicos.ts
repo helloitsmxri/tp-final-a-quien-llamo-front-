@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TecnicoListadoModel } from '../../models/TecnicoListado';
@@ -10,7 +10,7 @@ import { RubroModel } from '../../../rubro/models/rubro-model';
 @Component({
   selector: 'app-list-tecnicos',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './list-tecnicos.html',
   styleUrl: './list-tecnicos.css'
 })

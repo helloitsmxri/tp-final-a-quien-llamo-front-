@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ViewChild } from '@angular/core';
 import { ListaChat } from '../lista-chat/lista-chat';
 import { DetalleChat } from '../detalle-chat/detalle-chat';
@@ -7,7 +7,7 @@ import { ChatModel } from '../../models/chat-model';
 @Component({
   selector: 'app-chat-view',
   standalone: true,
-  imports: [CommonModule, ListaChat, DetalleChat],
+  imports: [ListaChat, DetalleChat],
   templateUrl: './chat-view.html',
   styleUrl: './chat-view.css',
 })

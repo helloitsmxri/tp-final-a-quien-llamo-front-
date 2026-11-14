@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { AfterViewInit, Component, NgZone, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -16,7 +16,7 @@ const CENTRO_POR_DEFECTO = { lat: -38.0055, lng: -57.5426 };
 const CIUDAD_POR_DEFECTO = 'Mar del Plata';
 
 @Component({
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   selector: 'app-detalle-ubicacion',
   styleUrl: './detalle-ubicacion.css',
   templateUrl: './detalle-ubicacion.html',

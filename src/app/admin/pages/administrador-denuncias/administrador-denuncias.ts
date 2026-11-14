@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EstadoDenuncia } from '../../../denuncia/enum/estado-denuncia';
@@ -17,7 +17,7 @@ type FiltroDenuncia =
 
 @Component({
   selector: 'app-administrador-denuncias',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './administrador-denuncias.html',
   styleUrl: './administrador-denuncias.css',
 })

@@ -1,5 +1,5 @@
 
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminService } from '../../services/admin-service';
@@ -7,7 +7,7 @@ import { AdminService } from '../../services/admin-service';
 @Component({
   selector: 'app-administrador-bloquear-cuenta',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './administrador-bloquear-cuenta.html',
   styleUrl: './administrador-bloquear-cuenta.css',
 })

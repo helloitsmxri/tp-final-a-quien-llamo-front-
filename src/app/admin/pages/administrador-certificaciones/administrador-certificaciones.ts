@@ -1,5 +1,5 @@
 
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -15,7 +15,7 @@ type FiltroCertificacion =
 
 @Component({
   selector: 'app-administrador-certificaciones',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './administrador-certificaciones.html',
   styleUrl: './administrador-certificaciones.css',
 })
