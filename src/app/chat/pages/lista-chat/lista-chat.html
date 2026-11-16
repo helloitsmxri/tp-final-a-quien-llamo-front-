@@ -1,33 +1,104 @@
-<div class="search-box">
-  <input type="text" [(ngModel)]="filtroBusqueda" placeholder="Buscar conversaciones" />
-</div>
 
-<div class="lista-chats">
+<div class="lista-chat-container">
 
-  @if (chatsFiltrados.length > 0) {
-    <p class="seccion-titulo">Conversaciones</p>
-    @for (chat of chatsFiltrados; track chat.uuidChat) {
-      <div
-        class="item-chat"
-        [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
-        (click)="seleccionarChat(chat)"
-      >
-        <div class="avatar-chat">
-          <img [src]="avatar(nombreChat(chat))" alt="Avatar" />
-        </div>
-        <div class="info-chat">
-          <span class="nombre">{{ nombreChat(chat) }}</span>
-        </div>
+  <div class="lista-chat-header">
+
+    <div class="titulo-lista">
+      <div>
+        <h2>Mensajes</h2>
+        <p>Tus conversaciones</p>
       </div>
-    }
-  } @else {
-    <p class="sin-chats">
-      @if (filtroBusqueda.trim()) {
-        No hay conversaciones que coincidan.
-      } @else {
-        Todavía no tenés conversaciones. Contactá a un técnico desde su perfil para empezar.
+
+      <span class="cantidad-chats">
+        {{ chats.length }}
+      </span>
+    </div>
+
+    <div class="search-box">
+      <span class="icono-busqueda">⌕</span>
+
+      <input
+        type="text"
+        [(ngModel)]="filtroBusqueda"
+        placeholder="Buscar conversación..."
+      />
+
+      @if (filtroBusqueda) {
+        <button
+          type="button"
+          class="limpiar-busqueda"
+          (click)="filtroBusqueda = ''"
+          aria-label="Limpiar búsqueda"
+        >
+          ×
+        </button>
       }
-    </p>
-  }
+    </div>
+
+  </div>
+
+  <div class="lista-chats">
+
+    @if (chatsFiltrados.length > 0) {
+
+      <p class="seccion-titulo">CONVERSACIONES</p>
+
+      @for (chat of chatsFiltrados; track chat.uuidChat) {
+
+        <button
+          type="button"
+          class="item-chat"
+          [class.active]="chatSeleccionado?.uuidChat === chat.uuidChat"
+          (click)="seleccionarChat(chat)"
+        >
+
+          <div class="avatar-chat">
+            <img
+              [src]="avatar(nombreChat(chat))"
+              alt=""
+            />
+          </div>
+
+          <div class="info-chat">
+
+            <div class="info-chat-superior">
+              <span class="nombre">
+                {{ nombreChat(chat) }}
+              </span>
+            </div>
+
+            <span class="ultimo-mensaje">
+              Abrí la conversación para ver los mensajes
+            </span>
+
+          </div>
+
+          <span class="indicador-chat"></span>
+
+        </button>
+
+      }
+
+    } @else {
+
+      <div class="sin-chats">
+        @if (filtroBusqueda.trim()) {
+          <h3>Sin resultados</h3>
+          <p>
+            No encontramos conversaciones con ese nombre.
+          </p>
+        } @else {
+
+          <h3>Todavía no tenés chats</h3>
+          <p>
+            Contactá a un profesional desde su perfil
+            para comenzar una conversación.
+          </p>
+        }
+      </div>
+
+    }
+
+  </div>
 
 </div>
