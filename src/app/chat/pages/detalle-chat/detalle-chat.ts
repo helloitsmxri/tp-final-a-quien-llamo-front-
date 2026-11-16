@@ -2,6 +2,7 @@
 import { CommonModule } from '@angular/common';
 
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -67,6 +68,7 @@ export class DetalleChat
 
   mensajes: MensajeModel[] = [];
   errorPresupuestos = '';
+  avisoTrabajos = '';
 
   nuevoMensajeTexto = '';
 
@@ -98,7 +100,8 @@ export class DetalleChat
     private presupuestoService: PresupuestoService,
     private trabajoService: TrabajoService,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -208,29 +211,32 @@ export class DetalleChat
       });
   }
 
-  private agregarMensaje(mensaje: MensajeModel): void {
-
-    if (
-      this.mensajes.some(
-        m => m.uuidMensaje === mensaje.uuidMensaje
-      )
-    ) {
-      return;
-    }
-
-    this.mensajes.push(mensaje);
-
-    this.mensajeNuevo.emit(mensaje.uuidChat);
-
-    this.scrollToBottom();
+private agregarMensaje(mensaje: MensajeModel): void {
+  if (this.mensajes.some(m => m.uuidMensaje === mensaje.uuidMensaje)) {
+    return;
   }
+
+  this.mensajes = [...this.mensajes, mensaje];
+  this.mensajeNuevo.emit(mensaje.uuidChat);
+
+  this.cdr.detectChanges();
+  this.scrollToBottom();
+}
+
 
 cargarMensajes(uuidChat: string): void {
   this.mensajeService.getByChat(uuidChat).subscribe({
     next: (data) => {
       this.ngZone.run(() => {
-        // Evitamos cargar mensajes de un chat que ya no está seleccionado.
         if (this.chat?.uuidChat !== uuidChat) return;
+
+        console.log('Historial recibido del backend:', data);
+
+        if (!Array.isArray(data)) {
+          console.error('La respuesta de mensajes no es un array:', data);
+          alert('El servidor devolvió un formato de mensajes inesperado.');
+          return;
+        }
 
         const ids = new Set(data.map(m => m.uuidMensaje));
 
@@ -239,6 +245,7 @@ cargarMensajes(uuidChat: string): void {
           ...this.mensajes.filter(m => !ids.has(m.uuidMensaje))
         ];
 
+        this.cdr.detectChanges();
         this.scrollToBottom();
       });
     },
@@ -354,45 +361,49 @@ cargarMensajes(uuidChat: string): void {
 
   this.mostrandoListaPresupuestos = true;
   this.cargandoPresupuestos = true;
-
   this.errorPresupuestos = '';
+  this.avisoTrabajos = '';
   this.presupuestosDelChat = [];
 
-  let errorAlCargarPresupuestos = false;
   let errorAlCargarTrabajos = false;
 
   forkJoin({
-    presupuestos: this.presupuestoService
-      .obtenerPresupuestoChat(uuidChat)
-      .pipe(
-        catchError((err) => {
-          console.error('Error al obtener presupuestos:', err);
-          errorAlCargarPresupuestos = true;
-          return of([] as PresupuestoModel[]);
-        })
-      ),
-
-    trabajos: this.trabajoService
-      .getMyJobs()
-      .pipe(
-        catchError((err) => {
-          console.error('Error al obtener trabajos:', err);
-          errorAlCargarTrabajos = true;
-          return of([]);
-        })
-      )
+    presupuestos: this.presupuestoService.obtenerPresupuestoChat(uuidChat).pipe(
+      catchError((err) => {
+        console.error('Error al obtener presupuestos:', err);
+        return of(null);
+      })
+    ),
+    trabajos: this.trabajoService.getMyJobs().pipe(
+      catchError((err) => {
+        console.error('Error al obtener trabajos:', err);
+        errorAlCargarTrabajos = true;
+        return of([]);
+      })
+    )
   }).subscribe({
     next: ({ presupuestos, trabajos }) => {
       this.ngZone.run(() => {
-        // Si cambiaste de chat mientras cargaban los datos,
-        // no mostramos los resultados del chat anterior.
         if (this.chat?.uuidChat !== uuidChat) return;
 
+        if (!Array.isArray(presupuestos)) {
+          this.errorPresupuestos =
+            'No se pudieron cargar los presupuestos de esta conversación.';
+          this.cargandoPresupuestos = false;
+          this.cdr.detectChanges();
+          return;
+        }
+
+        console.log('Presupuestos recibidos del backend:', presupuestos);
+        console.log('Trabajos recibidos del backend:', trabajos);
+
+        const listaTrabajos = Array.isArray(trabajos) ? trabajos : [];
+
         const presupuestosFinalizados = new Set(
-          trabajos
+          listaTrabajos
             .filter(t =>
               String(t.estadoTrabajo).toUpperCase() ===
-              EstadoTrabajo.Finalizado.toUpperCase()
+              String(EstadoTrabajo.Finalizado).toUpperCase()
             )
             .map(t => t.uuidPresupuesto)
         );
@@ -401,25 +412,22 @@ cargarMensajes(uuidChat: string): void {
           p => !presupuestosFinalizados.has(p.uuid)
         );
 
-        if (errorAlCargarPresupuestos) {
-          this.errorPresupuestos =
-            'No se pudieron cargar los presupuestos de esta conversación.';
-        } else if (errorAlCargarTrabajos) {
-          this.errorPresupuestos =
-            'Se cargaron los presupuestos, pero no se pudo verificar cuáles tienen un trabajo finalizado.';
+        if (errorAlCargarTrabajos) {
+          this.avisoTrabajos =
+            'No se pudo verificar cuáles presupuestos tienen trabajos finalizados. Se muestran los presupuestos igualmente.';
         }
 
         this.cargandoPresupuestos = false;
+        this.cdr.detectChanges();
       });
     },
-
     error: (err) => {
       console.error('Error inesperado al cargar presupuestos:', err);
-
       this.ngZone.run(() => {
         this.cargandoPresupuestos = false;
         this.errorPresupuestos =
-          'Ocurrió un error al cargar la información.';
+          'Ocurrió un error al cargar los presupuestos.';
+        this.cdr.detectChanges();
       });
     }
   });
