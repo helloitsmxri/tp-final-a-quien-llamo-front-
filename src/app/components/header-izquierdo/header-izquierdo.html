@@ -6,14 +6,22 @@
     <!--esta partecita de acá es para los ICONOS NADA MÁS-->
     <nav class="lateral__nav">
         @for (item of items; track item.ruta){
-            <a [routerLink]="item.ruta" routerLinkActive="activo" class="lateral__icono" [attr.aria-label]="item.etiqueta">
+            <a [routerLink]="item.ruta" routerLinkActive="activo" [routerLinkActiveOptions]="{exact: item.ruta === '/'}" class="lateral__icono" [attr.aria-label]="item.etiqueta" [title]="item.etiqueta">
                 {{item.icono}}
             </a>
         }
     </nav>
 
-    <a [routerLink]="authService.esTecnico() ? '/mi-perfil-tecnico : '/mi-perfil' " class="lateral__avatar" aria-label="Mi perfil">
-        <img [src]="avatarUrl" alt="Avatar">
+    <a [routerLink]="authService.esTecnico() ? '/mi-perfil-tecnico' : '/mi-perfil' " class="lateral__avatar" aria-label="Mi perfil">
+        @if (foto()) {
+      <img [src]="foto()" alt="" class="lateral__foto">
+    } @else {
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M5 21v-2a7 7 0 0 1 14 0v2"></path>
+      </svg>
+    }
     </a>
 
 </aside>
