@@ -181,6 +181,9 @@
               <p>{{ errorPresupuestos }}</p>
             </div>
           } @else {
+            @if (avisoTrabajos) {
+              <p class="estado-vacio-modal">{{ avisoTrabajos }}</p>
+            }
             @for (p of presupuestosDelChat; track p.uuid) {
               <div class="item-presupuesto" (click)="seleccionarPresupuesto(p)">
                 <div class="item-presupuesto-info">
