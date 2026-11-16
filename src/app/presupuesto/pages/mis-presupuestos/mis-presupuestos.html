@@ -36,7 +36,7 @@
             @if (tipoSeleccionado === 'CREADOS') {
               <p>Cliente: {{presupuesto.nombreUsuario}} {{presupuesto.apellidoUsuario}}</p>
             } @else {
-              <p>Técnico: {{ presupuesto.nombreTecnico }}{{ presupuesto.apellidoTecnico }}</p>
+              <p>Técnico: {{ presupuesto.nombreTecnico }} {{ presupuesto.apellidoTecnico }}</p>
             }
             <p class="precio">{{ presupuesto.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}</p>
           </article>

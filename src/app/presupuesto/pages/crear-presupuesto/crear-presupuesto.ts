@@ -51,7 +51,7 @@ export class CrearPresupuesto {
   formulario = this.fb.group({
     nombreProyecto: ['', [Validators.required,Validators.minLength(3),Validators.maxLength(80)]],
     observaciones: [''],
-    descuentoPorcentaje: [0, [Validators.required,Validators.min(0),Validators.max(100)]],
+    //descuentoPorcentaje: [0, [Validators.required,Validators.min(0),Validators.max(100)]],
     detalles: this.fb.array([this.crearDetalle()])
   });
 
@@ -98,17 +98,21 @@ export class CrearPresupuesto {
   }
 
   // CALCULAR MONTO DEL DESCUENTO
+  /*
   get montoDescuento(): number {
 
     const porcentaje = Number(this.formulario.get('descuentoPorcentaje')?.value) || 0;
 
     return this.redondear(this.subTotal * porcentaje / 100);
   }
+  */
 
+  /*
   // CALCULAR TOTAL FINAL
   get totalFinal(): number {
     return this.redondear(this.subTotal - this.montoDescuento);
   }
+    */
 
   // CALCULAR TOTAL DE UN TRABAJO
   calcularTotalDetalle(indice: number): number {
@@ -205,7 +209,7 @@ export class CrearPresupuesto {
     const presupuesto: PresupuestoRequestModel = {
       nombreProyecto: String(datos.nombreProyecto).trim(),
       observaciones: String(datos.observaciones ?? '').trim(),
-      descuentoPorcentaje: Number(datos.descuentoPorcentaje),
+      //descuentoPorcentaje: Number(datos.descuentoPorcentaje),
       detalles: datos.detalles.map(detalle => ({ descripcion: String(detalle['descripcion']).trim(), precioUnitario: Number(detalle['precioUnitario']), cantidad: Number(detalle['cantidad'])}))
     };
 
