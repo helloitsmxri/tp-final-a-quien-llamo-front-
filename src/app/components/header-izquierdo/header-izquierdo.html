@@ -1,0 +1,19 @@
+<aside class="lateral" aria-label="Navegación principal">
+    <a routerLink="/" class="lateral__logo" aria-label="Ir al inicio">
+        <img src="/íconos/logo/logo.png" alt="Logo de ¿A Quién Llamo?">
+    </a>
+
+    <!--esta partecita de acá es para los ICONOS NADA MÁS-->
+    <nav class="lateral__nav">
+        @for (item of items; track item.ruta){
+            <a [routerLink]="item.ruta" routerLinkActive="activo" class="lateral__icono" [attr.aria-label]="item.etiqueta">
+                {{item.icono}}
+            </a>
+        }
+    </nav>
+
+    <a [routerLink]="authService.esTecnico() ? '/mi-perfil-tecnico : '/mi-perfil' " class="lateral__avatar" aria-label="Mi perfil">
+        <img [src]="avatarUrl" alt="Avatar">
+    </a>
+
+</aside>
