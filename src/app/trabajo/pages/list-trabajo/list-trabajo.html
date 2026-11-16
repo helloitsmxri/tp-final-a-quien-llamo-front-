@@ -32,7 +32,9 @@
                 <article class="trabajo-card">
 
                     <div class="card-superior">
-                        <span class="estado" [attr.data-estado]="formatearEstado(trabajo.estadoTrabajo)">
+                        <span
+                            class="estado"
+                            [attr.data-estado]="formatearEstado(trabajo.estadoTrabajo)">
                             {{ formatearEstado(trabajo.estadoTrabajo) }}
                         </span>
 
@@ -89,61 +91,109 @@
                     </div>
 
                     <footer class="card-inferior">
+
                         <div class="acciones-trabajo">
+
                             @if (esTecnicoDelTrabajo(trabajo)) {
+
                                 @if (estaPendiente(trabajo)) {
-                                    <button
-                                        type="button"
-                                        class="btn-estado btn-proceso"
-                                        [disabled]="actualizandoUuid === trabajo.uuid"
-                                        (click)="cambiarEstado(trabajo, estados.En_proceso)">
-                                        {{ actualizandoUuid === trabajo.uuid ? 'Iniciando...' : '▶ Iniciar trabajo' }}
-                                    </button>
+
+                                    <div class="accion-iniciar">
+
+                                        <div class="botones-pendiente">
+
+                                            <button
+                                                type="button"
+                                                class="btn-estado btn-proceso"
+                                                [disabled]="actualizandoUuid === trabajo.uuid || !fechaInicioAlcanzada(trabajo)"
+                                                (click)="cambiarEstado(trabajo, estados.En_proceso)">
+
+                                                {{ actualizandoUuid === trabajo.uuid ? 'Iniciando...' : '▶ Iniciar trabajo' }}
+
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                class="btn-estado btn-cancelar"
+                                                [disabled]="actualizandoUuid === trabajo.uuid"
+                                                (click)="cambiarEstado(trabajo, estados.Cancelado)">
+
+                                                ✕ Cancelar trabajo
+
+                                            </button>
+
+                                        </div>
+
+                                        @if (!fechaInicioAlcanzada(trabajo)) {
+                                            <p class="mensaje-fecha-inicio">
+                                                <span>
+                                                    Este trabajo estará disponible para iniciar a partir de la fecha estimada.
+                                                </span>
+                                            </p>
+                                        }
+
+                                    </div>
+
                                 }
 
                                 @if (estaEnProceso(trabajo)) {
+
                                     <button
                                         type="button"
                                         class="btn-estado btn-finalizar"
                                         [disabled]="actualizandoUuid === trabajo.uuid"
                                         (click)="cambiarEstado(trabajo, estados.Finalizado)">
-                                        {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
-                                    </button>
-                                }
 
-                                @if (estaPendiente(trabajo) || estaEnProceso(trabajo)) {
+                                        {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
+
+                                    </button>
+
                                     <button
                                         type="button"
                                         class="btn-estado btn-cancelar"
                                         [disabled]="actualizandoUuid === trabajo.uuid"
                                         (click)="cambiarEstado(trabajo, estados.Cancelado)">
+
                                         ✕ Cancelar trabajo
+
                                     </button>
+
                                 }
+
                             }
 
                             @if (estaFinalizado(trabajo) && esClienteDelTrabajo(trabajo)) {
+
                                 <a
                                     [routerLink]="['/pagos/nuevo']"
                                     [queryParams]="{ uuidTrabajo: trabajo.uuid }"
                                     class="btn-estado btn-pagar">
+
                                     Pagar trabajo
+
                                 </a>
-                                }
+
+                            }
 
                             @if (estaFinalizado(trabajo)) {
-                                    <a
-                                        [routerLink]="['/ratings/nuevo']"
-                                        [queryParams]="{ uuidTrabajo: trabajo.uuid }"
-                                        class="btn-estado btn-resena">
-                                        ★ Dejar reseña
-                                    </a>
-                                }
+
+                                <a
+                                    [routerLink]="['/ratings/nuevo']"
+                                    [queryParams]="{ uuidTrabajo: trabajo.uuid }"
+                                    class="btn-estado btn-resena">
+
+                                    ★ Dejar reseña
+
+                                </a>
+
+                            }
+
                         </div>
 
                         <span class="precio">
                             {{ trabajo.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}
                         </span>
+
                     </footer>
 
                 </article>
