@@ -1,0 +1,102 @@
+:host {
+  display: flex;
+  flex-shrink: 0;          /* que el chat no lo achique */
+  height: 100%;
+}
+
+.lateral {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  height: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  font-family: "Creato Display", Arial, sans-serif;
+}
+
+/* logo */
+.lateral__logo { display: block; line-height: 0; }
+.lateral__logo img { height: 36px; max-width: 100%; }
+
+/* íconos del medio */
+.lateral__nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: auto;     /* los pega arriba y deja el avatar abajo */
+}
+
+/* círculo base: lo comparten los íconos y el avatar */
+.lateral__icono,
+.lateral__avatar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #fff;
+  color: #6c4fe0;
+  font-size: 1.15rem;
+  text-decoration: none;
+  overflow: hidden;        /* la foto respeta el círculo */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s, background 0.2s, color 0.2s;
+}
+
+.lateral__icono:hover,
+.lateral__avatar:hover {
+  transform: translateY(-2px);
+}
+
+/* página actual */
+.lateral__icono.activo,
+.lateral__avatar.activo {
+  background: #6c4fe0;
+  color: #fff;
+}
+
+/* foto real del usuario */
+.lateral__foto {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* contorno para quien navega con Tab */
+.lateral__icono:focus-visible,
+.lateral__avatar:focus-visible,
+.lateral__logo:focus-visible {
+  outline: 3px solid #6c4fe0;
+  outline-offset: 3px;
+}
+
+/* respeta "reducir movimiento" */
+@media (prefers-reduced-motion: reduce) {
+  .lateral__icono,
+  .lateral__avatar { transition: none; }
+  .lateral__icono:hover,
+  .lateral__avatar:hover { transform: none; }
+}
+
+/* celular: la barra pasa a horizontal */
+@media (max-width: 768px) {
+  :host { height: auto; width: 100%; }
+  .lateral {
+    flex-direction: row;
+    height: auto;
+    width: 100%;
+    gap: 0.6rem;
+  }
+  .lateral__nav {
+    flex-direction: row;
+    margin-bottom: 0;
+    margin-right: auto;
+    gap: 0.5rem;
+  }
+  .lateral__icono,
+  .lateral__avatar { width: 38px; height: 38px; }
+}
