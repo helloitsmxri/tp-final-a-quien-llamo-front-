@@ -1,5 +1,6 @@
 
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   OnInit,
@@ -41,14 +42,14 @@ export class ListaChat implements OnInit {
   constructor(
     private chatService: ChatService,
     private usuarioService: UsuarioService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
 
     forkJoin({
       perfil: this.usuarioService.getMyProfile(),
-
       chats: this.chatService.getMisChats().pipe(
         catchError((err) => {
           console.error('Error al cargar chats:', err);
@@ -56,11 +57,12 @@ export class ListaChat implements OnInit {
         })
       )
     }).subscribe({
-
       next: ({ perfil, chats }) => {
-
         this.miUuid = perfil.uuid;
         this.chats = chats;
+
+        // c esto actualizamos el angular
+        this.cdr.markForCheck();
 
         const uuidTecnico =
           this.route.snapshot.queryParamMap.get('tecnico');
@@ -69,9 +71,9 @@ export class ListaChat implements OnInit {
           this.abrirChatCon(uuidTecnico);
         }
       },
-
       error: (err) => {
         console.error('No se pudo obtener tu perfil:', err);
+        this.cdr.markForCheck();
       }
     });
   }
