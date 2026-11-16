@@ -1,5 +1,11 @@
-<app-header></app-header>
-<main>
+@if (!modoChat()){
+  <app-header></app-header>
+}
+
+<main [class.main-chat]="modoChat()">
   <router-outlet></router-outlet>
 </main>
+
+@if(!modoChat()){
 <app-footer></app-footer>
+}
