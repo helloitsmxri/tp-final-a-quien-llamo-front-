@@ -12,11 +12,12 @@ import { forkJoin, timer } from 'rxjs';
 import { TrabajoService } from '../../services/trabajo';
 import { TrabajoRequestModel } from '../../models/trabajo-request-model';
 import { TrabajoModel } from '../../models/trabajo-model';
+import { Calendario } from '../../../components/calendario/calendario';
 
 @Component({
   selector: 'app-form-trabajo',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Calendario],
   templateUrl: './form-trabajo.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './form-trabajo.css',

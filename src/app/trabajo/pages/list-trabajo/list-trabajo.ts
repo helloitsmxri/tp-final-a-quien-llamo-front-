@@ -55,6 +55,20 @@ export class ListTrabajo implements OnInit {
     return String(trabajo.estadoTrabajo) === EstadoTrabajo.Pendiente;
   }
 
+  fechaInicioAlcanzada(trabajo: TrabajoModel): boolean {
+  if (!trabajo.fechaEstimadaInicio) return false;
+
+  const hoy = new Date();
+
+  const fechaHoy = [
+    hoy.getFullYear(),
+    String(hoy.getMonth() + 1).padStart(2, '0'),
+    String(hoy.getDate()).padStart(2, '0')
+  ].join('-');
+
+  return fechaHoy >= String(trabajo.fechaEstimadaInicio).substring(0, 10);
+}
+
   estaEnProceso(trabajo: TrabajoModel): boolean {
     const estado = String(trabajo.estadoTrabajo);
     return estado === EstadoTrabajo.En_proceso || estado === 'En_proceso';
@@ -124,7 +138,10 @@ export class ListTrabajo implements OnInit {
   }
 
   cambiarEstado(trabajo: TrabajoModel, nuevoEstado: EstadoTrabajo): void {
-    if (this.actualizandoUuid || !this.esTecnicoDelTrabajo(trabajo)) return;
+    if (this.actualizandoUuid || !this.esTecnicoDelTrabajo(trabajo) ||
+       (nuevoEstado === EstadoTrabajo.En_proceso && !this.fechaInicioAlcanzada(trabajo))) {
+     return;
+    }
 
     let mensaje = '';
     if (nuevoEstado === EstadoTrabajo.Finalizado) {
