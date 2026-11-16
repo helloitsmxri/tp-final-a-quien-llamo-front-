@@ -1,27 +1,31 @@
 <div class="app-layout">
+  <app-header-izquierdo />
 
-  <!-- Sidebar Íconos -->
-  <aside class="sidebar-nav">
-    <div class="nav-icon active">💬</div>
-  </aside>
-
-  <!-- Panel Izquierdo (Lista) -->
-  <section class="panel-conversaciones">
+  <!-- la lista trae su propio buscador y su panel -->
+  <div class="columna-conversaciones">
     <app-lista-chat (chatSeleccionadoEvent)="alSeleccionarChat($event)"></app-lista-chat>
-  </section>
+  </div>
 
-  <!-- Panel Derecho (Detalle del Chat) -->
-  <main class="panel-chat-activo">
+  <!-- era <main>, pero app.html ya tiene un <main>: no puede haber dos -->
+ <section class="panel-chat-activo">
+
     @if (chatSeleccionado) {
+
       <app-detalle-chat
         [chat]="chatSeleccionado"
         (mensajeNuevo)="alMensajeNuevo($event)"
-      ></app-detalle-chat>
-    } @else {
-      <div class="sin-chat-seleccionado">
-        <p>Seleccione una conversación</p>
-      </div>
-    }
-  </main>
+      />
 
+    } @else {
+
+      <div class="sin-chat-seleccionado">
+        <div class="sin-chat-icono">✉</div>
+        <p>
+          Seleccioná una conversación para comenzar a chatear.
+          Acá vas a poder comunicarte con tus clientes y profesionales.
+        </p>
+      </div>
+
+    }
+  </section>
 </div>

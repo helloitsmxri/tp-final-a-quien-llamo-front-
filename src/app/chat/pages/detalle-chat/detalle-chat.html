@@ -1,121 +1,335 @@
+
 @if (chat) {
+
   <div class="chat-activo-container">
 
-    <!-- Header -->
+    <!-- ENCABEZADO -->
+
     <header class="header-chat-activo">
+
       <div class="info-contacto">
-        <img [src]="avatar(nombreOtro)" alt="Avatar" class="avatar-header" />
-        <div>
+
+        <img
+          [src]="avatar(nombreOtro)"
+          alt=""
+          class="avatar-header"
+        />
+
+        <div class="contacto-datos">
+
           <h3>{{ nombreOtro }}</h3>
+
+          <span class="subtitulo-contacto">
+            Conversación
+          </span>
+
         </div>
+
       </div>
 
-      <!-- Desplegable de Presupuestos y Denuncia -->
       <div class="menu-presupuesto-wrapper">
-        <button type="button" class="btn-opciones" (click)="alternarMenu()">
-          ⋮ Opciones
+
+        <button
+          type="button"
+          class="btn-menu"
+          (click)="alternarMenu()"
+          aria-label="Opciones de conversación"
+          title="Opciones"
+        >
+          <span>⋮</span>
         </button>
 
         @if (menuAbierto) {
+
           <div class="dropdown-menu">
+
             @if (soyElTecnico) {
-              <button type="button" class="dropdown-item" (click)="abrirCrearPresupuesto()">
-                ➕ Crear presupuesto
+
+              <button
+                type="button"
+                class="dropdown-item"
+                (click)="abrirCrearPresupuesto()"
+              >
+                <span class="dropdown-icono">＋</span>
+                Crear presupuesto
               </button>
+
             }
-            <button type="button" class="dropdown-item" (click)="abrirVerPresupuestos()">
-              📄 Ver presupuestos del chat
+
+            <button
+              type="button"
+              class="dropdown-item"
+              (click)="abrirVerPresupuestos()"
+            >
+              <span class="dropdown-icono">▤</span>
+              Ver presupuestos
             </button>
-            <button type="button" class="dropdown-item dropdown-item-peligro" (click)="irADenunciar()">
-              🚨 Denunciar usuario
+
+            <button
+              type="button"
+              class="dropdown-item dropdown-item-peligro"
+              (click)="irADenunciar()"
+            >
+              <span class="dropdown-icono">⚑</span>
+              Denunciar usuario
             </button>
+
           </div>
+
         }
+
       </div>
+
     </header>
 
-    <!-- Lista de mensajes -->
+
+    <!-- MENSAJES -->
+
     <div #areaMensajes class="area-mensajes">
+
       @for (msg of mensajes; track msg.uuidMensaje) {
-        <div class="burbuja-wrapper" [class.sent]="esMio(msg)" [class.received]="!esMio(msg)">
-          <div class="burbuja">
-            @if (msg.mensaje) {
-              <p class="texto-msg">{{ msg.mensaje }}</p>
+
+        <div
+          class="mensaje-fila"
+          [class.mensaje-propio]="esMio(msg)"
+          [class.mensaje-recibido]="!esMio(msg)"
+        >
+
+          <img
+            [src]="avatar(esMio(msg) ? 'Yo' : (msg.nombreSender || nombreOtro))"
+            alt=""
+            class="avatar-mensaje"
+          />
+
+          <div class="mensaje-contenido">
+
+            <div class="burbuja">
+
+              @if (msg.mensaje) {
+
+                <p class="texto-msg">
+                  {{ msg.mensaje }}
+                </p>
+
+              }
+
+              @if (
+                msg.archivoUrl &&
+                msg.tipoArchivo === 'imagen'
+              ) {
+
+                <a
+                  [href]="urlArchivo(msg.archivoUrl)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    [src]="urlArchivo(msg.archivoUrl)"
+                    alt="Imagen adjunta"
+                    class="img-preview"
+                  />
+                </a>
+
+              }
+
+              @if (
+                msg.archivoUrl &&
+                msg.tipoArchivo === 'pdf'
+              ) {
+
+                <a
+                  [href]="urlArchivo(msg.archivoUrl)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="pdf-link"
+                >
+                  <span>▤</span>
+                  Ver documento PDF
+                </a>
+
+              }
+
+            </div>
+
+            @if (msg.fechaMensaje) {
+
+              <span class="hora-mensaje">
+                {{ msg.fechaMensaje | date:'HH:mm' }}
+              </span>
+
             }
-            @if (msg.archivoUrl && msg.tipoArchivo === 'imagen') {
-              <img [src]="urlArchivo(msg.archivoUrl)" alt="Imagen adjunta" class="img-preview" />
-            }
-            @if (msg.archivoUrl && msg.tipoArchivo === 'pdf') {
-              <a [href]="urlArchivo(msg.archivoUrl)" target="_blank" rel="noopener noreferrer" class="pdf-link">
-                📄 Ver documento PDF
-              </a>
-            }
+
           </div>
+
         </div>
+
       } @empty {
-        <p class="sin-mensajes">No hay mensajes en esta conversación aún.</p>
+
+        <div class="sin-mensajes">
+
+          <div class="sin-mensajes-icono">✉</div>
+
+          <h3>¡Comenzá la conversación!</h3>
+
+          <p>
+            Todavía no hay mensajes. Escribí algo para iniciar el chat.
+          </p>
+
+        </div>
+
       }
+
     </div>
 
-    <!-- Input -->
+
+    <!-- CAMPO DE ESCRITURA -->
+
     <footer class="footer-chat-input">
+
       @if (archivoSeleccionado) {
+
         <div class="archivo-pendiente">
-          📎 {{ archivoSeleccionado.name }}
-          <button type="button" (click)="quitarArchivo()">✕</button>
+
+          <span>📎</span>
+
+          <span class="archivo-nombre">
+            {{ archivoSeleccionado.name }}
+          </span>
+
+          <button
+            type="button"
+            (click)="quitarArchivo()"
+            aria-label="Quitar archivo"
+          >
+            ×
+          </button>
+
         </div>
+
       }
+
       <div class="input-pill">
-        <input
-          type="text"
-          [(ngModel)]="nuevoMensajeTexto"
-          placeholder="Escribe un mensaje aquí para chatear..."
-          (keyup.enter)="enviarMensaje()"
-        />
-        <label for="file-attach" class="btn-input-icon" title="Adjuntar archivo">🖼️</label>
+
+        <label
+          for="file-attach"
+          class="btn-adjuntar"
+          title="Adjuntar imagen o PDF"
+        >
+          ＋
+        </label>
+
         <input
           id="file-attach"
           type="file"
           (change)="onFileSelected($event)"
           accept="image/*,.pdf"
-          style="display: none;"
+          hidden
         />
-        <button type="button" class="btn-send" (click)="enviarMensaje()">➕</button>
+
+        <input
+          type="text"
+          [(ngModel)]="nuevoMensajeTexto"
+          placeholder="Escribí un mensaje..."
+          (keyup.enter)="enviarMensaje()"
+          aria-label="Escribir mensaje"
+        />
+
+        <button
+          type="button"
+          class="btn-send"
+          (click)="enviarMensaje()"
+          [disabled]="!nuevoMensajeTexto.trim() && !archivoSeleccionado"
+          aria-label="Enviar mensaje"
+          title="Enviar mensaje"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="19"
+            height="19"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m22 2-7 20-4-9-9-4Z"/>
+            <path d="M22 2 11 13"/>
+          </svg>
+        </button>
+
       </div>
+
     </footer>
 
   </div>
+
 } @else {
+
   <div class="chat-sin-seleccionar">
+
     <div class="chat-sin-seleccionar-contenido">
-      <div class="icono-sin-chat">💬</div>
-      <h3>Seleccione un chat</h3>
-      <p>Elegí una conversación de la lista para ver los mensajes o gestionar presupuestos.</p>
+
+      <div class="icono-sin-chat">✉</div>
+
+      <h3>Seleccioná una conversación</h3>
+
+      <p>
+        Elegí un contacto de la lista para visualizar los mensajes.
+      </p>
+
     </div>
+
   </div>
+
 }
 
-<!-- MODAL PARA CREAR PRESUPUESTO -->
+
+<!-- MODAL CREAR PRESUPUESTO -->
+
 @if (mostrandoCrearPresupuesto && chat) {
+
   <div class="overlay-modal">
+
     <div class="modal-contenido">
+
       <app-crear-presupuesto
         [uuidChat]="chat.uuidChat"
         (presupuestoCreado)="onPresupuestoCreado($event)"
         (cerrar)="cerrarPanelesPresupuesto()"
       />
+
     </div>
+
   </div>
+
 }
 
-<!-- MODAL PARA VER PRESUPUESTOS DEL CHAT -->
+
+<!-- MODAL VER PRESUPUESTOS -->
+
 @if (mostrandoListaPresupuestos || presupuestoSeleccionado) {
+
   <div class="overlay-modal">
+
     <div class="modal-contenido">
+
       @if (presupuestoSeleccionado) {
+
         <div class="barra-superior-detalle">
-          <span class="etiqueta-vista">Detalle del presupuesto</span>
-          <button type="button" class="btn-cerrar-modal" (click)="cerrarPanelesPresupuesto()">✕</button>
+
+          <span class="etiqueta-vista">
+            Detalle del presupuesto
+          </span>
+
+          <button
+            type="button"
+            class="btn-cerrar-modal"
+            (click)="cerrarPanelesPresupuesto()"
+          >
+            ×
+          </button>
+
         </div>
 
         <app-ver-presupuesto
@@ -125,68 +339,158 @@
           (volver)="presupuestoSeleccionado = null"
         />
 
-        @if (soyElTecnico && presupuestoSeleccionado.estado === EstadoPresupuesto.Aceptado) {
+        @if (
+          soyElTecnico &&
+          presupuestoSeleccionado.estado === EstadoPresupuesto.Aceptado
+        ) {
+
           <div class="accion-trabajo-modal">
+
             <button
               type="button"
               class="btn-registrar-trabajo"
-              (click)="abrirRegistrarTrabajo(presupuestoSeleccionado.uuid)">
-              🛠️ Registrar trabajo a partir de este presupuesto
+              (click)="abrirRegistrarTrabajo(presupuestoSeleccionado.uuid)"
+            >
+              Registrar trabajo a partir de este presupuesto
             </button>
+
           </div>
+
         }
+
       } @else {
+
         <div class="lista-presupuestos-chat">
+
           <div class="header-modal">
+
             <div>
-              <span class="sobretitulo-modal">HISTORIAL EN ESTE CHAT</span>
+              <span class="sobretitulo-modal">
+                HISTORIAL EN ESTE CHAT
+              </span>
+
               <h3>Presupuestos de la conversación</h3>
             </div>
-            <button type="button" class="btn-cerrar-modal" (click)="cerrarPanelesPresupuesto()">✕</button>
+
+            <button
+              type="button"
+              class="btn-cerrar-modal"
+              (click)="cerrarPanelesPresupuesto()"
+            >
+              ×
+            </button>
+
           </div>
 
           @if (cargandoPresupuestos) {
-            <p class="estado-vacio-modal">Cargando presupuestos...</p>
+
+            <p class="estado-vacio-modal">
+              Cargando presupuestos...
+            </p>
+
           } @else {
+
             @for (p of presupuestosDelChat; track p.uuid) {
-              <div class="item-presupuesto" (click)="seleccionarPresupuesto(p)">
+
+              <div
+                class="item-presupuesto"
+                (click)="seleccionarPresupuesto(p)"
+              >
+
                 <div class="item-presupuesto-info">
+
                   <div class="item-presupuesto-titulo">
+
                     <strong>{{ p.nombreProyecto }}</strong>
-                    <span class="estado-badge" [attr.data-estado]="p.estado">{{ p.estado }}</span>
+
+                    <span
+                      class="estado-badge"
+                      [attr.data-estado]="p.estado"
+                    >
+                      {{ p.estado }}
+                    </span>
+
                   </div>
-                  <span class="item-presupuesto-fecha">Emitido el {{ p.fechaRealizado | date:'dd/MM/yyyy' }}</span>
+
+                  <span class="item-presupuesto-fecha">
+                    Emitido el {{ p.fechaRealizado | date:'dd/MM/yyyy' }}
+                  </span>
+
                 </div>
 
                 <div class="item-presupuesto-derecha">
-                  <span class="item-presupuesto-precio">{{ p.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}</span>
-                  <span class="item-presupuesto-flecha">Ver →</span>
+
+                  <span class="item-presupuesto-precio">
+                    {{ p.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}
+                  </span>
+
+                  <span class="item-presupuesto-flecha">
+                    Ver →
+                  </span>
+
                 </div>
+
               </div>
+
             } @empty {
+
               <div class="estado-vacio-modal">
-                <p>Todavía no hay presupuestos en este chat.</p>
+
+                <p>
+                  Todavía no hay presupuestos en este chat.
+                </p>
+
                 @if (soyElTecnico) {
-                  <button type="button" class="btn-crear-desde-vacio" (click)="abrirCrearPresupuesto()">
-                    ➕ Crear primer presupuesto
+
+                  <button
+                    type="button"
+                    class="btn-crear-desde-vacio"
+                    (click)="abrirCrearPresupuesto()"
+                  >
+                    Crear primer presupuesto
                   </button>
+
                 }
+
               </div>
+
             }
+
           }
+
         </div>
+
       }
+
     </div>
+
   </div>
+
 }
 
-<!-- MODAL PARA REGISTRAR TRABAJO -->
+
+<!-- MODAL REGISTRAR TRABAJO -->
+
 @if (uuidPresupuestoParaTrabajo) {
+
   <div class="overlay-modal">
+
     <div class="modal-contenido">
+
       <div class="barra-superior-detalle">
-        <span class="etiqueta-vista">Registrar trabajo</span>
-        <button type="button" class="btn-cerrar-modal" (click)="cerrarPanelesPresupuesto()">✕</button>
+
+        <span class="etiqueta-vista">
+          Registrar trabajo
+        </span>
+
+        <button
+          type="button"
+          class="btn-cerrar-modal"
+          (click)="cerrarPanelesPresupuesto()"
+        >
+          ×
+        </button>
+
       </div>
 
       <app-form-trabajo
@@ -195,6 +499,9 @@
         (trabajoCreado)="onTrabajoCreado()"
         (cerrar)="cerrarPanelesPresupuesto()"
       />
+
     </div>
+
   </div>
+
 }

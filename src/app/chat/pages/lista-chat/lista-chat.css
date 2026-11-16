@@ -1,51 +1,245 @@
-.search-box input {
+
+:host {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  font-family: "Creato Display", Arial, sans-serif;
+}
+
+.lista-chat-container {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  padding: 12px 20px;
-  border-radius: 30px;
+  min-height: 0;
+  background: #fff;
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.lista-chat-header {
+  padding: 24px 20px 16px;
+}
+
+.titulo-lista {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.titulo-lista h2 {
+  margin: 0;
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: #342b4a;
+}
+
+.titulo-lista p {
+  margin: 3px 0 0;
+  font-size: 0.88rem;
+  color: #9992aa;
+}
+
+.cantidad-chats {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  background: #f0ebff;
+  color: #6c4fe0;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 42px;
+  padding: 0 13px;
+  border-radius: 13px;
+  background: #f6f4fa;
+  border: 1px solid transparent;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.search-box:focus-within {
+  border-color: #c5b6f4;
+  background: #fff;
+}
+
+.icono-busqueda {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: #8d7bc2;
+}
+
+.search-box input {
+  flex: 1;
+  min-width: 0;
   border: none;
-  background-color: #ffffff;
-  color: #372f47;
   outline: none;
-  box-sizing: border-box;
-  margin-bottom: 16px;
+  background: transparent;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #342b4a;
+}
+
+.search-box input::placeholder {
+  color: #aaa4b7;
+}
+
+.limpiar-busqueda {
+  border: none;
+  background: none;
+  color: #8d7bc2;
+  font-size: 1.3rem;
+  cursor: pointer;
 }
 
 .lista-chats {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  padding: 4px 12px 16px;
+}
+
+.lista-chats::-webkit-scrollbar {
+  width: 5px;
+}
+
+.lista-chats::-webkit-scrollbar-thumb {
+  background: #e1d9f4;
+  border-radius: 10px;
+}
+
+.seccion-titulo {
+  padding: 8px 9px;
+  margin: 0 0 7px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  color: #a19aae;
 }
 
 .item-chat {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 16px;
+  width: 100%;
+  gap: 11px;
+  padding: 12px 10px;
+  margin-bottom: 4px;
+  border: none;
+  border-radius: 13px;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
   cursor: pointer;
   transition: background 0.2s;
 }
 
-.item-chat:hover, .item-chat.active {
-  background-color: rgba(255, 255, 255, 0.7);
+.item-chat:hover {
+  background: #f8f6fc;
+}
+
+.item-chat.active {
+  background: #f0ebff;
+}
+
+.avatar-chat {
+  width: 43px;
+  height: 43px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #eee8ff;
 }
 
 .avatar-chat img {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
+.info-chat {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 5px;
+}
+
+.info-chat-superior {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .info-chat .nombre {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #514274;
+  font-size: 0.93rem;
   font-weight: 600;
-  color: #5c4391;
-  font-size: 0.95rem;
+}
+
+.item-chat.active .nombre {
+  color: #6245ce;
+}
+
+.ultimo-mensaje {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #9993a7;
+  font-size: 0.76rem;
+}
+
+.indicador-chat {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.item-chat.active .indicador-chat {
+  background: #8b72e9;
 }
 
 .sin-chats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  color: #6b7280;
-  margin-top: 20px;
+  padding: 50px 18px;
+}
+
+.sin-chats-icono {
+  display: grid;
+  place-items: center;
+  width: 55px;
+  height: 55px;
+  border-radius: 17px;
+  background: #f0ebff;
+  color: #8b72e9;
+  font-size: 25px;
+  margin-bottom: 15px;
+}
+
+.sin-chats h3 {
+  margin: 0 0 7px;
+  color: #514274;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.sin-chats p {
+  max-width: 220px;
+  margin: 0;
+  color: #9993a7;
+  font-size: 0.84rem;
+  line-height: 1.5;
 }
