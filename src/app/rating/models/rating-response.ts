@@ -1,8 +1,7 @@
 export interface RatingResponse {
-    uuidCalificacion: string;
     uuidRemitente: string;
     nombreRemitente: string;
-    apellidoRemitente: string;
+    apellidoRemitente?: string;
     nombreDestinatario: string;
     valoracion: number;
     descripcion ?: string | null;
