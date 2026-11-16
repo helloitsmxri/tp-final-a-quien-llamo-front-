@@ -5,6 +5,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   imports: [RouterLink, RouterLinkActive],
+  standalone: true,
   selector: 'app-header-izquierdo',
   styleUrl: './header-izquierdo.css',
   templateUrl: './header-izquierdo.html',

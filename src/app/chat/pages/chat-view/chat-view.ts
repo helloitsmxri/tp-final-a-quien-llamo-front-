@@ -3,11 +3,12 @@ import { Component, ViewChild, ChangeDetectionStrategy } from '@angular/core';
 import { ListaChat } from '../lista-chat/lista-chat';
 import { DetalleChat } from '../detalle-chat/detalle-chat';
 import { ChatModel } from '../../models/chat-model';
+import { HeaderIzquierdo } from '../../../components/header-izquierdo/header-izquierdo';
 
 @Component({
   selector: 'app-chat-view',
   standalone: true,
-  imports: [ListaChat, DetalleChat],
+  imports: [ListaChat, DetalleChat, HeaderIzquierdo],
   templateUrl: './chat-view.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './chat-view.css',
