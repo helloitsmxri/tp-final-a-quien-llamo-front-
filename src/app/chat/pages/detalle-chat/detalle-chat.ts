@@ -66,6 +66,7 @@ export class DetalleChat
   private areaMensajesContainer!: ElementRef;
 
   mensajes: MensajeModel[] = [];
+  errorPresupuestos = '';
 
   nuevoMensajeTexto = '';
 
@@ -224,33 +225,31 @@ export class DetalleChat
     this.scrollToBottom();
   }
 
-  cargarMensajes(uuidChat: string): void {
-
-    this.mensajeService.getByChat(uuidChat).subscribe({
-
-      next: (data) => {
-
+cargarMensajes(uuidChat: string): void {
+  this.mensajeService.getByChat(uuidChat).subscribe({
+    next: (data) => {
+      this.ngZone.run(() => {
+        // Evitamos cargar mensajes de un chat que ya no está seleccionado.
         if (this.chat?.uuidChat !== uuidChat) return;
 
-        const ids = new Set(
-          data.map(m => m.uuidMensaje)
-        );
+        const ids = new Set(data.map(m => m.uuidMensaje));
 
         this.mensajes = [
           ...data,
-          ...this.mensajes.filter(
-            m => !ids.has(m.uuidMensaje)
-          )
+          ...this.mensajes.filter(m => !ids.has(m.uuidMensaje))
         ];
 
         this.scrollToBottom();
-      },
-
-      error: (err) => {
-        console.error('Error al cargar mensajes:', err);
-      }
-    });
-  }
+      });
+    },
+    error: (err) => {
+      console.error('Error al cargar mensajes:', err);
+      this.ngZone.run(() => {
+        alert('No se pudieron cargar los mensajes.');
+      });
+    }
+  });
+}
 
   onFileSelected(event: Event): void {
 
@@ -268,36 +267,36 @@ export class DetalleChat
   }
 
   enviarMensaje(): void {
+  if (!this.chat) return;
 
-    if (!this.chat) return;
+  if (!this.nuevoMensajeTexto.trim() && !this.archivoSeleccionado) {
+    return;
+  }
 
-    if (
-      !this.nuevoMensajeTexto.trim() &&
-      !this.archivoSeleccionado
-    ) {
-      return;
-    }
+  const uuidChat = this.chat.uuidChat;
 
-    this.mensajeService.store(
-      this.chat.uuidChat,
-      this.nuevoMensajeTexto.trim(),
-      this.archivoSeleccionado || undefined
-    ).subscribe({
-
-      next: (creado) => {
+  this.mensajeService.store(
+    uuidChat,
+    this.nuevoMensajeTexto.trim(),
+    this.archivoSeleccionado || undefined
+  ).subscribe({
+    next: (creado) => {
+      this.ngZone.run(() => {
+        if (this.chat?.uuidChat !== uuidChat) return;
 
         this.agregarMensaje(creado);
-
         this.nuevoMensajeTexto = '';
-
         this.archivoSeleccionado = null;
-      },
-
-      error: (err) => {
-        console.error('Error al enviar mensaje:', err);
-      }
-    });
-  }
+      });
+    },
+    error: (err) => {
+      console.error('Error al enviar mensaje:', err);
+      this.ngZone.run(() => {
+        alert('No se pudo enviar el mensaje.');
+      });
+    }
+  });
+}
 
   alternarMenu(): void {
     this.menuAbierto = !this.menuAbierto;
@@ -344,36 +343,50 @@ export class DetalleChat
   }
 
   abrirVerPresupuestos(): void {
+  if (!this.chat) return;
 
-    if (!this.chat) return;
+  const uuidChat = this.chat.uuidChat;
 
-    this.menuAbierto = false;
+  this.menuAbierto = false;
+  this.mostrandoCrearPresupuesto = false;
+  this.presupuestoSeleccionado = null;
+  this.uuidPresupuestoParaTrabajo = null;
 
-    this.mostrandoCrearPresupuesto = false;
+  this.mostrandoListaPresupuestos = true;
+  this.cargandoPresupuestos = true;
 
-    this.presupuestoSeleccionado = null;
+  this.errorPresupuestos = '';
+  this.presupuestosDelChat = [];
 
-    this.uuidPresupuestoParaTrabajo = null;
+  let errorAlCargarPresupuestos = false;
+  let errorAlCargarTrabajos = false;
 
-    this.mostrandoListaPresupuestos = true;
+  forkJoin({
+    presupuestos: this.presupuestoService
+      .obtenerPresupuestoChat(uuidChat)
+      .pipe(
+        catchError((err) => {
+          console.error('Error al obtener presupuestos:', err);
+          errorAlCargarPresupuestos = true;
+          return of([] as PresupuestoModel[]);
+        })
+      ),
 
-    this.cargandoPresupuestos = true;
-
-    forkJoin({
-
-      presupuestos:
-        this.presupuestoService.obtenerPresupuestoChat(
-          this.chat.uuidChat
-        ),
-
-      trabajos:
-        this.trabajoService.getMyJobs().pipe(
-          catchError(() => of([]))
-        )
-
-    }).subscribe({
-
-      next: ({ presupuestos, trabajos }) => {
+    trabajos: this.trabajoService
+      .getMyJobs()
+      .pipe(
+        catchError((err) => {
+          console.error('Error al obtener trabajos:', err);
+          errorAlCargarTrabajos = true;
+          return of([]);
+        })
+      )
+  }).subscribe({
+    next: ({ presupuestos, trabajos }) => {
+      this.ngZone.run(() => {
+        // Si cambiaste de chat mientras cargaban los datos,
+        // no mostramos los resultados del chat anterior.
+        if (this.chat?.uuidChat !== uuidChat) return;
 
         const presupuestosFinalizados = new Set(
           trabajos
@@ -384,25 +397,33 @@ export class DetalleChat
             .map(t => t.uuidPresupuesto)
         );
 
-        this.presupuestosDelChat =
-          presupuestos.filter(
-            p => !presupuestosFinalizados.has(p.uuid)
-          );
-
-        this.cargandoPresupuestos = false;
-      },
-
-      error: (err) => {
-
-        console.error(
-          'Error al cargar presupuestos del chat:',
-          err
+        this.presupuestosDelChat = presupuestos.filter(
+          p => !presupuestosFinalizados.has(p.uuid)
         );
 
+        if (errorAlCargarPresupuestos) {
+          this.errorPresupuestos =
+            'No se pudieron cargar los presupuestos de esta conversación.';
+        } else if (errorAlCargarTrabajos) {
+          this.errorPresupuestos =
+            'Se cargaron los presupuestos, pero no se pudo verificar cuáles tienen un trabajo finalizado.';
+        }
+
         this.cargandoPresupuestos = false;
-      }
-    });
-  }
+      });
+    },
+
+    error: (err) => {
+      console.error('Error inesperado al cargar presupuestos:', err);
+
+      this.ngZone.run(() => {
+        this.cargandoPresupuestos = false;
+        this.errorPresupuestos =
+          'Ocurrió un error al cargar la información.';
+      });
+    }
+  });
+}
 
   seleccionarPresupuesto(p: PresupuestoModel): void {
     this.presupuestoSeleccionado = p;
