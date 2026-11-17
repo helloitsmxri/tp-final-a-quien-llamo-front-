@@ -25,9 +25,23 @@ export class FormPago {
 
   private route = inject(ActivatedRoute);
 
+  // Paso actual del formulario.
+  paso = 1;
+
+  // Relación entre proveedores y métodos disponibles.
+  private readonly metodosPorProveedor: Record<ProveedorPago, MetodoDePago[]> = {
+    [ProveedorPago.MERCADO_PAGO]: [
+      MetodoDePago.Transferencia
+    ]
+  };
+
+  // Opciones disponibles.
+  proveedoresDisponibles = Object.values(ProveedorPago);
+  metodosDisponibles: MetodoDePago[] = [];
+
   uuidTrabajo: FormControl<string>;
-  metodoDePago: FormControl<MetodoDePago>;
-  proveedorDePago: FormControl<ProveedorPago>;
+  proveedorDePago: FormControl<ProveedorPago | null>;
+  metodoDePago: FormControl<MetodoDePago | null>;
 
   buyerFullName: FormControl<string>;
   buyerEmail: FormControl<string>;
@@ -45,15 +59,15 @@ export class FormPago {
       validators: [Validators.required]
     });
 
-    this.metodoDePago = new FormControl(MetodoDePago.Transferencia, {
-      nonNullable: true,
-      validators: [Validators.required]
-    });
+    this.proveedorDePago = new FormControl<ProveedorPago | null>(
+      null,
+      Validators.required
+    );
 
-    this.proveedorDePago = new FormControl(ProveedorPago.MERCADO_PAGO, {
-      nonNullable: true,
-      validators: [Validators.required]
-    });
+    this.metodoDePago = new FormControl<MetodoDePago | null>(
+      null,
+      Validators.required
+    );
 
     this.buyerFullName = new FormControl('', {
       nonNullable: true,
@@ -86,15 +100,14 @@ export class FormPago {
 
     this.formulario = new FormGroup({
       uuidTrabajo: this.uuidTrabajo,
-      metodoDePago: this.metodoDePago,
       proveedorDePago: this.proveedorDePago,
+      metodoDePago: this.metodoDePago,
       buyerFullName: this.buyerFullName,
       buyerEmail: this.buyerEmail,
       buyerDNI: this.buyerDNI,
       buyerPhone: this.buyerPhone
     });
 
-    // Obtener automáticamente el UUID del trabajo desde la URL.
     const uuid = this.route.snapshot.queryParamMap.get('uuidTrabajo');
 
     if (uuid) {
@@ -102,6 +115,47 @@ export class FormPago {
     }
   }
 
+  // PASO 1: continuar con el proveedor seleccionado.
+  continuarProveedor(): void {
+
+    if (this.proveedorDePago.invalid) {
+      this.proveedorDePago.markAsTouched();
+      return;
+    }
+
+    const proveedor = this.proveedorDePago.value!;
+
+    this.metodosDisponibles = this.metodosPorProveedor[proveedor] ?? [];
+
+    // Reiniciar el método si se cambia de proveedor.
+    this.metodoDePago.reset(null);
+
+    if (this.metodosDisponibles.length === 0) {
+      return;
+    }
+
+    this.paso = 2;
+  }
+
+  // PASO 2: continuar con el método seleccionado.
+  continuarMetodo(): void {
+
+    if (this.metodoDePago.invalid) {
+      this.metodoDePago.markAsTouched();
+      return;
+    }
+
+    this.paso = 3;
+  }
+
+  // Volver al paso anterior.
+  volver(): void {
+    if (this.paso > 1) {
+      this.paso--;
+    }
+  }
+
+  // PASO 3: registrar el pago.
   registrar(): void {
 
     if (this.formulario.invalid) {
@@ -109,7 +163,15 @@ export class FormPago {
       return;
     }
 
-    const pago: PagoRequestModel = this.formulario.getRawValue();
+    const pago: PagoRequestModel = {
+      uuidTrabajo: this.uuidTrabajo.value,
+      proveedorDePago: this.proveedorDePago.value!,
+      metodoDePago: this.metodoDePago.value!,
+      buyerFullName: this.buyerFullName.value,
+      buyerEmail: this.buyerEmail.value,
+      buyerDNI: this.buyerDNI.value,
+      buyerPhone: this.buyerPhone.value
+    };
 
     this.cargando = true;
 
@@ -135,9 +197,18 @@ export class FormPago {
       }
 
     });
+
+  }
+    seleccionarProveedor(proveedor: ProveedorPago): void {
+      this.formulario.get('proveedorDePago')?.setValue(proveedor);
+
+      this.metodosDisponibles = this.metodosPorProveedor[proveedor];
+
+      // Reiniciamos el método si cambia el proveedor.
+      this.formulario.get('metodoDePago')?.reset();
   }
 
-  verSubmit(): void {
-    console.log(this.formulario.getRawValue());
+  seleccionarMetodo(metodo: MetodoDePago): void {
+      this.formulario.get('metodoDePago')?.setValue(metodo);
   }
 }
