@@ -36,9 +36,13 @@ export class DetallePago implements OnInit {
   ngOnInit(): void {
 
     const id = this.identificador
-      ?? this.route.snapshot.paramMap.get('uuid');
+      ?? this.route.snapshot.paramMap.get(
+        this.metodo === 'mercadoPagoOrderId'
+          ? 'mercadoPagoOrderId'
+          : 'uuid'
+      );
 
-    if (!id) {
+    if (!id?.trim()) {
       this.error = true;
       return;
     }
@@ -50,22 +54,25 @@ export class DetallePago implements OnInit {
 
     this.cargando = true;
     this.error = false;
+    this.pago = undefined;
 
     const peticion = this.metodo === 'mercadoPagoOrderId'
       ? this.pService.getByMercadoPagoOrderId(id)
       : this.pService.getByUuid(id);
 
     peticion.subscribe({
+
       next: (data: PagoResponseModel) => {
         this.pago = data;
         this.cargando = false;
       },
 
       error: (e) => {
-        console.error('Error al obtener el pago', e);
+        console.error('Error al obtener el pago:', e);
         this.error = true;
         this.cargando = false;
       }
+
     });
   }
 }

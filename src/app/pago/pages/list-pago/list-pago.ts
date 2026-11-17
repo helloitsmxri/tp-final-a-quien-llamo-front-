@@ -5,6 +5,10 @@ import { ActivatedRoute } from '@angular/router';
 import { PagoService } from '../../services/pago';
 import { PagoResponseModel } from '../../models/pago-response-model';
 import { DatePipe } from '@angular/common';
+import { Observable } from 'rxjs';
+import { MetodoDePago } from '../../enum/metodo-de-pago';
+import { EstadoPago } from '../../enum/estado-pago';
+
 
 type MetodoListadoPago =
   | 'todos'
@@ -47,32 +51,44 @@ export class ListPago implements OnInit {
     this.cargando = true;
     this.error = false;
 
-    let peticion;
+    let peticion: Observable<PagoResponseModel[]>;
 
     switch (this.metodo) {
 
       case 'metodoPago':
-        if (!parametro) {
-          this.error = true;
-          this.cargando = false;
-          return;
+        if (!parametro?.trim()) {
+            this.error = true;
+            this.cargando = false;
+            return;
         }
 
-        peticion = this.pService.getByMetodoPago(parametro);
+        if (!Object.values(MetodoDePago).includes(parametro as MetodoDePago)) {
+            this.error = true;
+            this.cargando = false;
+            return;
+        }
+
+        peticion = this.pService.getByMetodoPago(parametro as MetodoDePago);
         break;
 
       case 'estado':
-        if (!parametro) {
-          this.error = true;
-          this.cargando = false;
-          return;
-        }
+          if (!parametro?.trim()) {
+              this.error = true;
+              this.cargando = false;
+              return;
+          }
 
-        peticion = this.pService.getByEstado(parametro);
-        break;
+          if (!Object.values(EstadoPago).includes(parametro as EstadoPago)) {
+              this.error = true;
+              this.cargando = false;
+              return;
+          }
+
+          peticion = this.pService.getByEstado(parametro as EstadoPago);
+          break;
 
       case 'cliente':
-        if (!parametro) {
+        if (!parametro?.trim()) {
           this.error = true;
           this.cargando = false;
           return;

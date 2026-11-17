@@ -10,6 +10,8 @@ import { ActivatedRoute } from '@angular/router';
 import { PagoRequestModel } from '../../models/pago-request-model';
 import { PagoResponseModel } from '../../models/pago-response-model';
 import { PagoService } from '../../services/pago';
+import { MetodoDePago } from '../../enum/metodo-de-pago';
+import { ProveedorPago } from '../../enum/proveedor-pago';
 
 @Component({
   selector: 'app-form-pago',
@@ -23,12 +25,14 @@ export class FormPago {
 
   private route = inject(ActivatedRoute);
 
-  uuidTrabajo: FormControl;
-  metodoDePago: FormControl;
-  buyerFullName: FormControl;
-  buyerEmail: FormControl;
-  buyerDNI: FormControl;
-  buyerPhone: FormControl;
+  uuidTrabajo: FormControl<string>;
+  metodoDePago: FormControl<MetodoDePago>;
+  proveedorDePago: FormControl<ProveedorPago>;
+
+  buyerFullName: FormControl<string>;
+  buyerEmail: FormControl<string>;
+  buyerDNI: FormControl<string>;
+  buyerPhone: FormControl<string>;
 
   formulario: FormGroup;
 
@@ -36,36 +40,54 @@ export class FormPago {
 
   constructor(public pService: PagoService) {
 
-    this.uuidTrabajo = new FormControl('', [
-      Validators.required
-    ]);
+    this.uuidTrabajo = new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    });
 
-    this.metodoDePago = new FormControl('', [
-      Validators.required
-    ]);
+    this.metodoDePago = new FormControl(MetodoDePago.Transferencia, {
+      nonNullable: true,
+      validators: [Validators.required]
+    });
 
-    this.buyerFullName = new FormControl('', [
-      Validators.required,
-      Validators.minLength(2)
-    ]);
+    this.proveedorDePago = new FormControl(ProveedorPago.MERCADO_PAGO, {
+      nonNullable: true,
+      validators: [Validators.required]
+    });
 
-    this.buyerEmail = new FormControl('', [
-      Validators.required,
-      Validators.email
-    ]);
+    this.buyerFullName = new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.minLength(2)
+      ]
+    });
 
-    this.buyerDNI = new FormControl('', [
-      Validators.required
-    ]);
+    this.buyerEmail = new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.email
+      ]
+    });
 
-    this.buyerPhone = new FormControl('', [
-      Validators.required,
-      Validators.pattern(/^\d{10}$/)
-    ]);
+    this.buyerDNI = new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required]
+    });
+
+    this.buyerPhone = new FormControl('', {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.pattern(/^\d{10}$/)
+      ]
+    });
 
     this.formulario = new FormGroup({
       uuidTrabajo: this.uuidTrabajo,
       metodoDePago: this.metodoDePago,
+      proveedorDePago: this.proveedorDePago,
       buyerFullName: this.buyerFullName,
       buyerEmail: this.buyerEmail,
       buyerDNI: this.buyerDNI,
@@ -80,40 +102,40 @@ export class FormPago {
     }
   }
 
-    registrar(): void {
+  registrar(): void {
 
-        if (this.formulario.invalid) {
-            this.formulario.markAllAsTouched();
-            return;
+    if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
+      return;
+    }
+
+    const pago: PagoRequestModel = this.formulario.getRawValue();
+
+    this.cargando = true;
+
+    this.pService.store(pago).subscribe({
+
+      next: (respuesta: PagoResponseModel) => {
+
+        console.log('Pago registrado correctamente', respuesta);
+
+        this.cargando = false;
+
+        if (respuesta.checkoutUrl) {
+          window.location.href = respuesta.checkoutUrl;
+        } else {
+          console.error('No se recibió una URL de Mercado Pago.');
         }
 
-        const pago: PagoRequestModel = this.formulario.getRawValue();
+      },
 
-        this.cargando = true;
+      error: (e) => {
+        console.error('Error al registrar el pago:', e);
+        this.cargando = false;
+      }
 
-        this.pService.store(pago).subscribe({
-
-            next: (respuesta: PagoResponseModel) => {
-
-                console.log('Pago registrado correctamente', respuesta);
-
-                this.cargando = false;
-
-                if (respuesta.checkoutUrl) {
-                    window.location.href = respuesta.checkoutUrl;
-                } else {
-                    console.error('No se recibió una URL de Mercado Pago.');
-                }
-
-            },
-
-            error: (e) => {
-                console.error('Error al registrar el pago:', e);
-                this.cargando = false;
-            }
-
-        });
-    }
+    });
+  }
 
   verSubmit(): void {
     console.log(this.formulario.getRawValue());
