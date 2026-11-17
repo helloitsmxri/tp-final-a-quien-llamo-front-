@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth-service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthLoginModel } from '../models/auth-login-model';
+import { AlertaService } from '../../shared/alertas/service/alerta-service';
 
 @Component({
   imports: [RouterLink, ReactiveFormsModule],
@@ -15,6 +16,7 @@ export class Login {
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private alertaService = inject(AlertaService);
 
   cargando: boolean = false;
   error: string = '';
@@ -60,6 +62,7 @@ manejarEnvio(): void {
       localStorage.setItem('refreshToken', response.refreshToken);
 
       this.cargando = false;
+      this.alertaService.exito('¡Se inició sesión con éxito!');
       this.router.navigate(['/home']);
     },
 
