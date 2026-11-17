@@ -61,11 +61,8 @@
       <div class="fila-fechas">
         <!-- Fecha estimada de inicio -->
         <fieldset class="form-group">
-          <label for="fechaEstimadaInicio">Fecha estimada de inicio:</label>
-          <input
-            type="date"
-            id="fechaEstimadaInicio"
-            formControlName="fechaEstimadaInicio">
+          <label>Fecha estimada de inicio:</label>
+          <app-calendario formControlName="fechaEstimadaInicio" modo="futuro"></app-calendario>
 
           @if (fechaEstimadaInicio.invalid && fechaEstimadaInicio.touched) {
             <div class="error">
@@ -78,11 +75,8 @@
 
         <!-- Fecha estimada de finalización -->
         <fieldset class="form-group">
-          <label for="fechaEstimadaFin">Fecha estimada de finalización:</label>
-          <input
-            type="date"
-            id="fechaEstimadaFin"
-            formControlName="fechaEstimadaFin">
+          <label>Fecha estimada de finalización:</label>
+          <app-calendario formControlName="fechaEstimadaFin" modo="futuro"></app-calendario>
 
           @if (fechaEstimadaFin.invalid && fechaEstimadaFin.touched) {
             <div class="error">

@@ -57,9 +57,10 @@
     color: var(--color-acento);
 }
 
-.pestanas button.activa {
-    color: var(--color-acento);
-    border-bottom-color: var(--color-acento);
+.pestanas button.activa,
+.pestanas button.activa:hover {
+    color: #5b3fd6;
+    border-bottom-color: #5b3fd6;
     font-weight: 800;
 }
 
@@ -108,26 +109,28 @@
 /* TARJETAS */
 
 .presupuesto-card {
-    padding: 1.5rem 1.7rem;
-    border: 1px solid #e7e3ef;
-    border-radius: var(--radio-tarjeta);
-    background: var(--color-tarjeta);
-    box-shadow: var(--sombra-tarjeta);
-    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 24px;
+    border: 1px solid #d6d1e2;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow: 0 3px 10px rgba(90, 70, 160, 0.08);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 
 .presupuesto-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 9px 24px rgba(90, 70, 160, 0.13);
+    border-color: #b9a9ed;
+    box-shadow: 0 7px 18px rgba(90, 70, 160, 0.14);
 }
+
+/* ESTADO Y FECHA */
 
 .card-superior {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
+    gap: 12px;
+    margin-bottom: 18px;
 }
 
 /* ESTADOS */
@@ -135,46 +138,44 @@
 .estado {
     display: inline-flex;
     align-items: center;
-    padding: 0.35rem 0.9rem;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+    white-space: nowrap;
 }
 
 .estado[data-estado="Pendiente"] {
-    background: #fff1d6;
-    color: #805600;
+    color: #946200;
+    background: #fff2cc;
 }
 
 .estado[data-estado="Aceptado"] {
-    background: #e1f2e5;
-    color: #23653a;
+    color: #237347;
+    background: #dcf5e7;
 }
 
-.estado[data-estado="Rechazado"] {
-    background: #fbe5e5;
-    color: #982e38;
-}
-
+.estado[data-estado="Rechazado"],
 .estado[data-estado="Cancelado"] {
-    background: #e9e7ed;
-    color: #595465;
+    color: #a83232;
+    background: #ffe2e2;
 }
 
 /* FECHA */
 
 .fecha {
-    color: var(--color-texto-secundario);
-    font-size: 0.9rem;
+    color: #888;
+    font-size: 0.85rem;
 }
 
-/* DESCRIPCIÓN */
+/* NOMBRE DEL PROYECTO */
 
 .presupuesto-card h2 {
-    margin: 0 0 0.9rem;
-    color: #40336e;
-    font-size: 1.25rem;
-    font-weight: 800;
+    margin: 0 0 12px;
+    color: #5b3fd6;
+    font-size: 1.3rem;
+    font-weight: 700;
     line-height: 1.4;
     overflow-wrap: anywhere;
 }
@@ -182,17 +183,22 @@
 /* DATOS DEL PRESUPUESTO */
 
 .presupuesto-card p {
-    margin: 0.5rem 0;
-    color: var(--color-texto-secundario);
-    font-size: 0.98rem;
+    margin: 8px 0;
+    color: #666;
+    font-size: 0.95rem;
     line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
+/* PRECIO */
+
 .presupuesto-card .precio {
-    margin-top: 1.2rem;
-    color: var(--color-acento);
-    font-size: 1.45rem;
-    font-weight: 800;
+    margin: 18px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid #e5defb;
+    color: #5b3fd6;
+    font-size: 1.4rem;
+    font-weight: 700;
 }
 
 /* SIN PRESUPUESTOS */
@@ -200,7 +206,7 @@
 .sin-presupuestos {
     padding: 3rem 1rem;
     border: 1px dashed #cfc5eb;
-    border-radius: var(--radio-tarjeta);
+    border-radius: 14px;
     background: #faf9fd;
     color: var(--color-texto-secundario);
     text-align: center;
@@ -256,7 +262,7 @@
     }
 
     .presupuesto-card {
-        padding: 1.2rem;
+        padding: 20px;
     }
 }
 

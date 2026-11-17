@@ -1,28 +1,28 @@
 
 <section class="crear-presupuesto" aria-labelledby="titulo-formulario">
 
-<header class="encabezado-formulario">
-  <div class="textos-encabezado">
-    <p class="sobre-titulo">NUEVO DOCUMENTO</p>
+  <header class="encabezado-formulario">
+    <div class="textos-encabezado">
+      <p class="sobre-titulo">NUEVO DOCUMENTO</p>
 
-    <h2 id="titulo-formulario">
-      Presupuesto del Proyecto
-    </h2>
+      <h2 id="titulo-formulario">
+        Presupuesto del Proyecto
+      </h2>
 
-    <p class="descripcion-encabezado">
-      Completá los detalles del trabajo para enviarle una propuesta al cliente.
-    </p>
-  </div>
+      <p class="descripcion-encabezado">
+        Completá los detalles del trabajo para enviarle una propuesta al cliente.
+      </p>
+    </div>
 
-  <button
-    type="button"
-    class="boton-cerrar"
-    aria-label="Cerrar formulario de presupuesto"
-    (click)="cerrarFormulario()"
-  >
-    <span aria-hidden="true">&times;</span>
-  </button>
-</header>
+    <button
+      type="button"
+      class="boton-cerrar"
+      aria-label="Cerrar formulario de presupuesto"
+      (click)="cerrarFormulario()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </header>
 
   <form [formGroup]="formulario" (ngSubmit)="guardarPresupuesto()">
 
@@ -222,44 +222,6 @@
 
     </section>
 
-    <!-- DESCUENTO -->
-    <section class="seccion-formulario" aria-labelledby="titulo-descuento">
-
-      <h3 id="titulo-descuento">Descuento</h3>
-
-      <div class="campo">
-        <label for="descuentoPorcentaje">
-          Descuento aplicado (%)
-        </label>
-
-        <div class="campo-porcentaje">
-          <input
-            id="descuentoPorcentaje"
-            type="number"
-            formControlName="descuentoPorcentaje"
-            min="0"
-            max="100"
-            step="0.01"
-            [attr.aria-invalid]="campoInvalido(formulario.get('descuentoPorcentaje'))"
-            aria-describedby="ayuda-descuento error-descuento"
-          >
-
-          <span aria-hidden="true">%</span>
-        </div>
-
-        <span class="texto-ayuda" id="ayuda-descuento">
-          Si no corresponde aplicar un descuento, dejá el valor en 0.
-        </span>
-
-        @if (mensajeError(formulario.get('descuentoPorcentaje'))) {
-          <span class="mensaje-error" id="error-descuento">
-            {{ mensajeError(formulario.get('descuentoPorcentaje')) }}
-          </span>
-        }
-      </div>
-
-    </section>
-
     <!-- RESUMEN -->
     <section class="resumen-presupuesto" aria-labelledby="titulo-resumen">
 
@@ -270,16 +232,9 @@
         <span>{{ subTotal | currency:'ARS':'symbol':'1.2-2' }}</span>
       </div>
 
-      <div class="fila-resumen descuento">
-        <span>Descuento</span>
-        <span>
-          -{{ montoDescuento | currency:'ARS':'symbol':'1.2-2' }}
-        </span>
-      </div>
-
       <div class="fila-total">
-        <strong>Total final</strong>
-        <strong>{{ totalFinal | currency:'ARS':'symbol':'1.2-2' }}</strong>
+        <strong>Total del presupuesto</strong>
+        <strong>{{ subTotal | currency:'ARS':'symbol':'1.2-2' }}</strong>
       </div>
 
       <p class="texto-ayuda">
