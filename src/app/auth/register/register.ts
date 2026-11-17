@@ -3,6 +3,7 @@ import {AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Val
 import { Calendario } from '../../components/calendario/calendario';
 import { AuthService } from '../services/auth-service';
 import { switchMap } from 'rxjs';
+import { AlertaService } from '../../shared/alertas/service/alerta-service';
 
 // Validador del grupo: compara "clave" con "repetirClave"
 function clavesIguales(grupo: AbstractControl): ValidationErrors | null {
@@ -42,8 +43,10 @@ function validarEdad(control : AbstractControl) : ValidationErrors | null{
 })
 export class Register {
 
+  cargando = false;
   private fb = inject(FormBuilder);
   private uService = inject(AuthService);
+  private alertaService = inject(AlertaService);
  
   // Paso actual del formulario (1 o 2)
   paso = 1;
@@ -143,7 +146,7 @@ export class Register {
         const archivo = input.files[0];
 
       if (archivo.size > 5 * 1024 * 1024) {
-        alert('La imagen no puede superar los 5 MB.');
+        this.alertaService.advertencia('La imagen no puede superar los 5 MB.');
         input.value = '';
         this.foto = null;
         return;
@@ -157,6 +160,11 @@ export class Register {
     // Si apretan Enter en el paso 1, avanza en vez de enviar
     if (this.paso === 1) {
       this.siguiente();
+      return;
+    }
+
+    // acá evitamos q se envie varias veces el form
+    if (this.cargando){
       return;
     }
  
@@ -178,7 +186,10 @@ export class Register {
     if (this.foto) {
       formData.append('foto', this.foto);
     }
- 
+
+    // acitvamos el estado d cargar
+    this.cargando = true;
+
     // primero registra al usuario, dsps inicia sesión
     this.uService.store(formData).pipe(
       switchMap(() => {
@@ -189,13 +200,16 @@ export class Register {
       })
     ).subscribe({
       next : () => {
-        alert ('¡Se creó e inició sesión correctamente!');
+        this.cargando = false;
+
+        this.alertaService.exito('¡Se creó e inició sesión correctamente!');
         this.formulario.reset();
         this.foto = null;
         this.paso = 1;
       },
       error : () => {
-        alert ('Error durante su registro o inicio de sesión.');
+        this.cargando = false;
+        this.alertaService.error('Error durante su registro o inicio de sesión.');
       }
     })
   }
