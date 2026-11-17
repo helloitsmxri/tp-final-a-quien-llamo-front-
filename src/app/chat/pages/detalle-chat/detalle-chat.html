@@ -2,42 +2,69 @@
 @if (chat) {
   <div class="chat-activo-container">
     <!-- ENCABEZADO -->
-    <header class="header-chat-activo">
-      <div class="info-contacto">
-        <img [src]="avatar(nombreOtro)" alt="" class="avatar-header" />
-        <div class="contacto-datos">
-          <h3>{{ nombreOtro }}</h3>
-          <span class="subtitulo-contacto">Conversación</span>
-        </div>
-      </div>
+  <header class="header-chat-activo">
+    <div class="info-contacto">
+      <img [src]="avatar(nombreOtro)" alt="" class="avatar-header" />
 
+      <div class="contacto-datos">
+        <h3>{{ nombreOtro }}</h3>
+        <span class="subtitulo-contacto">Conversación</span>
+      </div>
+    </div>
+
+    <div class="acciones-chat">
+
+      <!-- CREAR PRESUPUESTO -->
+      @if (soyElTecnico) {
+        <button
+          type="button"
+          class="btn-crear-presupuesto"
+          (click)="abrirCrearPresupuesto()"
+        >
+          <span>＋</span>
+          Crear presupuesto
+        </button>
+      }
+
+      <!-- MENÚ DE OPCIONES -->
       <div class="menu-presupuesto-wrapper">
-        <button type="button" class="btn-menu" (click)="alternarMenu()" aria-label="Opciones de conversación" title="Opciones">
+        <button
+          type="button"
+          class="btn-menu"
+          (click)="alternarMenu()"
+          aria-label="Opciones de conversación"
+          title="Opciones"
+        >
           <span>⋮</span>
         </button>
 
         @if (menuAbierto) {
           <div class="dropdown-menu">
-            @if (soyElTecnico) {
-              <button type="button" class="dropdown-item" (click)="abrirCrearPresupuesto()">
-                <span class="dropdown-icono">＋</span>
-                Crear presupuesto
-              </button>
-            }
 
-            <button type="button" class="dropdown-item" (click)="abrirVerPresupuestos()">
+            <button
+              type="button"
+              class="dropdown-item"
+              (click)="abrirVerPresupuestos()"
+            >
               <span class="dropdown-icono">▤</span>
               Ver presupuestos
             </button>
 
-            <button type="button" class="dropdown-item dropdown-item-peligro" (click)="irADenunciar()">
+            <button
+              type="button"
+              class="dropdown-item dropdown-item-peligro"
+              (click)="irADenunciar()"
+            >
               <span class="dropdown-icono">⚑</span>
               Denunciar usuario
             </button>
+
           </div>
         }
       </div>
-    </header>
+
+    </div>
+  </header>
 
     <!-- MENSAJES -->
     <div #areaMensajes class="area-mensajes">
