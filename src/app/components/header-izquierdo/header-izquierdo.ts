@@ -18,12 +18,12 @@ export class HeaderIzquierdo implements OnInit{
 
   // acá van los íconos de cada cosita del menú
   items = [
-    {ruta : '/', etiqueta: 'Inicio', icono: ''},
-    { ruta: '/chats', etiqueta: 'Mis mensajes', icono: '' },
-    { ruta: '/mis-trabajos', etiqueta: 'Mis trabajos', icono: '' },
-    { ruta: '/mis-presupuestos', etiqueta: 'Mis presupuestos', icono: '' },
-    { ruta: '/mis-resenas', etiqueta: 'Mis reseñas', icono: '' },
-    { ruta: '/mis-denuncias', etiqueta: 'Mis denuncias', icono: '' },
+    {ruta : '/', etiqueta: 'Inicio', icono: 'íconos/iconos-header-lateral/home-page.png'},
+    { ruta: '/chats', etiqueta: 'Mis mensajes', icono: '/íconos/iconos-header-lateral/speech-bubble-icon.png' },
+    { ruta: '/mis-trabajos', etiqueta: 'Mis trabajos', icono: '/íconos/iconos-header-lateral/mis-trabajos.png' },
+    { ruta: '/mis-presupuestos', etiqueta: 'Mis presupuestos', icono: '/íconos/iconos-header-lateral/mis-presupuestos.png' },
+    { ruta: '/mis-resenas', etiqueta: 'Mis reseñas', icono: 'íconos/iconos-header-lateral/resenas.png' },
+    { ruta: '/mis-denuncias', etiqueta: 'Mis denuncias', icono: 'íconos/iconos-header-lateral/denuncias.png' },
   ]
 
     ngOnInit(): void {

@@ -7,7 +7,9 @@
     <nav class="lateral__nav">
         @for (item of items; track item.ruta){
             <a [routerLink]="item.ruta" routerLinkActive="activo" [routerLinkActiveOptions]="{exact: item.ruta === '/'}" class="lateral__icono" [attr.aria-label]="item.etiqueta" [title]="item.etiqueta">
-                {{item.icono}}
+                @if (item.icono){
+                     <img class="icono" [src]="item.icono" alt="">
+                }
             </a>
         }
     </nav>
