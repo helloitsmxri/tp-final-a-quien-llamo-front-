@@ -6,6 +6,7 @@ import { TecnicoModel } from '../models/tecnico-model';
 import { PerfilTecnico } from '../pages/perfil-tecnico/perfil-tecnico';
 import { PerfilTecnicoModel } from '../models/PerfilTecnicoModel';
 import { TecnicoListadoModel } from '../models/TecnicoListado';
+import { TecnicoTrabajoRequestModel } from '../models/Tecnico-trabajo-request.model';
 
 //lo q se muestra publicamente de una certificacion o un portfolio: solo el título
 export interface ItemPublico {
@@ -85,4 +86,17 @@ export class TecnicoService {
   getPortfolios(uuidTecnico: string): Observable<ItemPublico[]> {
    return this.http.get<ItemPublico[]>(`http://localhost:8080/aquienllamo/portafolios/usuario/publico/tecnico/${uuidTecnico}`);
   }
+
+  // UPDATE: actualizar alias y CVU del técnico logueado
+  actualizarDatosCobro(datos: TecnicoTrabajoRequestModel): Observable<void> {
+    return this.http.patch<void>(
+        `${this.url}/mi-perfil/datos-cobro`, datos);
+  }
+
+  // READ: obtener los datos de cobro del técnico logueado
+obtenerDatosCobro(): Observable<TecnicoTrabajoRequestModel> {
+  return this.http.get<TecnicoTrabajoRequestModel>(
+    `${this.url}/mi-perfil/datos-cobro`
+  );
+}
 }
