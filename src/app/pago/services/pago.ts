@@ -5,9 +5,11 @@ import { Observable } from 'rxjs';
 
 import { PagoRequestModel } from '../models/pago-request-model';
 import { PagoResponseModel } from '../models/pago-response-model';
+import { MetodoDePago } from '../enum/metodo-de-pago';
+import { EstadoPago } from '../enum/estado-pago';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class PagoService {
 
@@ -37,56 +39,39 @@ export class PagoService {
     }
 
     // READ: listar pagos por método de pago
-    getByMetodoPago(metodoDePago: string): Observable<PagoResponseModel[]> {
-        return this.http.get<PagoResponseModel[]>(
-            this.API_URL_METODOPAGO,
-            { params: { metodoDePago } }
-        );
+    getByMetodoPago(metodoDePago: MetodoDePago): Observable<PagoResponseModel[]> {
+        return this.http.get<PagoResponseModel[]>(this.API_URL_METODOPAGO,{ params: { metodoDePago } });
     }
 
     // READ: listar pagos por estado
-    getByEstado(estado: string): Observable<PagoResponseModel[]> {
-        return this.http.get<PagoResponseModel[]>(
-            this.API_URL_ESTADO,
-            { params: { estado } }
-        );
+    getByEstado(estado: EstadoPago): Observable<PagoResponseModel[]> {
+        return this.http.get<PagoResponseModel[]>(this.API_URL_ESTADO,{ params: { estado } });
     }
 
     // READ: listar pagos realizados por un cliente
     getByCliente(uuid: string): Observable<PagoResponseModel[]> {
-        return this.http.get<PagoResponseModel[]>(
-            `${this.API_URL_PAGOSCLIENTE}/${uuid}`
-        );
+        return this.http.get<PagoResponseModel[]>(`${this.API_URL_PAGOSCLIENTE}/${uuid}`);
     }
 
     // READ: listar pagos recibidos por un técnico
     getByTecnico(uuid: string): Observable<PagoResponseModel[]> {
-        return this.http.get<PagoResponseModel[]>(
-            `${this.API_URL_PAGOSTECNICO}/${uuid}`
-        );
+        return this.http.get<PagoResponseModel[]>(`${this.API_URL_PAGOSTECNICO}/${uuid}`);
     }
 
     // READ: consultar una orden de Mercado Pago
     consultarOrden(orderId: string): Observable<unknown> {
-        return this.http.get<unknown>(
-            `${this.API_URL_MP_ORDEN}/${orderId}`
-        );
+        return this.http.get<unknown>(`${this.API_URL_MP_ORDEN}/${orderId}`);
     }
 
     // READ: buscar un pago por ID de orden de Mercado Pago
     getByMercadoPagoOrderId(
         mercadoPagoOrderId: string
     ): Observable<PagoResponseModel> {
-        return this.http.get<PagoResponseModel>(
-            `${this.API_URL_MP_ORDEN}/${mercadoPagoOrderId}/pago`
-        );
+        return this.http.get<PagoResponseModel>(`${this.API_URL_MP_ORDEN}/${mercadoPagoOrderId}/pago`);
     }
 
     // UPDATE: cancelar un pago
     cancelarPago(uuid: string): Observable<PagoResponseModel> {
-        return this.http.patch<PagoResponseModel>(
-            `${this.API_URL}/${uuid}/cancelar`,
-            {}
-        );
+        return this.http.patch<PagoResponseModel>(`${this.API_URL}/${uuid}/cancelar`,{});
     }
 }
