@@ -1,0 +1,96 @@
+
+<section class="ver-datos-cobro">
+
+  <header class="encabezado">
+    <span class="sobre-titulo">MIS DATOS DE COBRO</span>
+    <h2>Administrá tus datos de pago</h2>
+    <p>
+      Consultá y modificá el alias o CVU donde querés recibir
+      los pagos de tus trabajos.
+    </p>
+  </header>
+
+  @if (cargando) {
+    <div class="estado-mensaje">
+      Cargando tus datos de cobro...
+    </div>
+  }
+  @else if (error && !alias && !cvu) {
+    <div class="mensaje-error">{{ error }}</div>
+    <button type="button" (click)="cargarDatos()">
+      Reintentar
+    </button>
+  }
+  @else {
+
+    <form (ngSubmit)="guardarCambios()">
+
+      <div class="campo">
+        <label for="alias">Alias</label>
+
+        <div class="campo-con-accion">
+          <input
+            id="alias"
+            type="text"
+            name="alias"
+            [(ngModel)]="alias"
+            maxlength="100"
+            placeholder="No tenés un alias cargado"
+          />
+
+          @if (alias) {
+            <button
+              type="button"
+              class="btn-borrar"
+              (click)="borrarAlias()">
+              Borrar
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="cvu">CVU</label>
+
+        <div class="campo-con-accion">
+          <input
+            id="cvu"
+            type="text"
+            name="cvu"
+            [(ngModel)]="cvu"
+            maxlength="22"
+            inputmode="numeric"
+            placeholder="No tenés un CVU cargado"
+          />
+
+          @if (cvu) {
+            <button
+              type="button"
+              class="btn-borrar"
+              (click)="borrarCvu()">
+              Borrar
+            </button>
+          }
+        </div>
+      </div>
+
+      @if (mensaje) {
+        <div class="mensaje-exito">{{ mensaje }}</div>
+      }
+
+      @if (error) {
+        <div class="mensaje-error">{{ error }}</div>
+      }
+
+      <button type="submit" [disabled]="guardando">
+        {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
+
+    </form>
+  }
+
+  <a routerLink="/mis-trabajos" class="volver">
+    Volver a mis trabajos
+  </a>
+
+</section>
