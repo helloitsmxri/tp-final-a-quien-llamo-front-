@@ -1,3 +1,4 @@
+
 <section class="mis-pagos">
 
   <header class="encabezado">
@@ -49,9 +50,28 @@
               </div>
 
               <div>
+                <span class="etiqueta">Proveedor de pago</span>
+                <p>{{ pago.proveedorDePago }}</p>
+              </div>
+
+              <div>
                 <span class="etiqueta">Trabajo asociado</span>
                 <p>{{ pago.nombreProyecto }}</p>
               </div>
+
+              @if (pago.externalPaymentId) {
+                <div>
+                  <span class="etiqueta">Identificador externo</span>
+                  <p>{{ pago.externalPaymentId }}</p>
+                </div>
+              }
+
+              @if (pago.estadoExterno) {
+                <div>
+                  <span class="etiqueta">Estado del proveedor</span>
+                  <p>{{ pago.estadoExterno }}</p>
+                </div>
+              }
 
             </div>
 
@@ -61,18 +81,21 @@
 
             <div class="acciones-pago">
 
-              <a [routerLink]="['/pagos', pago.uuid]" class="btn-estado btn-detalle">
+              <a
+                [routerLink]="['/pagos', pago.uuid]"
+                class="btn-estado btn-detalle">
                 Ver detalle
               </a>
 
               @if (esPendienteDeRevision(pago.estadoPago)) {
+
                 @if (pago.checkoutUrl) {
                   <a
                     [href]="pago.checkoutUrl"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="btn-estado btn-pagar">
-                    Continuar en Mercado Pago
+                    Continuar pago
                   </a>
                 }
 

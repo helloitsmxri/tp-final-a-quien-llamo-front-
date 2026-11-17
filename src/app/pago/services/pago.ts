@@ -40,38 +40,55 @@ export class PagoService {
 
     // READ: listar pagos por método de pago
     getByMetodoPago(metodoDePago: MetodoDePago): Observable<PagoResponseModel[]> {
-        return this.http.get<PagoResponseModel[]>(this.API_URL_METODOPAGO,{ params: { metodoDePago } });
+        return this.http.get<PagoResponseModel[]>(
+            this.API_URL_METODOPAGO,
+            { params: { metodoDePago } }
+        );
     }
 
     // READ: listar pagos por estado
     getByEstado(estado: EstadoPago): Observable<PagoResponseModel[]> {
-        return this.http.get<PagoResponseModel[]>(this.API_URL_ESTADO,{ params: { estado } });
+        return this.http.get<PagoResponseModel[]>(
+            this.API_URL_ESTADO,
+            { params: { estado } }
+        );
     }
 
     // READ: listar pagos realizados por un cliente
     getByCliente(uuid: string): Observable<PagoResponseModel[]> {
-        return this.http.get<PagoResponseModel[]>(`${this.API_URL_PAGOSCLIENTE}/${uuid}`);
+        return this.http.get<PagoResponseModel[]>(
+            `${this.API_URL_PAGOSCLIENTE}/${uuid}`
+        );
     }
 
     // READ: listar pagos recibidos por un técnico
     getByTecnico(uuid: string): Observable<PagoResponseModel[]> {
-        return this.http.get<PagoResponseModel[]>(`${this.API_URL_PAGOSTECNICO}/${uuid}`);
+        return this.http.get<PagoResponseModel[]>(
+            `${this.API_URL_PAGOSTECNICO}/${uuid}`
+        );
     }
 
     // READ: consultar una orden de Mercado Pago
     consultarOrden(orderId: string): Observable<unknown> {
-        return this.http.get<unknown>(`${this.API_URL_MP_ORDEN}/${orderId}`);
+        return this.http.get<unknown>(
+            `${this.API_URL_MP_ORDEN}/${orderId}`
+        );
     }
 
-    // READ: buscar un pago por ID de orden de Mercado Pago
-    getByMercadoPagoOrderId(
-        mercadoPagoOrderId: string
+    // READ: buscar un pago por ID externo del proveedor
+    getByExternalPaymentId(
+        externalPaymentId: string
     ): Observable<PagoResponseModel> {
-        return this.http.get<PagoResponseModel>(`${this.API_URL_MP_ORDEN}/${mercadoPagoOrderId}/pago`);
+        return this.http.get<PagoResponseModel>(
+            `${this.API_URL_MP_ORDEN}/${externalPaymentId}/pago`
+        );
     }
 
     // UPDATE: cancelar un pago
     cancelarPago(uuid: string): Observable<PagoResponseModel> {
-        return this.http.patch<PagoResponseModel>(`${this.API_URL}/${uuid}/cancelar`,{});
+        return this.http.patch<PagoResponseModel>(
+            `${this.API_URL}/${uuid}/cancelar`,
+            {}
+        );
     }
 }

@@ -1,3 +1,4 @@
+
 <section class="detalle-pago">
 
   <a routerLink="/mis-pagos" class="btn-volver">← Volver a mis pagos</a>
@@ -31,24 +32,36 @@
       </div>
 
       <div class="card-contenido">
+
         <h2>{{ pago.nombreProyecto }}</h2>
 
         @if (pago.descripcionProyecto) {
-          <p class="descripcion-proyecto">{{ pago.descripcionProyecto }}</p>
+          <p class="descripcion-proyecto">
+            {{ pago.descripcionProyecto }}
+          </p>
         }
 
         <div class="informacion-pago">
+
+          <div>
+            <span class="etiqueta">UUID del pago</span>
+            <p>{{ pago.uuid }}</p>
+          </div>
+
+          <div>
+            <span class="etiqueta">UUID del trabajo</span>
+            <p>{{ pago.uuidTrabajo }}</p>
+          </div>
+
           <div>
             <span class="etiqueta">Método de pago</span>
             <p>{{ pago.metodoDePago }}</p>
           </div>
 
-          @if (pago.proveedorDePago) {
-            <div>
-              <span class="etiqueta">Plataforma de pago</span>
-              <p>{{ pago.proveedorDePago }}</p>
-            </div>
-          }
+          <div>
+            <span class="etiqueta">Proveedor de pago</span>
+            <p>{{ pago.proveedorDePago }}</p>
+          </div>
 
           <div>
             <span class="etiqueta">Fecha y hora</span>
@@ -56,21 +69,40 @@
           </div>
 
           <div>
-            <span class="etiqueta">Estado</span>
+            <span class="etiqueta">Estado del pago</span>
             <p>{{ formatearEstado(pago.estadoPago) }}</p>
           </div>
+
+          @if (pago.externalPaymentId) {
+            <div>
+              <span class="etiqueta">Identificador externo</span>
+              <p>{{ pago.externalPaymentId }}</p>
+            </div>
+          }
+
+          @if (pago.estadoExterno) {
+            <div>
+              <span class="etiqueta">Estado del proveedor</span>
+              <p>{{ pago.estadoExterno }}</p>
+            </div>
+          }
+
         </div>
       </div>
-      
-    @if (esPendienteDeRevision(pago.estadoPago) && esMercadoPago(pago)) {
+
+      @if (esPendienteDeRevision(pago.estadoPago) && esMercadoPago(pago)) {
         <footer class="card-inferior">
-          <a
-            [href]="obtenerUrlMercadoPago(pago)"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn-mp">
-            Continuar pago en Mercado Pago
-          </a>
+          @if (pago.checkoutUrl) {
+            <a
+              [href]="obtenerUrlMercadoPago(pago)"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-mp">
+              Continuar pago en Mercado Pago
+            </a>
+          } @else {
+            <p>El pago está pendiente de revisión, pero no hay un enlace de checkout disponible.</p>
+          }
         </footer>
       }
 
