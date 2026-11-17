@@ -13,6 +13,7 @@ import { PresupuestoService } from '../../services/presupuesto';
 import { PresupuestoModel } from '../../models/presupuesto-model';
 import { PresupuestoRequestModel } from '../../models/presupuesto-request-model';
 import { CurrencyPipe } from '@angular/common';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 @Component({
   selector: 'app-crear-presupuesto',
@@ -26,6 +27,7 @@ export class CrearPresupuesto {
 
   private fb = inject(FormBuilder);
   private presupuestoService = inject(PresupuestoService);
+  private alertaService = inject(AlertaService);
 
   // Recibimos el uuid del chat desde el componente que nos utiliza.
   @Input({ required: true }) uuidChat!: string;
@@ -185,6 +187,11 @@ export class CrearPresupuesto {
   // GUARDAR PRESUPUESTO
   guardarPresupuesto(): void {
 
+    // Evitar envíos repetidos.
+    if (this.enviando) {
+      return;
+    }
+
     // Comprobar que el formulario sea válido.
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
@@ -193,12 +200,7 @@ export class CrearPresupuesto {
 
     // Comprobar que exista un chat.
     if (!this.uuidChat) {
-      alert('No se pudo identificar la conversación.');
-      return;
-    }
-
-    // Evitar envíos repetidos.
-    if (this.enviando) {
+      this.alertaService.error('No se pudo identificar la conversación.');
       return;
     }
 
@@ -217,10 +219,11 @@ export class CrearPresupuesto {
 
     // Enviar el presupuesto al backend.
     this.presupuestoService.crearPresupuesto(this.uuidChat, presupuesto).subscribe({
-      next: (respuesta) => {this.enviando = false; alert('¡El presupuesto se creó correctamente!');
+      next: (respuesta) => { this.enviando = false; 
+                            this.alertaService.exito('¡El presupuesto se creó correctamente!');
                             this.presupuestoCreado.emit(respuesta)},
       error: () => {        this.enviando = false;
-                            alert('No se pudo crear el presupuesto. Intentá nuevamente.')}});
+                            this.alertaService.error('No se pudo crear el presupuesto. Intentá nuevamente.')}});
     }
 
   // CERRAR FORMULARIO
