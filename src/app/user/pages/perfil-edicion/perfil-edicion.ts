@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import { UsuarioService } from '../../services/user';
 import { UserProfileDTO } from '../../models/user-profile-DTO';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 const TAMANO_MAXIMO_MB = 10;
 
@@ -20,6 +21,7 @@ export class PerfilEdicion implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private usuarioService = inject(UsuarioService);
   private router = inject(Router);
+  private alertaService = inject(AlertaService);
 
   perfil: UserProfileDTO | null = null;
   errorCarga = false;
@@ -64,6 +66,7 @@ export class PerfilEdicion implements OnInit, OnDestroy {
       },
       error: () => {
         this.errorCarga = true;
+        this.alertaService.error('Hubo un error al cargar los datos de este perfil. Intente nuevamente más tarde.');
       },
     });
   }
@@ -158,15 +161,16 @@ export class PerfilEdicion implements OnInit, OnDestroy {
     this.usuarioService.updateMyProfile(this.perfil.uuid, datos).subscribe({
       next: () => {
         this.guardando = false;
+        this.alertaService.exito('¡El perfil fue actualizado con éxito!');
         this.router.navigate(['/mi-perfil']);
       },
       error: (e) => {
         this.guardando = false;
-
-        this.errorServidor =
+        this.alertaService.error(
           e?.error?.mensaje ??
           e?.error?.message ??
-          'No se pudo guardar el perfil.';
+          'No se pudo guardar el perfil.'
+        )
       },
     });
   }

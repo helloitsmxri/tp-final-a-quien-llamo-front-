@@ -387,7 +387,17 @@
     justify-content: flex-end;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 0.65rem;
+    margin: 20px 0 28px;
+}
+
+
+.acciones-encabezado {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
     margin: 20px 0 28px;
 }
 
@@ -395,48 +405,60 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 44px;
-    padding: 12px 20px;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    background: var(--degrade-boton);
+    gap: 0.35rem;
+    padding: 0.65rem 1.15rem;
+    border: 1px solid #7952c7;
+    border-radius: 999px;
+    background: #7952c7;
     color: #ffffff;
     font-family: inherit;
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-weight: 700;
     text-decoration: none;
-    text-align: center;
-    box-shadow: 0 4px 12px rgba(121, 82, 199, 0.18);
-    transition: transform 0.2s ease,
-                box-shadow 0.2s ease,
-                background 0.2s ease;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .btn-datos-cobro:hover {
+    background: #6841b5;
     color: #ffffff;
+    border-color: #6841b5;
     transform: translateY(-2px);
-    box-shadow: 0 7px 16px rgba(121, 82, 199, 0.28);
+    box-shadow: 0 5px 12px rgba(121, 82, 199, 0.22);
+}
+
+.btn-ver-datos {
+    background: #7952c7;
+    color: #ffffff;
+    border-color: #7952c7;
+}
+
+.btn-ver-datos:hover {
+    background: #6841b5;
+    color: #ffffff;
+    border-color: #6841b5;
 }
 
 /* VER DATOS */
 
 .btn-ver-datos {
-    background: #f2ecfc;
-    color: #6841a5;
-    border-color: #dfd2f5;
-    box-shadow: none;
+    background: #7952c7;
+    color: #ffffff;
+    border-color: #7952c7;
+    box-shadow: 0 3px 9px rgba(121, 82, 199, 0.15);
 }
 
 .btn-ver-datos:hover {
-    background: #e9defa;
-    color: #58348f;
-    box-shadow: 0 5px 12px rgba(121, 82, 199, 0.12);
+    background: #6841b5;
+    color: #ffffff;
+    border-color: #6841b5;
+    box-shadow: 0 5px 12px rgba(121, 82, 199, 0.22);
 }
 
 /* RESPONSIVE */
 
 @media (max-width: 480px) {
-    .acciones-encabezado {
+   .acciones-encabezado {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;

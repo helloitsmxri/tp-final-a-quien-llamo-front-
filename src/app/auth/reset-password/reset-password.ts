@@ -28,15 +28,15 @@ export class ResetPassword {
   completado = false;
 
   formulario = new FormGroup({
-  newPassword: new FormControl('', [
-    Validators.required,
-    Validators.minLength(8),
-    Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/)
-  ]),
-  confirmarPassword: new FormControl('', [
-    Validators.required
-  ])
-});
+    newPassword: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z\d\s]).{8,}$/)
+    ]),
+    confirmarPassword: new FormControl('', [
+      Validators.required
+    ])
+  });
 
   constructor() {
     this.token = this.route.snapshot.queryParamMap.get('token') ?? '';
@@ -55,6 +55,9 @@ export class ResetPassword {
   }
 
   manejarEnvio(): void {
+    this.error = '';
+    this.mensaje = '';
+
     if (!this.token) {
       this.error = 'No se encontró un token de recuperación válido.';
       return;
@@ -71,8 +74,6 @@ export class ResetPassword {
     }
 
     this.cargando = true;
-    this.error = '';
-    this.mensaje = '';
 
     this.authService.resetPassword(
       this.token,
@@ -85,8 +86,13 @@ export class ResetPassword {
         this.formulario.reset();
       },
       error: (err) => {
-        console.error(err);
-        this.error = err.error?.message || 'No se pudo restablecer la contraseña. El enlace puede haber expirado.';
+        console.error('Error al restablecer la contraseña:', err);
+
+        this.error =
+          err.error?.message ||
+          err.error?.mensaje ||
+          'No se pudo restablecer la contraseña. El enlace puede haber expirado.';
+
         this.cargando = false;
       }
     });

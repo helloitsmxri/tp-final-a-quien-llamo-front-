@@ -4,6 +4,7 @@ import { UserProfileDTO } from '../../models/user-profile-DTO';
 import { RatingResponse } from '../../../rating/models/rating-response';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RatingService } from '../../../rating/services/rating';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 @Component({
   selector: 'app-perfil',
@@ -16,7 +17,8 @@ import { RatingService } from '../../../rating/services/rating';
 export class Perfil implements OnInit{
   private usuarioService = inject(UsuarioService);
   private route = inject(ActivatedRoute);
-  private ratingService = inject(RatingService)
+  private ratingService = inject(RatingService);
+  private alertaService = inject(AlertaService);
 
   perfil : UserProfileDTO | null = null;
 
@@ -68,7 +70,7 @@ export class Perfil implements OnInit{
         next : (perfil) => { this.procesarPerfil(perfil)},
         error : () => {
           this.cargando = false;
-          alert('No se pudo cargar este perfil.')
+          this.alertaService.error('¡No se pudo cargar este perfil! Inténtelo nuevamente o consulte con un moderador.')
         }
       })
 
@@ -81,7 +83,7 @@ export class Perfil implements OnInit{
       next : (perfil) => {this.procesarPerfil(perfil)},
       error : () => {
         this.cargando = false;
-        alert('No se pudo cargar la información del perfil.');
+        this.alertaService.error('No se pudo cargar la información de este perfil');
       }
     })
   }
@@ -107,10 +109,10 @@ export class Perfil implements OnInit{
         this.cargando=false
       }
     })
-    this.resenas = perfil.calificacionesRecibidas ?? [];
+    /*this.resenas = perfil.calificacionesRecibidas ?? [];
     this.promedio = perfil.promedioCalificaciones ?? this.calcularPromedio();
     this.imagenEstrellas = this.resenas.length > 0 ? this.obtenerImagenEstrellas(this.promedio) : null;
-    this.cargando = false;
+    this.cargando = false;*/
   }
 
   armarFoto(foto: string | null | undefined, tipo: string | null | undefined): string | null {
