@@ -1,9 +1,9 @@
-
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TrabajoService } from '../../services/trabajo';
 import { ActivatedRoute } from '@angular/router';
+import { TrabajoService } from '../../services/trabajo';
 import { TrabajoModel } from '../../models/trabajo-model';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 @Component({
   selector: 'app-detalle-trabajo',
@@ -15,18 +15,17 @@ import { TrabajoModel } from '../../models/trabajo-model';
 })
 export class DetalleTrabajo implements OnInit {
 
+  private alertaService = inject(AlertaService);
+
   trabajo: TrabajoModel | undefined;
 
-  cargando: boolean;
-  error: boolean;
+  cargando = true;
+  error = false;
 
   constructor(
     public tService: TrabajoService,
     public route: ActivatedRoute
-  ) {
-    this.cargando = true;
-    this.error = false;
-  }
+  ) {}
 
   ngOnInit(): void {
     const uuid = this.route.snapshot.paramMap.get('uuid');
@@ -36,12 +35,11 @@ export class DetalleTrabajo implements OnInit {
     } else {
       this.cargando = false;
       this.error = true;
-      console.error('No se proporcionó un UUID de trabajo.');
+      this.alertaService.error('No se proporcionó un identificador de trabajo válido.');
     }
   }
 
   detalleTrabajo(uuid: string): void {
-
     this.cargando = true;
     this.error = false;
 
@@ -54,8 +52,10 @@ export class DetalleTrabajo implements OnInit {
         console.error('Error al obtener el detalle del trabajo:', e);
         this.error = true;
         this.cargando = false;
+        this.alertaService.error(
+          e?.error?.mensaje || 'No se pudo cargar el detalle del trabajo.'
+        );
       }
     });
   }
 }
-

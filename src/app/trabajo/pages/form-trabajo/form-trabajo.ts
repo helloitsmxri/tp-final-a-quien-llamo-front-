@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, NgZone, ChangeDetectorRef, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -14,7 +14,7 @@ import { TrabajoRequestModel } from '../../models/trabajo-request-model';
 import { TrabajoModel } from '../../models/trabajo-model';
 import { Calendario } from '../../../components/calendario/calendario';
 import { TecnicoService } from '../../../tecnico/services/tecnico';
-
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 @Component({
   selector: 'app-form-trabajo',
   standalone: true,
@@ -30,7 +30,8 @@ export class FormTrabajo implements OnInit {
 
   @Output() trabajoCreado = new EventEmitter<TrabajoModel>();
   @Output() cerrar = new EventEmitter<void>();
-
+private alertaService = inject(AlertaService);
+  
   uuidPresupuesto = '';
 
   descripcionTrabajo: FormControl;
@@ -102,6 +103,7 @@ export class FormTrabajo implements OnInit {
     if (!this.puedeCrearTrabajo) {
       this.mensajeError =
         'Debés cargar tu Alias o CVU antes de crear un trabajo.';
+        this.alertaService.error(this.mensajeError);
       return;
     }
 
@@ -123,7 +125,8 @@ export class FormTrabajo implements OnInit {
     ) {
       this.mensajeError =
         'La fecha de finalización no puede ser anterior a la fecha de inicio.';
-      return;
+      this.alertaService.error(this.mensajeError);
+        return;
     }
 
     this.cargando = true;
@@ -135,6 +138,7 @@ export class FormTrabajo implements OnInit {
       next: ({ respuesta }) => {
         this.cargando = false;
         this.mensajeExito = '¡Trabajo registrado correctamente!';
+        this.alertaService.exito(this.mensajeExito);
 
         this.formulario.reset({
           descripcionTrabajo: '',
@@ -151,7 +155,8 @@ export class FormTrabajo implements OnInit {
         this.cargando = false;
         this.mensajeError =
           e?.error?.mensaje || 'No se pudo registrar el trabajo. Intentá nuevamente.';
-      }
+        this.alertaService.error(this.mensajeError);
+        }
     });
   }
 
