@@ -54,7 +54,7 @@
         </h2>
         @if (resenas.length > 0) {
         <div class="resenas-lista">
-            @for (r of resenas; track $index) {
+            @for (r of resenas; track r.uuidCalificacion) {
             <article class="resena-card"
                 [attr.aria-label]="'Reseña de ' + r.nombreRemitente + ' ' + r.apellidoRemitente">
                 <div class="resena-foto">
