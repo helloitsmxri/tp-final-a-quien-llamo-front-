@@ -380,7 +380,73 @@
     outline-offset: 4px;
 }
 
+/* ACCIONES DE DATOS DE COBRO */
+
+.acciones-encabezado {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 20px 0 28px;
+}
+
+.btn-datos-cobro {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 12px 20px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: var(--degrade-boton);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(121, 82, 199, 0.18);
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+}
+
+.btn-datos-cobro:hover {
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(121, 82, 199, 0.28);
+}
+
+/* VER DATOS */
+
+.btn-ver-datos {
+    background: #f2ecfc;
+    color: #6841a5;
+    border-color: #dfd2f5;
+    box-shadow: none;
+}
+
+.btn-ver-datos:hover {
+    background: #e9defa;
+    color: #58348f;
+    box-shadow: 0 5px 12px rgba(121, 82, 199, 0.12);
+}
+
 /* RESPONSIVE */
+
+@media (max-width: 480px) {
+    .acciones-encabezado {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin: 18px 0 24px;
+    }
+
+    .btn-datos-cobro {
+        width: 100%;
+    }
+}
 
 @media (max-width: 768px) {
     .mis-trabajos {
