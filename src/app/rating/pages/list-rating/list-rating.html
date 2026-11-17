@@ -7,7 +7,11 @@
     />
   } @else {
     <header class="page-header">
-      <h1>Mis <span class="titulo-acento">Reseñas</span></h1>
+      <div class="encabezado-textos">
+        <h1>Mis Reseñas</h1>
+        <p>Consultá las calificaciones recibidas y enviadas en la plataforma.</p>
+      </div>
+
       <a routerLink="/ratings/nuevo" class="btn-nueva-resena">
         ★ Crear reseña
       </a>
@@ -76,7 +80,9 @@
     </div>
 
     @if (cargando) {
-      <p class="mensaje-vacio">Cargando reseñas...</p>
+      <div class="estado-mensaje">
+        <p>Cargando reseñas...</p>
+      </div>
     } @else {
       <div class="cards-list">
         @for (r of ratingsFiltrados; track r.uuidCalificacion) {
@@ -92,17 +98,19 @@
               <span class="ver-mas-link">Ver detalle →</span>
             </div>
 
-            <h3 class="persona-titulo">
-              @if (pestanaActiva === 'recibidas') {
-                {{ r.nombreRemitente }} {{ r.apellidoRemitente }}
-              } @else {
-                Para: {{ r.nombreDestinatario }}
-              }
-            </h3>
+            <div class="card-contenido">
+              <h2 class="persona-titulo">
+                @if (pestanaActiva === 'recibidas') {
+                  {{ r.nombreRemitente }} {{ r.apellidoRemitente }}
+                } @else {
+                  Para: {{ r.nombreDestinatario }}
+                }
+              </h2>
 
-            @if (r.descripcion) {
-              <p class="comentario-preview">{{ r.descripcion }}</p>
-            }
+              @if (r.descripcion) {
+                <p class="comentario-preview">{{ r.descripcion }}</p>
+              }
+            </div>
 
             @if (r.caracteristicas && r.caracteristicas.length > 0) {
               <div class="chips-preview">
@@ -114,6 +122,7 @@
           </article>
         } @empty {
           <div class="empty-card">
+            <h3>No hay reseñas registradas</h3>
             <p>
               No hay reseñas {{ pestanaActiva === 'recibidas' ? 'recibidas' : 'enviadas' }}
               con este filtro todavía.
