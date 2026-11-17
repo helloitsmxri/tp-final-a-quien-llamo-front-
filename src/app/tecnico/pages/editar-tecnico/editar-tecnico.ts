@@ -10,6 +10,7 @@ import { TipoValidacion } from '../../../especialidad/enum/tipo-validacion';
 import { PerfilTecnicoModel } from '../../models/PerfilTecnicoModel';
 import { contieneLetras } from '../../../utils/validadores-texto';
 import { SelectorServicios } from '../../../selector-servicios/selector-servicios';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 type Pendiente = {
   especialidad: EspecialidadModel;
@@ -32,6 +33,7 @@ type Pendiente = {
 export class EditarTecnico implements OnInit {
 
   private servicio = inject(TecnicoService);
+  private alertaService = inject(AlertaService);
   private fb = inject(FormBuilder);
   private router = inject(Router);
 
@@ -101,6 +103,7 @@ export class EditarTecnico implements OnInit {
       },
       error: () => {
         this.errorCarga = true;
+        this.alertaService.error('No se pudo cargar tu perfil. Intentá nuevamente');
       },
     });
   }
@@ -262,16 +265,18 @@ export class EditarTecnico implements OnInit {
         if (this.pendientes.length > 0) {
           this.fase = 'documentacion';
         } else {
+          this.alertaService.exito('¡Tu perfil se actualizó correctamente!')
           this.terminar();
         }
       },
       error: (e) => {
         this.guardando = false;
 
-        this.errorServidor =
+        this.alertaService.error(
           e?.error?.mensaje ??
           e?.error?.message ??
-          'No se pudo guardar el perfil.';
+          'No se pudo guardar el perfil'
+        );
       },
     });
   }
