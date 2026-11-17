@@ -5,9 +5,11 @@ import { Observable } from 'rxjs';
 
 import { PagoRequestModel } from '../models/pago-request-model';
 import { PagoResponseModel } from '../models/pago-response-model';
+import { MetodoDePago } from '../enum/metodo-de-pago';
+import { EstadoPago } from '../enum/estado-pago';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class PagoService {
 
@@ -37,7 +39,7 @@ export class PagoService {
     }
 
     // READ: listar pagos por método de pago
-    getByMetodoPago(metodoDePago: string): Observable<PagoResponseModel[]> {
+    getByMetodoPago(metodoDePago: MetodoDePago): Observable<PagoResponseModel[]> {
         return this.http.get<PagoResponseModel[]>(
             this.API_URL_METODOPAGO,
             { params: { metodoDePago } }
@@ -45,7 +47,7 @@ export class PagoService {
     }
 
     // READ: listar pagos por estado
-    getByEstado(estado: string): Observable<PagoResponseModel[]> {
+    getByEstado(estado: EstadoPago): Observable<PagoResponseModel[]> {
         return this.http.get<PagoResponseModel[]>(
             this.API_URL_ESTADO,
             { params: { estado } }
@@ -73,12 +75,12 @@ export class PagoService {
         );
     }
 
-    // READ: buscar un pago por ID de orden de Mercado Pago
-    getByMercadoPagoOrderId(
-        mercadoPagoOrderId: string
+    // READ: buscar un pago por ID externo del proveedor
+    getByExternalPaymentId(
+        externalPaymentId: string
     ): Observable<PagoResponseModel> {
         return this.http.get<PagoResponseModel>(
-            `${this.API_URL_MP_ORDEN}/${mercadoPagoOrderId}/pago`
+            `${this.API_URL_MP_ORDEN}/${externalPaymentId}/pago`
         );
     }
 

@@ -246,20 +246,11 @@
     <!-- BOTONES -->
     <footer class="acciones-formulario">
 
-      <button
-        type="button"
-        class="boton-secundario"
-        (click)="cerrarFormulario()"
-        [disabled]="enviando"
-      >
+      <button type="button" class="boton-secundario" (click)="cerrarFormulario()" [disabled]="enviando">
         Cancelar
       </button>
 
-      <button
-        type="submit"
-        class="boton-principal"
-        [disabled]="enviando"
-      >
+      <button type="submit" class="boton-principal" [disabled]="enviando">
         @if (enviando) {
           Enviando presupuesto...
         } @else {

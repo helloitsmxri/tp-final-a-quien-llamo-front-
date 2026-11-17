@@ -1,51 +1,124 @@
 
-<div class="container">
+<section class="mis-pagos">
 
-    @if (cargando) {
-        <p>Cargando pagos...</p>
-    } @else if (error) {
-        <p>No se pudieron cargar los pagos.</p>
-    } @else if (pagos.length > 0) {
+  <header class="encabezado">
+    <h1>Mis Pagos</h1>
+    <p>Consultá el historial y estado de los pagos realizados en la plataforma.</p>
+  </header>
 
-        <ul>
-            @for (pago of pagos; track pago.uuid) {
-                <li>
-                    <p>UUID del pago: {{ pago.uuid }}</p>
+  @if (cargando) {
+    <div class="estado-mensaje">
+      <p>Cargando pagos...</p>
+    </div>
+  } @else if (error) {
+    <div class="estado-mensaje error">
+      <p>No se pudieron cargar los pagos.</p>
+      <button type="button" (click)="listarPagos()">Reintentar</button>
+    </div>
+  } @else if (pagos.length === 0) {
+    <div class="estado-vacio">
+      <h3>No hay pagos registrados</h3>
+      <p>Cuando realices un pago por un trabajo, aparecerá detallado en esta sección.</p>
+    </div>
+  } @else {
 
-                    <p>UUID del trabajo: {{ pago.uuidTrabajo }}</p>
+    <div class="lista-pagos">
 
-                    <p>Estado del pago: {{ pago.estadoPago }}</p>
+      @for (pago of pagos; track pago.uuid) {
 
-                    <p>
-                        Fecha de pago:
-                        {{ pago.fechaPago | date:'dd/MM/yyyy HH:mm' }}
-                    </p>
+        <article class="pago-card">
 
-                    <p>Método de pago: {{ pago.metodoDePago }}</p>
+          <div class="card-superior">
+            <span class="estado" [attr.data-estado]="pago.estadoPago">
+              {{ formatearEstado(pago.estadoPago) }}
+            </span>
 
-                    @if (pago.checkoutUrl) {
-                        <p>
-                            <a
-                                [href]="pago.checkoutUrl"
-                                target="_blank"
-                                rel="noopener noreferrer">
-                                Ir al checkout
-                            </a>
-                        </p>
-                    }
+            <span class="fecha">
+              {{ pago.fechaPago | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+          </div>
 
-                    @if (pago.mercadoPagoOrderId) {
-                        <p>
-                            Orden de Mercado Pago:
-                            {{ pago.mercadoPagoOrderId }}
-                        </p>
-                    }
-                </li>
-            }
-        </ul>
+          <div class="card-contenido">
 
-    } @else {
-        <p>No se encontraron pagos.</p>
-    }
+            <h2>Pago #{{ pago.uuid.slice(0, 8) }}</h2>
 
-</div>
+            <div class="informacion-pago">
+
+              <div>
+                <span class="etiqueta">Método de pago</span>
+                <p>{{ pago.metodoDePago }}</p>
+              </div>
+
+              <div>
+                <span class="etiqueta">Proveedor de pago</span>
+                <p>{{ pago.proveedorDePago }}</p>
+              </div>
+
+              <div>
+                <span class="etiqueta">Trabajo asociado</span>
+                <p>{{ pago.nombreProyecto }}</p>
+              </div>
+
+              @if (pago.externalPaymentId) {
+                <div>
+                  <span class="etiqueta">Identificador externo</span>
+                  <p>{{ pago.externalPaymentId }}</p>
+                </div>
+              }
+
+              @if (pago.estadoExterno) {
+                <div>
+                  <span class="etiqueta">Estado del proveedor</span>
+                  <p>{{ pago.estadoExterno }}</p>
+                </div>
+              }
+
+            </div>
+
+          </div>
+
+          <footer class="card-inferior">
+
+            <div class="acciones-pago">
+
+              <a
+                [routerLink]="['/pagos', pago.uuid]"
+                class="btn-estado btn-detalle">
+                Ver detalle
+              </a>
+
+              @if (esPendienteDeRevision(pago.estadoPago)) {
+
+                @if (pago.checkoutUrl) {
+                  <a
+                    [href]="pago.checkoutUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn-estado btn-pagar">
+                    Continuar pago
+                  </a>
+                }
+
+                <button
+                  type="button"
+                  class="btn-estado btn-cancelar"
+                  [disabled]="cancelandoUuid === pago.uuid"
+                  (click)="cancelarPago(pago)">
+                  {{ cancelandoUuid === pago.uuid ? 'Cancelando...' : '✕ Cancelar pago' }}
+                </button>
+
+              }
+
+            </div>
+
+          </footer>
+
+        </article>
+
+      }
+
+    </div>
+
+  }
+
+</section>

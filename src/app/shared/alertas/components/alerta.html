@@ -1,0 +1,48 @@
+<div class="contenedor-alertas" aria-live="polite" aria-atomic="false">
+
+  @for (alerta of alertas(); track alerta.id) {
+
+    <div
+      class="alerta"
+      [class.alerta--exito]="alerta.tipo === 'exito'"
+      [class.alerta--error]="alerta.tipo === 'error'"
+      [class.alerta--advertencia]="alerta.tipo === 'advertencia'"
+      [class.alerta--info]="alerta.tipo === 'info'"
+      role="status"
+    >
+
+      <div class="alerta__icono">
+        @switch (alerta.tipo) {
+            @case ('exito') {
+              <img src="íconos/iconos-alerta/check-mark-circle-line-icon.png" alt="Exito" class="icono" />
+            }
+            @case ('error') {
+              <img src="íconos/iconos-alerta/close-round-line-icon.png" alt="Error" class="icono" />
+            }
+            @case ('advertencia') {
+              <img src="íconos/iconos-alerta/exclamation-triangle-icon.png" alt="Warning" class="icono icono--triangulo" />
+            }
+            @case ('info') {
+              <img src="íconos/iconos-alerta/more-info-icon.png alt=" alt="Info" class="icono" />
+          }
+        }
+      </div>
+
+      <div class="alerta__contenido">
+        <p>{{ alerta.mensaje }}</p>
+      </div>
+
+      <button
+        type="button"
+        class="alerta__cerrar"
+        aria-label="Cerrar notificación"
+        (click)="cerrar(alerta.id)"
+      >
+        ×
+      </button>
+
+    </div>
+
+  }
+
+</div>

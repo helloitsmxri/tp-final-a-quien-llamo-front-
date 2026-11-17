@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth-service';
+import { AlertaService } from '../../shared/alertas/service/alerta-service';
 
 @Component({
   selector: 'app-reset-password',
@@ -20,6 +21,7 @@ export class ResetPassword {
 
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
+  private alertaService = inject(AlertaService);
 
   token = '';
   cargando = false;
@@ -59,7 +61,7 @@ export class ResetPassword {
     this.mensaje = '';
 
     if (!this.token) {
-      this.error = 'No se encontró un token de recuperación válido.';
+      this.alertaService.error('No se encontró un token de recuperación válido.');
       return;
     }
 
@@ -69,7 +71,7 @@ export class ResetPassword {
     }
 
     if (this.newPassword.value !== this.confirmarPassword.value) {
-      this.error = 'Las contraseñas no coinciden.';
+      this.alertaService.error('Las contraseñas no coinciden.');
       return;
     }
 
@@ -80,20 +82,18 @@ export class ResetPassword {
       this.newPassword.value!
     ).subscribe({
       next: () => {
-        this.mensaje = '¡Tu contraseña se actualizó correctamente!';
-        this.completado = true;
         this.cargando = false;
+        this.completado = true;
+
+        this.alertaService.exito('¡Tu contraseña se actualizó correctamete')
+
         this.formulario.reset();
       },
       error: (err) => {
         console.error('Error al restablecer la contraseña:', err);
-
-        this.error =
-          err.error?.message ||
-          err.error?.mensaje ||
-          'No se pudo restablecer la contraseña. El enlace puede haber expirado.';
-
         this.cargando = false;
+
+        this.alertaService.error('No se pudo restablecer la contraseña. El enlace puede haber expirado');
       }
     });
   }

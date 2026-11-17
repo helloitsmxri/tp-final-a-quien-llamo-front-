@@ -1,6 +1,6 @@
 export enum EstadoPago {
-    Confirmado,
-    Rechazado,
-    Pendiente_de_revision,
-    Cancelado
+    Pendiente_de_revision = 'Pendiente_de_revision',
+    Confirmado = 'Confirmado',
+    Cancelado = 'Cancelado',
+    Rechazado = 'Rechazado',
 }
