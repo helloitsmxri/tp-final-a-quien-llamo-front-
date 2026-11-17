@@ -22,7 +22,8 @@ export class Calendario implements ControlValueAccessor{
 
   //'pasado' (por defecto): se pueden elegir fechas hasta hoy (ej: fecha de nacimiento).
   //'futuro': solo se pueden elegir fechas posteriores a hoy (ej: fecha de vencimiento).
-  @Input() modo: 'pasado' | 'futuro' = 'pasado';
+  //'futuroPresente': admite tambien el dia de hoy
+  @Input() modo: 'pasado' | 'futuro' | 'futuroPresente' = 'pasado';
 
   hoy = new Date();
   anioHoy = this.hoy.getFullYear();
@@ -188,12 +189,24 @@ export class Calendario implements ControlValueAccessor{
 
   //fechas q no se pueden elegir
   diaBloqueado(dia: Dia): boolean {
-    return this.modo==='futuro' ? dia.fecha<=this.hoyTexto : dia.fecha>this.hoyTexto
+  if (this.modo === 'futuro') {
+    return dia.fecha <= this.hoyTexto;
   }
 
-  anioBloqueado(anio: number): boolean {
-    return this.modo==='futuro' ? anio<this.anioHoy:anio>this.anioHoy
+  if (this.modo === 'futuroPresente') {
+    return dia.fecha < this.hoyTexto;
   }
+
+  return dia.fecha > this.hoyTexto;
+}
+
+  anioBloqueado(anio: number): boolean {
+  if (this.modo === 'futuro' || this.modo === 'futuroPresente') {
+    return anio < this.anioHoy;
+  }
+
+  return anio > this.anioHoy;
+}
  
   // ---------- Armado de la grilla ----------
  

@@ -74,6 +74,20 @@ export class ListTrabajo implements OnInit {
   return fechaHoy >= String(trabajo.fechaEstimadaInicio).substring(0, 10);
 }
 
+  fechaFinAlcanzada(trabajo: TrabajoModel): boolean {
+    if (!trabajo.fechaEstimadaFin) return false;
+
+    const hoy = new Date();
+
+    const fechaHoy = [
+      hoy.getFullYear(),
+      String(hoy.getMonth() + 1).padStart(2, '0'),
+      String(hoy.getDate()).padStart(2, '0')
+    ].join('-');
+
+    return fechaHoy >= String(trabajo.fechaEstimadaFin).substring(0, 10);
+  }
+
   estaEnProceso(trabajo: TrabajoModel): boolean {
     const estado = String(trabajo.estadoTrabajo);
     return estado === EstadoTrabajo.En_proceso || estado === 'En_proceso';
