@@ -380,7 +380,95 @@
     outline-offset: 4px;
 }
 
+/* ACCIONES DE DATOS DE COBRO */
+
+.acciones-encabezado {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin: 20px 0 28px;
+}
+
+
+.acciones-encabezado {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin: 20px 0 28px;
+}
+
+.btn-datos-cobro {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.65rem 1.15rem;
+    border: 1px solid #7952c7;
+    border-radius: 999px;
+    background: #7952c7;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.btn-datos-cobro:hover {
+    background: #6841b5;
+    color: #ffffff;
+    border-color: #6841b5;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(121, 82, 199, 0.22);
+}
+
+.btn-ver-datos {
+    background: #7952c7;
+    color: #ffffff;
+    border-color: #7952c7;
+}
+
+.btn-ver-datos:hover {
+    background: #6841b5;
+    color: #ffffff;
+    border-color: #6841b5;
+}
+
+/* VER DATOS */
+
+.btn-ver-datos {
+    background: #7952c7;
+    color: #ffffff;
+    border-color: #7952c7;
+    box-shadow: 0 3px 9px rgba(121, 82, 199, 0.15);
+}
+
+.btn-ver-datos:hover {
+    background: #6841b5;
+    color: #ffffff;
+    border-color: #6841b5;
+    box-shadow: 0 5px 12px rgba(121, 82, 199, 0.22);
+}
+
 /* RESPONSIVE */
+
+@media (max-width: 480px) {
+   .acciones-encabezado {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        margin: 18px 0 24px;
+    }
+
+    .btn-datos-cobro {
+        width: 100%;
+    }
+}
 
 @media (max-width: 768px) {
     .mis-trabajos {
@@ -446,6 +534,15 @@
         align-self: flex-end;
         font-size: 1.3rem;
     }
+}
+
+.tooltip-container {
+    display: inline-block;
+    cursor: not-allowed;
+}
+
+.tooltip-container button:disabled {
+    cursor: not-allowed;
 }
 
 /* MOVIMIENTO REDUCIDO */

@@ -1,0 +1,183 @@
+
+:host {
+  display: block;
+  padding: 40px 20px;
+  font-family: "Creato Display", Arial, sans-serif;
+}
+
+.form-datos-cobro {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 40px 36px;
+  background: #f1f1f1;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(90, 70, 160, 0.25);
+  box-sizing: border-box;
+}
+
+.form-datos-cobro * {
+  box-sizing: border-box;
+}
+
+.encabezado {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.sobre-titulo {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #5b3fd6;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.encabezado h2 {
+  margin: 0 0 14px;
+  font-size: 2.2rem;
+  line-height: 1.1;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.encabezado p {
+  margin: 12px 0 0;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.campo label {
+  display: block;
+  margin: 14px 0 6px;
+  color: #333;
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.campo input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #333;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: #7d5ff0;
+  box-shadow: 0 0 0 3px rgba(125, 95, 240, 0.2);
+}
+
+.campo input::placeholder {
+  color: #aaa;
+}
+
+.campo small {
+  margin-top: 5px;
+  color: #777;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.separador {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 20px 0 10px;
+  color: #5b3fd6;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+
+.separador::before,
+.separador::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ccc;
+}
+
+.separador + .campo label {
+  margin-top: 0;
+}
+
+.mensaje-exito,
+.mensaje-error {
+  margin-top: 20px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.mensaje-exito {
+  color: #246b45;
+  background: #e5f5eb;
+  border: 1px solid #b9dfc7;
+}
+
+.mensaje-error {
+  color: #b00020;
+  background: #fdecea;
+  border: 1px solid #f1c5c5;
+}
+
+form button {
+  display: block;
+  width: 100%;
+  margin-top: 28px;
+  padding: 13px 18px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+form button:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  :host {
+    padding: 24px 12px;
+  }
+
+  .form-datos-cobro {
+    padding: 30px 22px;
+  }
+
+  .encabezado h2 {
+    font-size: 2rem;
+  }
+}

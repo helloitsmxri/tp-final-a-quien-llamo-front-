@@ -1,5 +1,5 @@
 export interface RatingResponse {
-    uuidCalificacion: string;
+    uuidCalificacion:string;
     uuidRemitente: string;
     nombreRemitente: string;
     apellidoRemitente: string;
