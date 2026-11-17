@@ -7,6 +7,8 @@ export interface PagoResponseModel {
     uuid: string;
     uuidTrabajo: string;
     proveedorDePago:ProveedorPago;
+    nombreProyecto: string;
+    descripcionProyecto:string;
     metodoDePago: MetodoDePago;
     fechaPago: string;
     estadoPago: EstadoPago;

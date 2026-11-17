@@ -1,49 +1,81 @@
+<section class="detalle-pago">
 
-<div class="container">
+  <a routerLink="/mis-pagos" class="btn-volver">← Volver a mis pagos</a>
 
-    @if (cargando) {
-        <p>Cargando pago...</p>
-    } @else if (error) {
-        <p>No se pudo encontrar el pago.</p>
-    } @else if (pago) {
+  <header class="encabezado">
+    <h1>Detalle del Pago</h1>
+    <p>Información completa y estado actual de la transacción.</p>
+  </header>
 
-        <ul>
-            <li>
-                <p>UUID del pago: {{ pago.uuid }}</p>
+  @if (cargando) {
+    <div class="estado-mensaje">
+      <p>Cargando información del pago...</p>
+    </div>
+  } @else if (error || !pago) {
+    <div class="estado-mensaje error">
+      <p>No se pudo cargar el detalle de este pago.</p>
+      <a routerLink="/mis-pagos" class="btn-secundario">Volver al listado</a>
+    </div>
+  } @else {
 
-                <p>UUID del trabajo: {{ pago.uuidTrabajo }}</p>
+    <article class="detalle-card">
 
-                <p>Estado del pago: {{ pago.estadoPago }}</p>
+      <div class="card-superior">
+        <span class="estado" [attr.data-estado]="pago.estadoPago">
+          {{ formatearEstado(pago.estadoPago) }}
+        </span>
 
-                <p>
-                    Fecha de pago:
-                    {{ pago.fechaPago | date:'dd/MM/yyyy HH:mm' }}
-                </p>
+        <span class="fecha">
+          {{ pago.fechaPago | date:'dd/MM/yyyy HH:mm' }}
+        </span>
+      </div>
 
-                <p>Método de pago: {{ pago.metodoDePago }}</p>
+      <div class="card-contenido">
+        <h2>{{ pago.nombreProyecto }}</h2>
 
-                @if (pago.checkoutUrl) {
-                    <p>
-                        <a
-                            [href]="pago.checkoutUrl"
-                            target="_blank"
-                            rel="noopener noreferrer">
-                            Ir al checkout del pago
-                        </a>
-                    </p>
-                }
+        @if (pago.descripcionProyecto) {
+          <p class="descripcion-proyecto">{{ pago.descripcionProyecto }}</p>
+        }
 
-                @if (pago.mercadoPagoOrderId) {
-                    <p>
-                        Orden de Mercado Pago:
-                        {{ pago.mercadoPagoOrderId }}
-                    </p>
-                }
-            </li>
-        </ul>
+        <div class="informacion-pago">
+          <div>
+            <span class="etiqueta">Método de pago</span>
+            <p>{{ pago.metodoDePago }}</p>
+          </div>
 
-    } @else {
-        <p>No se encontró el pago.</p>
-    }
+          @if (pago.proveedorDePago) {
+            <div>
+              <span class="etiqueta">Plataforma de pago</span>
+              <p>{{ pago.proveedorDePago }}</p>
+            </div>
+          }
 
-</div>
+          <div>
+            <span class="etiqueta">Fecha y hora</span>
+            <p>{{ pago.fechaPago | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+
+          <div>
+            <span class="etiqueta">Estado</span>
+            <p>{{ formatearEstado(pago.estadoPago) }}</p>
+          </div>
+        </div>
+      </div>
+      
+    @if (esPendienteDeRevision(pago.estadoPago) && esMercadoPago(pago)) {
+        <footer class="card-inferior">
+          <a
+            [href]="obtenerUrlMercadoPago(pago)"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-mp">
+            Continuar pago en Mercado Pago
+          </a>
+        </footer>
+      }
+
+    </article>
+
+  }
+
+</section>

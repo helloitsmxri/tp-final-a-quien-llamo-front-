@@ -115,6 +115,7 @@ export const routes: Routes = [
 {path: 'pagos/tecnico/:uuid',component: ListPago,canActivate: [authGuard]},
 {path: 'pagos/mercado-pago/:orderId',component: DetallePago,canActivate: [authGuard]},
 {path: 'pagos/:uuid',component: DetallePago,canActivate: [authGuard]},
+{path: 'mis-pagos', component:ListPago, canActivate:[authGuard]},
 
     // INICIO DE SESIÓN (PÚBLICO)
 
