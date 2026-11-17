@@ -86,7 +86,7 @@ export const routes: Routes = [
         {path: 'bloquear-cuenta', component: AdministradorBloquearCuenta},
 
         {path: 'denuncias', component: AdministradorDenuncias}
-      ]},
+    ]},
 
 
     // USUARIO
@@ -122,12 +122,12 @@ export const routes: Routes = [
     { path: 'recuperar', component: RecuperarPassword },
     { path: 'reset-password', component: ResetPassword },
 
-// Reseñas del usuario logueado (enlace desde el header / perfil)
-  {path: 'mis-resenas',component: ListRating,canActivate: [authGuard],},
-  // Crear nueva reseña (botón "★ Crear reseña" en ListRating)
-  {path: 'ratings/nuevo',component: FormRating,canActivate: [authGuard],},
-  // Ver reseñas públicas de un usuario/técnico específico por su UUID
-  {path: 'ratings/:uuid',component: ListRating,},
+    // Reseñas del usuario logueado (enlace desde el header / perfil)
+    {path: 'mis-resenas',component: ListRating,canActivate: [authGuard],},
+    // Crear nueva reseña (botón "★ Crear reseña" en ListRating)
+    {path: 'ratings/nuevo',component: FormRating,canActivate: [authGuard],},
+    // Ver reseñas públicas de un usuario/técnico específico por su UUID
+    {path: 'ratings/:uuid',component: ListRating,},
     { path: 'contacto', component: Contacto },
 
     // TRABAJOS

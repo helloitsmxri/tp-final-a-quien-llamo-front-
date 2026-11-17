@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy, NgZone, ChangeDetectorRef } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -6,13 +6,14 @@ import {
   Validators
 } from '@angular/forms';
 
-import { ActivatedRoute } from '@angular/router';
-import { forkJoin, timer } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, take, timeout, timer } from 'rxjs';
 
 import { TrabajoService } from '../../services/trabajo';
 import { TrabajoRequestModel } from '../../models/trabajo-request-model';
 import { TrabajoModel } from '../../models/trabajo-model';
 import { Calendario } from '../../../components/calendario/calendario';
+import { TecnicoService } from '../../../tecnico/services/tecnico';
 
 @Component({
   selector: 'app-form-trabajo',
@@ -41,10 +42,16 @@ export class FormTrabajo implements OnInit {
   cargando = false;
   mensajeExito = '';
   mensajeError = '';
+  puedeCrearTrabajo = false;
+  verificandoDatosCobro = true;
 
   constructor(
     public tService: TrabajoService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private tecnicoService : TecnicoService,
+    private router: Router,
+    private ngZone: NgZone,
+    private cdr: ChangeDetectorRef
   ) {
     this.descripcionTrabajo = new FormControl('', [
       Validators.required,
@@ -75,6 +82,8 @@ export class FormTrabajo implements OnInit {
         this.uuidPresupuesto = params.get('uuid') ?? '';
       });
     }
+
+    this.verificarDatosCobro();
   }
 
   manejarEnvio(): void {
@@ -83,6 +92,16 @@ export class FormTrabajo implements OnInit {
 
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
+      return;
+    }
+
+    if (this.verificandoDatosCobro) {
+      return;
+    }
+
+    if (!this.puedeCrearTrabajo) {
+      this.mensajeError =
+        'Debés cargar tu Alias o CVU antes de crear un trabajo.';
       return;
     }
 
@@ -139,6 +158,46 @@ export class FormTrabajo implements OnInit {
   cancelar(): void {
     this.cerrar.emit();
   }
+
+      verificarDatosCobro(): void {
+      console.log('Iniciando verificación de datos de cobro');
+
+      this.tecnicoService.obtenerDatosCobro()
+        .pipe(timeout({ first: 10000 }), take(1))
+        .subscribe({
+          next: (datos) => {
+            this.ngZone.run(() => {
+              console.log('Datos de cobro recibidos:', datos);
+
+              this.puedeCrearTrabajo = !!(
+                datos.alias?.trim() || datos.cvu?.trim()
+              );
+
+              this.verificandoDatosCobro = false;
+
+              console.log('¿Puede crear trabajo?', this.puedeCrearTrabajo);
+
+              this.cdr.detectChanges();
+
+              if (!this.puedeCrearTrabajo) {
+                this.router.navigate(['/tecnico/datos-cobro']);
+              }
+            });
+          },
+          error: (error) => {
+            this.ngZone.run(() => {
+              console.error('Error al verificar datos de cobro:', error);
+
+              this.verificandoDatosCobro = false;
+              this.puedeCrearTrabajo = false;
+
+              this.cdr.detectChanges();
+
+              this.router.navigate(['/tecnico/datos-cobro']);
+            });
+          }
+        });
+    }
 
   canDeactivate(): boolean {
     if (this.formulario.dirty) {
