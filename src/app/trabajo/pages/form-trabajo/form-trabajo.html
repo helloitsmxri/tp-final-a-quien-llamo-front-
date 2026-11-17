@@ -62,7 +62,7 @@
         <!-- Fecha estimada de inicio -->
         <fieldset class="form-group">
           <label>Fecha estimada de inicio:</label>
-          <app-calendario formControlName="fechaEstimadaInicio" modo="futuro"></app-calendario>
+          <app-calendario formControlName="fechaEstimadaInicio" modo="futuroPresente"></app-calendario>
 
           @if (fechaEstimadaInicio.invalid && fechaEstimadaInicio.touched) {
             <div class="error">

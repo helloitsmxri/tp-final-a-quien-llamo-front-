@@ -94,9 +94,9 @@
 
                         <div class="acciones-trabajo">
 
-                            @if (esTecnicoDelTrabajo(trabajo)) {
+                            @if (esTecnicoDelTrabajo(trabajo) || esClienteDelTrabajo(trabajo)) {
 
-                                @if (estaPendiente(trabajo)) {
+                                @if (estaPendiente(trabajo) && !esClienteDelTrabajo(trabajo)) {
 
                                     <div class="accion-iniciar">
 
@@ -137,17 +137,30 @@
                                 }
 
                                 @if (estaEnProceso(trabajo)) {
+                                
+                                    @if(esClienteDelTrabajo(trabajo)){
 
-                                    <button
-                                        type="button"
-                                        class="btn-estado btn-finalizar"
-                                        [disabled]="actualizandoUuid === trabajo.uuid"
-                                        (click)="cambiarEstado(trabajo, estados.Finalizado)">
+                                            <button
+                                            type="button"
+                                            class="btn-estado btn-finalizar"
+                                            [disabled]="true"
+                                            (click)="cambiarEstado(trabajo, estados.Finalizado)">
 
-                                        {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
+                                            {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
 
-                                    </button>
+                                            </button>
 
+                                    }@else{
+                                        <button
+                                            type="button"
+                                            class="btn-estado btn-finalizar"
+                                            [disabled]="actualizandoUuid === trabajo.uuid"
+                                            (click)="cambiarEstado(trabajo, estados.Finalizado)">
+
+                                            {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
+
+                                        </button>
+                                    }
                                     <button
                                         type="button"
                                         class="btn-estado btn-cancelar"
