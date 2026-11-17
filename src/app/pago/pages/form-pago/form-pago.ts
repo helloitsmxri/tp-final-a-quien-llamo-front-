@@ -211,4 +211,12 @@ export class FormPago {
   seleccionarMetodo(metodo: MetodoDePago): void {
       this.formulario.get('metodoDePago')?.setValue(metodo);
   }
+
+  obtenerNombreProveedor(proveedor: ProveedorPago): string {
+    const nombres: Record<ProveedorPago, string> = {
+        [ProveedorPago.MERCADO_PAGO]: 'Mercado Pago'
+    };
+
+    return nombres[proveedor];
+}
 }
