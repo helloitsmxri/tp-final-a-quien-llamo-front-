@@ -156,43 +156,95 @@ export class ListTrabajo implements OnInit {
     }
   }
 
-  cambiarEstado(trabajo: TrabajoModel, nuevoEstado: EstadoTrabajo): void {
-    if (this.actualizandoUuid || !this.esTecnicoDelTrabajo(trabajo) ||
-       (nuevoEstado === EstadoTrabajo.En_proceso && !this.fechaInicioAlcanzada(trabajo))) {
-     return;
-    }
+    cambiarEstado(trabajo: TrabajoModel, nuevoEstado: EstadoTrabajo): void {
 
-    let mensaje = '';
-    if (nuevoEstado === EstadoTrabajo.Finalizado) {
-      mensaje = '¿Confirmás que este trabajo ya fue finalizado?';
-    } else if (nuevoEstado === EstadoTrabajo.Cancelado) {
-      mensaje = '¿Seguro que querés cancelar este trabajo? Esta acción no se puede deshacer.';
-    } else {
-      mensaje = '¿Iniciar este trabajo ahora?';
-    }
-
-    if (!confirm(mensaje)) return;
-
-    this.actualizandoUuid = trabajo.uuid;
-
-    // El backend espera 'En_proceso' con guion bajo como valor del enum Java
-    const estadoParam = (nuevoEstado === EstadoTrabajo.En_proceso
-      ? 'En_proceso'
-      : nuevoEstado) as EstadoTrabajo;
-
-    this.tService.changeEstado(trabajo.uuid, estadoParam).subscribe({
-      next: (trabajoActualizado) => {
-        const index = this.trabajos.findIndex((t) => t.uuid === trabajo.uuid);
-        if (index !== -1) {
-          this.trabajos[index] = trabajoActualizado;
-        }
-        this.actualizandoUuid = null;
-      },
-      error: (err) => {
-        console.error('Error al cambiar estado del trabajo:', err);
-        this.actualizandoUuid = null;
-        alert(err?.error?.mensaje || 'No se pudo actualizar el estado del trabajo.');
+      // Evitar modificaciones simultáneas
+      if (this.actualizandoUuid) {
+          return;
       }
-    });
+
+      const esTecnico = this.esTecnicoDelTrabajo(trabajo);
+      const esCliente = this.esClienteDelTrabajo(trabajo);
+
+      // Verificar que el usuario sea participante del trabajo
+      if (!esTecnico && !esCliente) {
+          return;
+      }
+
+      // El técnico puede iniciar cuando llega la fecha estimada
+      if (
+          nuevoEstado === EstadoTrabajo.En_proceso &&
+          (!esTecnico || !this.fechaInicioAlcanzada(trabajo))
+      ) {
+          return;
+      }
+
+      // El cliente solamente puede finalizar cuando llega la fecha estimada de fin
+      if (
+          nuevoEstado === EstadoTrabajo.Finalizado &&
+          esCliente &&
+          !this.fechaFinAlcanzada(trabajo)
+      ) {
+          return;
+      }
+
+      // El cliente y el técnico solamente pueden cancelar trabajos en proceso
+      if (
+          nuevoEstado === EstadoTrabajo.Cancelado &&
+          !this.estaEnProceso(trabajo) &&
+          !this.estaPendiente(trabajo)
+      ) {
+          return;
+      }
+
+      let mensaje = '';
+
+      if (nuevoEstado === EstadoTrabajo.Finalizado) {
+          mensaje = '¿Confirmás que este trabajo ya fue finalizado?';
+      } else if (nuevoEstado === EstadoTrabajo.Cancelado) {
+          mensaje = '¿Seguro que querés cancelar este trabajo? Esta acción no se puede deshacer.';
+      } else {
+          mensaje = '¿Iniciar este trabajo ahora?';
+      }
+
+      if (!confirm(mensaje)) {
+          return;
+      }
+
+      this.actualizandoUuid = trabajo.uuid;
+
+      const estadoParam = (
+          nuevoEstado === EstadoTrabajo.En_proceso
+              ? 'En_proceso'
+              : nuevoEstado
+      ) as EstadoTrabajo;
+
+      this.tService.changeEstado(trabajo.uuid, estadoParam).subscribe({
+
+          next: (trabajoActualizado) => {
+
+              const index = this.trabajos.findIndex(
+                  (t) => t.uuid === trabajo.uuid
+              );
+
+              if (index !== -1) {
+                  this.trabajos[index] = trabajoActualizado;
+              }
+
+              this.actualizandoUuid = null;
+          },
+
+          error: (err) => {
+
+              console.error('Error al cambiar estado del trabajo:', err);
+
+              this.actualizandoUuid = null;
+
+              alert(
+                  err?.error?.mensaje ||
+                  'No se pudo actualizar el estado del trabajo.'
+              );
+          }
+      });
   }
 }

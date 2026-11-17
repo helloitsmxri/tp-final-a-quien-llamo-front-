@@ -514,6 +514,15 @@
     }
 }
 
+.tooltip-container {
+    display: inline-block;
+    cursor: not-allowed;
+}
+
+.tooltip-container button:disabled {
+    cursor: not-allowed;
+}
+
 /* MOVIMIENTO REDUCIDO */
 
 @media (prefers-reduced-motion: reduce) {

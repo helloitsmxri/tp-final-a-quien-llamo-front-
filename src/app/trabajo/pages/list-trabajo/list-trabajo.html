@@ -1,3 +1,4 @@
+
 <section class="mis-trabajos">
 
     <header class="encabezado">
@@ -6,145 +7,177 @@
     </header>
 
     @if (esTecnico) {
-    <div class="acciones-encabezado">
-        <a routerLink="/tecnico/datos-cobro" class="btn-datos-cobro">
-            Cargar datos de cobro
-        </a>
+        <div class="acciones-encabezado">
 
-        <a routerLink="/tecnico/ver-datos-cobro" class="btn-datos-cobro btn-ver-datos">
-            Ver mis datos de cobro
-        </a>
-    </div>
+            <a routerLink="/tecnico/datos-cobro" class="btn-datos-cobro">
+                Cargar datos de cobro
+            </a>
+
+            <a routerLink="/tecnico/ver-datos-cobro" class="btn-datos-cobro btn-ver-datos">
+                Ver mis datos de cobro
+            </a>
+
+        </div>
     }
 
     @if (cargando) {
-    <div class="estado-mensaje">
-        <p>Cargando trabajos...</p>
-    </div>
+
+        <div class="estado-mensaje">
+            <p>Cargando trabajos...</p>
+        </div>
+
     }
     @else if (error) {
-    <div class="estado-mensaje error">
-        <p>No se pudieron cargar los trabajos.</p>
-        <button type="button" (click)="listarTrabajos()">
-            Reintentar
-        </button>
-    </div>
+
+        <div class="estado-mensaje error">
+            <p>No se pudieron cargar los trabajos.</p>
+
+            <button type="button" (click)="listarTrabajos()">
+                Reintentar
+            </button>
+        </div>
+
     }
     @else if (trabajos.length === 0) {
-    <div class="estado-vacio">
-        <h3>No hay trabajos registrados</h3>
-        <p>Cuando tengas trabajos disponibles, aparecerán en esta sección.</p>
-    </div>
+
+        <div class="estado-vacio">
+            <h3>No hay trabajos registrados</h3>
+            <p>Cuando tengas trabajos disponibles, aparecerán en esta sección.</p>
+        </div>
+
     }
     @else {
-    <div class="lista-trabajos">
 
-        @for (trabajo of trabajos; track trabajo.uuid) {
+        <div class="lista-trabajos">
 
-        <article class="trabajo-card">
+            @for (trabajo of trabajos; track trabajo.uuid) {
 
-            <div class="card-superior">
-                <span class="estado" [attr.data-estado]="formatearEstado(trabajo.estadoTrabajo)">
-                    {{ formatearEstado(trabajo.estadoTrabajo) }}
-                </span>
+                <article class="trabajo-card">
 
-                <span class="fecha">
-                    Inicio: {{ trabajo.fechaEstimadaInicio }}
-                </span>
-            </div>
+                    <div class="card-superior">
 
-            <div class="card-contenido">
+                        <span class="estado"
+                            [attr.data-estado]="formatearEstado(trabajo.estadoTrabajo)">
 
-                <h2>{{ trabajo.nombreProyecto }}</h2>
+                            {{ formatearEstado(trabajo.estadoTrabajo) }}
 
-                <p class="descripcion">
-                    {{ trabajo.descripcionTrabajo }}
-                </p>
+                        </span>
 
-                <div class="informacion-trabajo">
+                        <span class="fecha">
+                            Inicio: {{ trabajo.fechaEstimadaInicio }}
+                        </span>
 
-                    <div>
-                        <span class="etiqueta">Cliente</span>
-                        <p>
-                            {{ trabajo.nombreCliente }}
-                            {{ trabajo.apellidoCliente }}
+                    </div>
+
+                    <div class="card-contenido">
+
+                        <h2>{{ trabajo.nombreProyecto }}</h2>
+
+                        <p class="descripcion">
+                            {{ trabajo.descripcionTrabajo }}
                         </p>
-                    </div>
 
-                    <div>
-                        <span class="etiqueta">Técnico</span>
-                        <p>
-                            {{ trabajo.nombreTecnico }}
-                            {{ trabajo.apellidoTecnico }}
-                        </p>
-                    </div>
+                        <div class="informacion-trabajo">
 
-                    <div>
-                        <span class="etiqueta">Fecha estimada de finalización</span>
-                        <p>{{ trabajo.fechaEstimadaFin }}</p>
-                    </div>
+                            <div>
+                                <span class="etiqueta">Cliente</span>
+                                <p>
+                                    {{ trabajo.nombreCliente }}
+                                    {{ trabajo.apellidoCliente }}
+                                </p>
+                            </div>
 
-                    <div>
-                        <span class="etiqueta">Presupuesto</span>
-                        <p>{{ trabajo.uuidPresupuesto }}</p>
-                    </div>
+                            <div>
+                                <span class="etiqueta">Técnico</span>
+                                <p>
+                                    {{ trabajo.nombreTecnico }}
+                                    {{ trabajo.apellidoTecnico }}
+                                </p>
+                            </div>
 
-                    <div>
-                        <span class="etiqueta">Chat</span>
-                        <p>
-                            {{ trabajo.uuidChat ?? 'No disponible' }}
-                        </p>
-                    </div>
+                            <div>
+                                <span class="etiqueta">Fecha estimada de finalización</span>
+                                <p>{{ trabajo.fechaEstimadaFin }}</p>
+                            </div>
 
-                </div>
+                            <div>
+                                <span class="etiqueta">Presupuesto</span>
+                                <p>{{ trabajo.uuidPresupuesto }}</p>
+                            </div>
 
-                            @if (esTecnicoDelTrabajo(trabajo) || esClienteDelTrabajo(trabajo)) {
-
-                                @if (estaPendiente(trabajo) && !esClienteDelTrabajo(trabajo)) {
-
-                <div class="acciones-trabajo">
-
-                    @if (esTecnicoDelTrabajo(trabajo)) {
-
-                    @if (estaPendiente(trabajo)) {
-
-                    <div class="accion-iniciar">
-
-                        <div class="botones-pendiente">
-
-                            <button type="button" class="btn-estado btn-proceso"
-                                [disabled]="actualizandoUuid === trabajo.uuid || !fechaInicioAlcanzada(trabajo)"
-                                (click)="cambiarEstado(trabajo, estados.En_proceso)">
-
-                                {{ actualizandoUuid === trabajo.uuid ? 'Iniciando...' : '▶ Iniciar trabajo' }}
-
-                            </button>
-
-                            <button type="button" class="btn-estado btn-cancelar"
-                                [disabled]="actualizandoUuid === trabajo.uuid"
-                                (click)="cambiarEstado(trabajo, estados.Cancelado)">
-
-                                ✕ Cancelar trabajo
-
-                            </button>
+                            <div>
+                                <span class="etiqueta">Chat</span>
+                                <p>
+                                    {{ trabajo.uuidChat ?? 'No disponible' }}
+                                </p>
+                            </div>
 
                         </div>
 
+                    </div>
+
+                    @if (esTecnicoDelTrabajo(trabajo) || esClienteDelTrabajo(trabajo)) {
+
+                        <footer class="card-inferior">
+
+                            <div class="acciones-trabajo">
+
+                                <!-- TRABAJO PENDIENTE -->
+
+                                @if (estaPendiente(trabajo)) {
+
+                                    @if (esTecnicoDelTrabajo(trabajo)) {
+
+                                        <div class="accion-iniciar">
+
+                                            <div class="botones-pendiente">
+
+                                                <button
+                                                    type="button"
+                                                    class="btn-estado btn-proceso"
+                                                    [disabled]="actualizandoUuid === trabajo.uuid || !fechaInicioAlcanzada(trabajo)"
+                                                    (click)="cambiarEstado(trabajo, estados.En_proceso)">
+
+                                                    {{ actualizandoUuid === trabajo.uuid ? 'Iniciando...' : '▶ Iniciar trabajo' }}
+
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn-estado btn-cancelar"
+                                                    [disabled]="actualizandoUuid === trabajo.uuid"
+                                                    (click)="cambiarEstado(trabajo, estados.Cancelado)">
+
+                                                    ✕ Cancelar trabajo
+
+                                                </button>
+
+                                            </div>
+
+                                            @if (!fechaInicioAlcanzada(trabajo)) {
+
+                                                <p class="mensaje-fecha-inicio">
+                                                    <span>
+                                                        Este trabajo estará disponible para iniciar a partir de la fecha estimada.
+                                                    </span>
+                                                </p>
+
+                                            }
+
+                                        </div>
+
+                                    }
+
+                                }
+
+                                <!-- TRABAJO EN PROCESO -->
+
                                 @if (estaEnProceso(trabajo)) {
-                                
-                                    @if(esClienteDelTrabajo(trabajo)){
 
-                                            <button
-                                            type="button"
-                                            class="btn-estado btn-finalizar"
-                                            [disabled]="true"
-                                            (click)="cambiarEstado(trabajo, estados.Finalizado)">
+                                    <!-- ACCIONES DEL TÉCNICO -->
 
-                                            {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
+                                    @if (esTecnicoDelTrabajo(trabajo)) {
 
-                                            </button>
-
-                                    }@else{
                                         <button
                                             type="button"
                                             class="btn-estado btn-finalizar"
@@ -154,63 +187,102 @@
                                             {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
 
                                         </button>
+
+                                        <button
+                                            type="button"
+                                            class="btn-estado btn-cancelar"
+                                            [disabled]="actualizandoUuid === trabajo.uuid"
+                                            (click)="cambiarEstado(trabajo, estados.Cancelado)">
+
+                                            ✕ Cancelar trabajo
+
+                                        </button>
+
                                     }
-                                    <button
-                                        type="button"
-                                        class="btn-estado btn-cancelar"
-                                        [disabled]="actualizandoUuid === trabajo.uuid"
-                                        (click)="cambiarEstado(trabajo, estados.Cancelado)">
 
-                        {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
+                                    <!-- ACCIONES DEL CLIENTE -->
 
-                    </button>
+                                    @if (esClienteDelTrabajo(trabajo)) {
 
-                    <button type="button" class="btn-estado btn-cancelar" [disabled]="actualizandoUuid === trabajo.uuid"
-                        (click)="cambiarEstado(trabajo, estados.Cancelado)">
+                                        <span
+                                            class="tooltip-container"
+                                            [attr.title]="!fechaFinAlcanzada(trabajo) 
+                                                ? 'No podés finalizar este trabajo porque todavía no se alcanzó la fecha estimada de finalización.'
+                                                : null">
 
-                        ✕ Cancelar trabajo
+                                            <button
+                                                type="button"
+                                                class="btn-estado btn-finalizar"
+                                                [disabled]="actualizandoUuid === trabajo.uuid || !fechaFinAlcanzada(trabajo)"
+                                                (click)="cambiarEstado(trabajo, estados.Finalizado)">
 
-                    </button>
+                                                {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
+
+                                            </button>
+
+                                            
+
+
+                                        </span>
+
+                                        <button
+                                            type="button"
+                                            class="btn-estado btn-cancelar"
+                                            [disabled]="actualizandoUuid === trabajo.uuid"
+                                            (click)="cambiarEstado(trabajo, estados.Cancelado)">
+
+                                            ✕ Cancelar trabajo
+
+                                        </button>
+
+                                    }
+
+                                }
+
+                                <!-- TRABAJO FINALIZADO -->
+
+                                @if (estaFinalizado(trabajo)) {
+
+                                    @if (esClienteDelTrabajo(trabajo)) {
+
+                                        <a
+                                            [routerLink]="['/pagos/nuevo']"
+                                            [queryParams]="{ uuidTrabajo: trabajo.uuid }"
+                                            class="btn-estado btn-pagar">
+
+                                            Pagar trabajo
+
+                                        </a>
+
+                                    }
+
+                                    <a
+                                        [routerLink]="['/ratings/nuevo']"
+                                        [queryParams]="{ uuidTrabajo: trabajo.uuid }"
+                                        class="btn-estado btn-resena">
+
+                                        ★ Dejar reseña
+
+                                    </a>
+
+                                }
+
+                            </div>
+
+                            <span class="precio">
+                                {{ trabajo.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}
+                            </span>
+
+                        </footer>
 
                     }
 
-                    }
+                </article>
 
-                    @if (estaFinalizado(trabajo) && esClienteDelTrabajo(trabajo)) {
+            }
 
-                    <a [routerLink]="['/pagos/nuevo']" [queryParams]="{ uuidTrabajo: trabajo.uuid }"
-                        class="btn-estado btn-pagar">
+        </div>
 
-                        Pagar trabajo
-
-                    </a>
-
-                    }
-
-                    @if (estaFinalizado(trabajo)) {
-
-                    <a [routerLink]="['/ratings/nuevo']" [queryParams]="{ uuidTrabajo: trabajo.uuid }"
-                        class="btn-estado btn-resena">
-
-                        ★ Dejar reseña
-
-                    </a>
-
-                    }
-
-                </div>
-
-                <span class="precio">
-                    {{ trabajo.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}
-                </span>
-
-            </footer>
-
-        </article>
-
-        }
-
-    </div>
     }
 
 </section>
