@@ -29,6 +29,12 @@
   margin-bottom: auto;     /* los pega arriba y deja el avatar abajo */
 }
 
+.icono {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 /* círculo base: lo comparten los íconos y el avatar */
 .lateral__icono,
 .lateral__avatar {
@@ -41,9 +47,13 @@
   color: #6c4fe0;
   font-size: 1.15rem;
   text-decoration: none;
-  overflow: hidden;        /* la foto respeta el círculo */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   transition: transform 0.2s, background 0.2s, color 0.2s;
+  position: relative;
+}
+
+.lateral__icono.activo .icono {
+  filter: brightness(0) invert(1);
 }
 
 .lateral__icono:hover,
@@ -90,6 +100,9 @@
     height: auto;
     width: 100%;
     gap: 0.6rem;
+    .lateral__icono::after { 
+      display: none; 
+    }
   }
   .lateral__nav {
     flex-direction: row;

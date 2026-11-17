@@ -5,11 +5,13 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { TrabajoModel } from '../../models/trabajo-model';
 import { EstadoTrabajo } from '../../enum/estado-trabajo';
 import { CommonModule } from '@angular/common';
+import { FormDatosCobro } from '../../../tecnico/pages/form-datos-cobro/form-datos-cobro';
+import { AuthService } from '../../../auth/services/auth-service';
 
 @Component({
   selector: 'app-list-trabajo',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormDatosCobro],
   templateUrl: './list-trabajo.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-trabajo.css',
@@ -17,6 +19,8 @@ import { CommonModule } from '@angular/common';
 export class ListTrabajo implements OnInit {
   private usuarioService = inject(UsuarioService);
 
+  private authService = inject(AuthService);
+  esTecnico = false;
   trabajos: TrabajoModel[] = [];
   miUuid = '';
   cargando = true;
@@ -31,16 +35,17 @@ export class ListTrabajo implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.usuarioService.getMyProfile().subscribe({
-      next: (perfil) => {
-        this.miUuid = perfil.uuid;
-      },
-      error: (err) => console.error('Error al obtener perfil:', err)
-    });
+  this.esTecnico = this.authService.esTecnico();
 
-    this.listarTrabajos();
-  }
+  this.usuarioService.getMyProfile().subscribe({
+    next: (perfil) => {
+      this.miUuid = perfil.uuid;
+    },
+    error: (err) => console.error('Error al obtener perfil:', err)
+  });
 
+  this.listarTrabajos();
+}
   esTecnicoDelTrabajo(trabajo: TrabajoModel): boolean {
     return !!this.miUuid && trabajo.uuidUsuarioTecnico === this.miUuid;
   }

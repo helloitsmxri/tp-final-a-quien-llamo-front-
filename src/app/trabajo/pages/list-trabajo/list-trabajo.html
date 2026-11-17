@@ -5,136 +5,130 @@
         <p>Consultá y gestioná los trabajos registrados en la plataforma.</p>
     </header>
 
+    @if (esTecnico) {
+    <div class="acciones-encabezado">
+        <a routerLink="/tecnico/datos-cobro" class="btn-datos-cobro">
+            Cargar datos de cobro
+        </a>
+
+        <a routerLink="/tecnico/ver-datos-cobro" class="btn-datos-cobro btn-ver-datos">
+            Ver mis datos de cobro
+        </a>
+    </div>
+    }
+
     @if (cargando) {
-        <div class="estado-mensaje">
-            <p>Cargando trabajos...</p>
-        </div>
+    <div class="estado-mensaje">
+        <p>Cargando trabajos...</p>
+    </div>
     }
     @else if (error) {
-        <div class="estado-mensaje error">
-            <p>No se pudieron cargar los trabajos.</p>
-            <button type="button" (click)="listarTrabajos()">
-                Reintentar
-            </button>
-        </div>
+    <div class="estado-mensaje error">
+        <p>No se pudieron cargar los trabajos.</p>
+        <button type="button" (click)="listarTrabajos()">
+            Reintentar
+        </button>
+    </div>
     }
     @else if (trabajos.length === 0) {
-        <div class="estado-vacio">
-            <h3>No hay trabajos registrados</h3>
-            <p>Cuando tengas trabajos disponibles, aparecerán en esta sección.</p>
-        </div>
+    <div class="estado-vacio">
+        <h3>No hay trabajos registrados</h3>
+        <p>Cuando tengas trabajos disponibles, aparecerán en esta sección.</p>
+    </div>
     }
     @else {
-        <div class="lista-trabajos">
+    <div class="lista-trabajos">
 
-            @for (trabajo of trabajos; track trabajo.uuid) {
+        @for (trabajo of trabajos; track trabajo.uuid) {
 
-                <article class="trabajo-card">
+        <article class="trabajo-card">
 
-                    <div class="card-superior">
-                        <span
-                            class="estado"
-                            [attr.data-estado]="formatearEstado(trabajo.estadoTrabajo)">
-                            {{ formatearEstado(trabajo.estadoTrabajo) }}
-                        </span>
+            <div class="card-superior">
+                <span class="estado" [attr.data-estado]="formatearEstado(trabajo.estadoTrabajo)">
+                    {{ formatearEstado(trabajo.estadoTrabajo) }}
+                </span>
 
-                        <span class="fecha">
-                            Inicio: {{ trabajo.fechaEstimadaInicio }}
-                        </span>
-                    </div>
+                <span class="fecha">
+                    Inicio: {{ trabajo.fechaEstimadaInicio }}
+                </span>
+            </div>
 
-                    <div class="card-contenido">
+            <div class="card-contenido">
 
-                        <h2>{{ trabajo.nombreProyecto }}</h2>
+                <h2>{{ trabajo.nombreProyecto }}</h2>
 
-                        <p class="descripcion">
-                            {{ trabajo.descripcionTrabajo }}
+                <p class="descripcion">
+                    {{ trabajo.descripcionTrabajo }}
+                </p>
+
+                <div class="informacion-trabajo">
+
+                    <div>
+                        <span class="etiqueta">Cliente</span>
+                        <p>
+                            {{ trabajo.nombreCliente }}
+                            {{ trabajo.apellidoCliente }}
                         </p>
-
-                        <div class="informacion-trabajo">
-
-                            <div>
-                                <span class="etiqueta">Cliente</span>
-                                <p>
-                                    {{ trabajo.nombreCliente }}
-                                    {{ trabajo.apellidoCliente }}
-                                </p>
-                            </div>
-
-                            <div>
-                                <span class="etiqueta">Técnico</span>
-                                <p>
-                                    {{ trabajo.nombreTecnico }}
-                                    {{ trabajo.apellidoTecnico }}
-                                </p>
-                            </div>
-
-                            <div>
-                                <span class="etiqueta">Fecha estimada de finalización</span>
-                                <p>{{ trabajo.fechaEstimadaFin }}</p>
-                            </div>
-
-                            <div>
-                                <span class="etiqueta">Presupuesto</span>
-                                <p>{{ trabajo.uuidPresupuesto }}</p>
-                            </div>
-
-                            <div>
-                                <span class="etiqueta">Chat</span>
-                                <p>
-                                    {{ trabajo.uuidChat ?? 'No disponible' }}
-                                </p>
-                            </div>
-
-                        </div>
-
                     </div>
 
-                    <footer class="card-inferior">
+                    <div>
+                        <span class="etiqueta">Técnico</span>
+                        <p>
+                            {{ trabajo.nombreTecnico }}
+                            {{ trabajo.apellidoTecnico }}
+                        </p>
+                    </div>
 
-                        <div class="acciones-trabajo">
+                    <div>
+                        <span class="etiqueta">Fecha estimada de finalización</span>
+                        <p>{{ trabajo.fechaEstimadaFin }}</p>
+                    </div>
+
+                    <div>
+                        <span class="etiqueta">Presupuesto</span>
+                        <p>{{ trabajo.uuidPresupuesto }}</p>
+                    </div>
+
+                    <div>
+                        <span class="etiqueta">Chat</span>
+                        <p>
+                            {{ trabajo.uuidChat ?? 'No disponible' }}
+                        </p>
+                    </div>
+
+                </div>
 
                             @if (esTecnicoDelTrabajo(trabajo) || esClienteDelTrabajo(trabajo)) {
 
                                 @if (estaPendiente(trabajo) && !esClienteDelTrabajo(trabajo)) {
 
-                                    <div class="accion-iniciar">
+                <div class="acciones-trabajo">
 
-                                        <div class="botones-pendiente">
+                    @if (esTecnicoDelTrabajo(trabajo)) {
 
-                                            <button
-                                                type="button"
-                                                class="btn-estado btn-proceso"
-                                                [disabled]="actualizandoUuid === trabajo.uuid || !fechaInicioAlcanzada(trabajo)"
-                                                (click)="cambiarEstado(trabajo, estados.En_proceso)">
+                    @if (estaPendiente(trabajo)) {
 
-                                                {{ actualizandoUuid === trabajo.uuid ? 'Iniciando...' : '▶ Iniciar trabajo' }}
+                    <div class="accion-iniciar">
 
-                                            </button>
+                        <div class="botones-pendiente">
 
-                                            <button
-                                                type="button"
-                                                class="btn-estado btn-cancelar"
-                                                [disabled]="actualizandoUuid === trabajo.uuid"
-                                                (click)="cambiarEstado(trabajo, estados.Cancelado)">
+                            <button type="button" class="btn-estado btn-proceso"
+                                [disabled]="actualizandoUuid === trabajo.uuid || !fechaInicioAlcanzada(trabajo)"
+                                (click)="cambiarEstado(trabajo, estados.En_proceso)">
 
-                                                ✕ Cancelar trabajo
+                                {{ actualizandoUuid === trabajo.uuid ? 'Iniciando...' : '▶ Iniciar trabajo' }}
 
-                                            </button>
+                            </button>
 
-                                        </div>
+                            <button type="button" class="btn-estado btn-cancelar"
+                                [disabled]="actualizandoUuid === trabajo.uuid"
+                                (click)="cambiarEstado(trabajo, estados.Cancelado)">
 
-                                        @if (!fechaInicioAlcanzada(trabajo)) {
-                                            <p class="mensaje-fecha-inicio">
-                                                <span>
-                                                    Este trabajo estará disponible para iniciar a partir de la fecha estimada.
-                                                </span>
-                                            </p>
-                                        }
+                                ✕ Cancelar trabajo
 
-                                    </div>
+                            </button>
 
-                                }
+                        </div>
 
                                 @if (estaEnProceso(trabajo)) {
                                 
@@ -167,53 +161,56 @@
                                         [disabled]="actualizandoUuid === trabajo.uuid"
                                         (click)="cambiarEstado(trabajo, estados.Cancelado)">
 
-                                        ✕ Cancelar trabajo
+                        {{ actualizandoUuid === trabajo.uuid ? 'Guardando...' : '✓ Finalizar trabajo' }}
 
-                                    </button>
+                    </button>
 
-                                }
+                    <button type="button" class="btn-estado btn-cancelar" [disabled]="actualizandoUuid === trabajo.uuid"
+                        (click)="cambiarEstado(trabajo, estados.Cancelado)">
 
-                            }
+                        ✕ Cancelar trabajo
 
-                            @if (estaFinalizado(trabajo) && esClienteDelTrabajo(trabajo)) {
+                    </button>
 
-                                <a
-                                    [routerLink]="['/pagos/nuevo']"
-                                    [queryParams]="{ uuidTrabajo: trabajo.uuid }"
-                                    class="btn-estado btn-pagar">
+                    }
 
-                                    Pagar trabajo
+                    }
 
-                                </a>
+                    @if (estaFinalizado(trabajo) && esClienteDelTrabajo(trabajo)) {
 
-                            }
+                    <a [routerLink]="['/pagos/nuevo']" [queryParams]="{ uuidTrabajo: trabajo.uuid }"
+                        class="btn-estado btn-pagar">
 
-                            @if (estaFinalizado(trabajo)) {
+                        Pagar trabajo
 
-                                <a
-                                    [routerLink]="['/ratings/nuevo']"
-                                    [queryParams]="{ uuidTrabajo: trabajo.uuid }"
-                                    class="btn-estado btn-resena">
+                    </a>
 
-                                    ★ Dejar reseña
+                    }
 
-                                </a>
+                    @if (estaFinalizado(trabajo)) {
 
-                            }
+                    <a [routerLink]="['/ratings/nuevo']" [queryParams]="{ uuidTrabajo: trabajo.uuid }"
+                        class="btn-estado btn-resena">
 
-                        </div>
+                        ★ Dejar reseña
 
-                        <span class="precio">
-                            {{ trabajo.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}
-                        </span>
+                    </a>
 
-                    </footer>
+                    }
 
-                </article>
+                </div>
 
-            }
+                <span class="precio">
+                    {{ trabajo.precioEstimado | currency:'ARS':'symbol':'1.2-2' }}
+                </span>
 
-        </div>
+            </footer>
+
+        </article>
+
+        }
+
+    </div>
     }
 
 </section>

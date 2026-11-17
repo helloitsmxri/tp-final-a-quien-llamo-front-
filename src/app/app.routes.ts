@@ -39,6 +39,8 @@ import { AdministradorBloquearCuenta } from './admin/pages/administrador-bloquea
 import { CrearDenuncia } from './denuncia/components/crear-denuncia/crear-denuncia';
 import { outForm } from './auth/guards/out-form';
 import { notFoundGuard } from './auth/guards/not-found-guard';
+import { FormDatosCobro } from './tecnico/pages/form-datos-cobro/form-datos-cobro';
+import { VerDatosCobro } from './tecnico/pages/ver-datos-cobro/ver-datos-cobro';
 
 
 export const routes: Routes = [
@@ -69,6 +71,10 @@ export const routes: Routes = [
     // mis denuncias
     {path : 'mis-denuncias', component: MisDenuncias, canActivate : [authGuard]},
     {path: 'crear-denuncia', component: CrearDenuncia, canActivate: [authGuard]},
+
+
+    {path: 'tecnico/datos-cobro', component: FormDatosCobro, canActivate: [authGuard]},
+    {path: 'tecnico/ver-datos-cobro', component: VerDatosCobro, canActivate: [authGuard]},
 
     // administracion
     {path: 'panel-admin', component: PanelAdmin, canActivate: [authGuard], children: [
