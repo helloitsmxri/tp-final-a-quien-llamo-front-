@@ -1,6 +1,15 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject
+} from '@angular/core';
+
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DatePipe } from '@angular/common';
+
 import { PagoService } from '../../services/pago';
 import { PagoResponseModel } from '../../models/pago-response-model';
 import { EstadoPago } from '../../enum/estado-pago';
@@ -14,11 +23,12 @@ import { EstadoPago } from '../../enum/estado-pago';
   styleUrl: './detalle-pago.css',
 })
 export class DetallePago implements OnInit {
+
   private route = inject(ActivatedRoute);
   private pagoService = inject(PagoService);
   private cdr = inject(ChangeDetectorRef);
 
-  @Input() metodo: 'uuid' | 'mercadoPagoOrderId' = 'uuid';
+  @Input() metodo: 'uuid' | 'externalPaymentId' = 'uuid';
   @Input() identificador: string | null = null;
 
   pago: PagoResponseModel | null = null;
@@ -28,7 +38,7 @@ export class DetallePago implements OnInit {
   ngOnInit(): void {
     const id = this.identificador
       ?? this.route.snapshot.paramMap.get(
-        this.metodo === 'mercadoPagoOrderId' ? 'mercadoPagoOrderId' : 'uuid'
+        this.metodo === 'externalPaymentId' ? 'externalPaymentId' : 'uuid'
       );
 
     if (!id?.trim()) {
@@ -45,8 +55,8 @@ export class DetallePago implements OnInit {
     this.error = false;
     this.pago = null;
 
-    const peticion = this.metodo === 'mercadoPagoOrderId'
-      ? this.pagoService.getByMercadoPagoOrderId(id)
+    const peticion = this.metodo === 'externalPaymentId'
+      ? this.pagoService.getByExternalPaymentId(id)
       : this.pagoService.getByUuid(id);
 
     peticion.subscribe({
@@ -68,7 +78,7 @@ export class DetallePago implements OnInit {
     return String(estado).replaceAll('_', ' ');
   }
 
- esPendienteDeRevision(estado: EstadoPago | string): boolean {
+  esPendienteDeRevision(estado: EstadoPago | string): boolean {
     const normalizado = String(estado)
       .toLowerCase()
       .normalize('NFD')
@@ -80,7 +90,7 @@ export class DetallePago implements OnInit {
   }
 
   esMercadoPago(pago: PagoResponseModel): boolean {
-    return !pago.proveedorDePago || String(pago.proveedorDePago) === 'MERCADO_PAGO';
+    return pago.proveedorDePago === 'MERCADO_PAGO';
   }
 
   obtenerUrlMercadoPago(pago: PagoResponseModel): string {

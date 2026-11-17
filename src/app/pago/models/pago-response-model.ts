@@ -6,12 +6,13 @@ import { ProveedorPago } from "../enum/proveedor-pago";
 export interface PagoResponseModel {
     uuid: string;
     uuidTrabajo: string;
-    proveedorDePago:ProveedorPago;
     nombreProyecto: string;
-    descripcionProyecto:string;
+    descripcionProyecto: string;
+    proveedorDePago: ProveedorPago;
     metodoDePago: MetodoDePago;
     fechaPago: string;
     estadoPago: EstadoPago;
     checkoutUrl: string | null;
-    mercadoPagoOrderId: string | null;
+    externalPaymentId: string | null;
+    estadoExterno: string | null;
 }

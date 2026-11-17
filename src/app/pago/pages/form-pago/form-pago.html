@@ -76,7 +76,7 @@
                 <h3>Seleccioná un método de pago</h3>
 
                 <p class="seleccion-actual">
-                    Proveedor seleccionado: {{ proveedorDePago.value }}
+                    Proveedor seleccionado: {{ obtenerNombreProveedor(proveedorDePago.value!) }}
                 </p>
 
                 <div class="opciones-pago">
@@ -142,7 +142,7 @@
                 <h3>Completá tus datos</h3>
 
                 <p class="seleccion-actual">
-                    Proveedor: {{ proveedorDePago.value }}
+                    Proveedor: {{ obtenerNombreProveedor(proveedorDePago.value!) }}
                 </p>
 
                 <p class="seleccion-actual">
@@ -236,6 +236,13 @@
                         </div>
                     }
                 </fieldset>
+
+                <!-- Error del registro de pago -->
+                @if (errorRegistro) {
+                    <div class="mensaje-error" role="alert">
+                        {{ errorRegistro }}
+                    </div>
+                    }
 
                 <div class="acciones">
 

@@ -24,6 +24,7 @@ import { ProveedorPago } from '../../enum/proveedor-pago';
 export class FormPago {
 
   private route = inject(ActivatedRoute);
+  errorRegistro: string | null = null;
 
   // Paso actual del formulario.
   paso = 1;
@@ -156,49 +157,65 @@ export class FormPago {
   }
 
   // PASO 3: registrar el pago.
-  registrar(): void {
+  
+    registrar(): void {
 
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      return;
-    }
-
-    const pago: PagoRequestModel = {
-      uuidTrabajo: this.uuidTrabajo.value,
-      proveedorDePago: this.proveedorDePago.value!,
-      metodoDePago: this.metodoDePago.value!,
-      buyerFullName: this.buyerFullName.value,
-      buyerEmail: this.buyerEmail.value,
-      buyerDNI: this.buyerDNI.value,
-      buyerPhone: this.buyerPhone.value
-    };
-
-    this.cargando = true;
-
-    this.pService.store(pago).subscribe({
-
-      next: (respuesta: PagoResponseModel) => {
-
-        console.log('Pago registrado correctamente', respuesta);
-
-        this.cargando = false;
-
-        if (respuesta.checkoutUrl) {
-          window.location.href = respuesta.checkoutUrl;
-        } else {
-          console.error('No se recibió una URL de Mercado Pago.');
-        }
-
-      },
-
-      error: (e) => {
-        console.error('Error al registrar el pago:', e);
-        this.cargando = false;
+      if (this.formulario.invalid) {
+        this.formulario.markAllAsTouched();
+        return;
       }
 
-    });
+      if (this.cargando) {
+        return;
+      }
 
-  }
+      // Limpiar errores anteriores.
+      this.errorRegistro = null;
+
+      const pago: PagoRequestModel = {
+        uuidTrabajo: this.uuidTrabajo.value,
+        proveedorDePago: this.proveedorDePago.value!,
+        metodoDePago: this.metodoDePago.value!,
+        buyerFullName: this.buyerFullName.value,
+        buyerEmail: this.buyerEmail.value,
+        buyerDNI: this.buyerDNI.value,
+        buyerPhone: this.buyerPhone.value
+      };
+
+      this.cargando = true;
+
+      this.pService.store(pago).subscribe({
+
+        next: (respuesta: PagoResponseModel) => {
+
+          console.log('Pago registrado correctamente', respuesta);
+
+          this.cargando = false;
+
+          if (respuesta.checkoutUrl) {
+            window.location.href = respuesta.checkoutUrl;
+          } else {
+            this.errorRegistro = 'No se recibió una URL para continuar con el pago.';
+          }
+
+        },
+
+        error: (e) => {
+            this.cargando = false;
+
+            if (e.status === 409) {
+              this.errorRegistro = 'Este trabajo ya tiene un pago registrado.';
+            } else {
+              this.errorRegistro =
+                e.error?.message ||
+                e.error?.mensaje ||
+                'Ocurrió un error al registrar el pago. Intentá nuevamente.';
+            }
+          }
+
+      });
+    }
+
     seleccionarProveedor(proveedor: ProveedorPago): void {
       this.formulario.get('proveedorDePago')?.setValue(proveedor);
 

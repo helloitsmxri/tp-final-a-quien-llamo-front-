@@ -1,3 +1,4 @@
+
 :host {
   display: block;
   font-family: "Creato Display", Arial, sans-serif;
@@ -20,6 +21,8 @@
   margin: 0 auto;
   padding: 2.5rem 3rem;
 }
+
+/* ENCABEZADO */
 
 .encabezado {
   margin-bottom: 2rem;
@@ -44,11 +47,15 @@
   line-height: 1.5;
 }
 
+/* LISTADO */
+
 .lista-pagos {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 }
+
+/* TARJETA */
 
 .pago-card {
   padding: 24px;
@@ -64,6 +71,8 @@
   border-color: #b9a9ed;
   box-shadow: 0 7px 18px rgba(90, 70, 160, 0.14);
 }
+
+/* INFORMACIÓN SUPERIOR */
 
 .card-superior {
   display: flex;
@@ -106,6 +115,8 @@
   font-size: 0.85rem;
 }
 
+/* CONTENIDO */
+
 .card-contenido h2 {
   margin: 0 0 14px;
   color: #5b3fd6;
@@ -113,6 +124,8 @@
   font-weight: 700;
   line-height: 1.4;
 }
+
+/* DATOS DEL PAGO */
 
 .informacion-pago {
   display: grid;
@@ -141,7 +154,16 @@
   line-height: 1.5;
   font-weight: 500;
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
+
+/* IDENTIFICADOR EXTERNO Y ESTADO DEL PROVEEDOR */
+
+.informacion-pago > div:has(.etiqueta) p {
+  overflow-wrap: anywhere;
+}
+
+/* ACCIONES */
 
 .card-inferior {
   display: flex;
@@ -186,6 +208,8 @@
   cursor: not-allowed;
 }
 
+/* BOTÓN DETALLE */
+
 .btn-detalle {
   background: #f4edff;
   color: #6841b5;
@@ -194,6 +218,8 @@
 .btn-detalle:hover {
   background: #e9ddff;
 }
+
+/* BOTÓN CONTINUAR PAGO */
 
 .btn-pagar {
   background: var(--degrade-boton);
@@ -206,6 +232,8 @@
   box-shadow: 0 7px 16px rgba(121, 82, 199, 0.3);
 }
 
+/* BOTÓN CANCELAR */
+
 .btn-cancelar {
   background: #ffe2e2;
   color: #a83232;
@@ -214,6 +242,8 @@
 .btn-cancelar:hover:not(:disabled) {
   background: #fecaca;
 }
+
+/* ESTADOS DE CARGA Y ERROR */
 
 .estado-mensaje {
   padding: 2rem;
@@ -243,7 +273,15 @@
   font-size: 0.95rem;
   font-weight: 800;
   cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
+
+.estado-mensaje button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(121, 82, 199, 0.2);
+}
+
+/* ESTADO VACÍO */
 
 .estado-vacio {
   padding: 3rem 1rem;
@@ -266,6 +304,8 @@
   line-height: 1.5;
 }
 
+/* TABLETS */
+
 @media (max-width: 768px) {
   .mis-pagos {
     padding: 2rem 1.3rem;
@@ -278,7 +318,13 @@
   .pago-card {
     padding: 20px;
   }
+
+  .informacion-pago {
+    gap: 1rem 1.3rem;
+  }
 }
+
+/* CELULARES */
 
 @media (max-width: 480px) {
   .mis-pagos {
@@ -301,5 +347,19 @@
 
   .pago-card {
     padding: 18px;
+  }
+
+  .card-inferior {
+    align-items: stretch;
+  }
+
+  .acciones-pago {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-estado {
+    width: 100%;
   }
 }

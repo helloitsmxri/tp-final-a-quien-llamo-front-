@@ -1,4 +1,13 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, inject } from '@angular/core';
+
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject
+} from '@angular/core';
+
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { Observable } from 'rxjs';
@@ -60,9 +69,7 @@ export class ListPago implements OnInit {
         },
         error: (e) => {
           console.error('Error al obtener perfil:', e);
-          this.error = true;
-          this.cargando = false;
-          this.cdr.markForCheck();
+          this.marcarError();
         }
       });
       return;
@@ -72,7 +79,10 @@ export class ListPago implements OnInit {
 
     switch (this.metodo) {
       case 'metodoPago':
-        if (!parametro?.trim() || !Object.values(MetodoDePago).includes(parametro as MetodoDePago)) {
+        if (
+          !parametro?.trim() ||
+          !Object.values(MetodoDePago).includes(parametro as MetodoDePago)
+        ) {
           this.marcarError();
           return;
         }
@@ -80,7 +90,10 @@ export class ListPago implements OnInit {
         break;
 
       case 'estado':
-        if (!parametro?.trim() || !Object.values(EstadoPago).includes(parametro as EstadoPago)) {
+        if (
+          !parametro?.trim() ||
+          !Object.values(EstadoPago).includes(parametro as EstadoPago)
+        ) {
           this.marcarError();
           return;
         }
@@ -120,7 +133,7 @@ export class ListPago implements OnInit {
         this.cdr.markForCheck();
       },
       error: (e) => {
-        console.error('Error al obtener los pagos', e);
+        console.error('Error al obtener los pagos:', e);
         this.marcarError();
       }
     });
@@ -140,14 +153,27 @@ export class ListPago implements OnInit {
     return String(estado) === 'Pendiente_de_revision';
   }
 
+  esMercadoPago(pago: PagoResponseModel): boolean {
+    return pago.proveedorDePago === 'MERCADO_PAGO';
+  }
+
+  tieneIdentificadorExterno(pago: PagoResponseModel): boolean {
+    return !!pago.externalPaymentId?.trim();
+  }
+
   cancelarPago(pago: PagoResponseModel): void {
     if (!confirm('¿Seguro que querés cancelar este intento de pago?')) return;
 
     this.cancelandoUuid = pago.uuid;
+
     this.pService.cancelarPago(pago.uuid).subscribe({
       next: (actualizado) => {
         const idx = this.pagos.findIndex(p => p.uuid === pago.uuid);
-        if (idx !== -1) this.pagos[idx] = actualizado;
+
+        if (idx !== -1) {
+          this.pagos[idx] = actualizado;
+        }
+
         this.cancelandoUuid = null;
         this.cdr.markForCheck();
       },
