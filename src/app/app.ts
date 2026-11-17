@@ -4,10 +4,11 @@ import { Footer } from './components/footer/footer';
 import { Header } from './components/header/header';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
+import { Alerta } from './shared/alertas/components/alerta';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Footer, Header],
+  imports: [RouterOutlet, Footer, Header, Alerta],
   templateUrl: './app.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './app.css'
