@@ -1,0 +1,64 @@
+
+<section class="form-datos-cobro">
+
+  <header class="encabezado">
+    <span class="sobre-titulo">DATOS DE COBRO</span>
+    <h2>Configurá cómo recibir tus pagos</h2>
+    <p>
+      Completá tu alias, CVU o ambos. Estos datos se guardarán
+      en tu perfil de técnico para utilizarlos en tus trabajos.
+    </p>
+  </header>
+
+  <form (ngSubmit)="guardarDatos()">
+
+    <div class="campo">
+      <label for="alias">Alias</label>
+      <input
+        id="alias"
+        type="text"
+        name="alias"
+        [(ngModel)]="alias"
+        maxlength="100"
+        placeholder="Ej: paulina.pagos.mp"
+      />
+      <small>Ingresá el alias de tu cuenta bancaria o billetera virtual.</small>
+    </div>
+
+    <div class="separador">
+      <span>Y / O</span>
+    </div>
+
+    <div class="campo">
+      <label for="cvu">CVU</label>
+      <input
+        id="cvu"
+        type="text"
+        name="cvu"
+        [(ngModel)]="cvu"
+        maxlength="22"
+        inputmode="numeric"
+        placeholder="Ingresá los 22 números del CVU"
+      />
+      <small>El CVU debe contener exactamente 22 números.</small>
+    </div>
+
+    @if (mensaje) {
+      <div class="mensaje-exito">
+        {{ mensaje }}
+      </div>
+    }
+
+    @if (error) {
+      <div class="mensaje-error">
+        {{ error }}
+      </div>
+    }
+
+    <button type="submit" [disabled]="cargando">
+      {{ cargando ? 'Guardando...' : 'Guardar datos de cobro' }}
+    </button>
+
+  </form>
+
+</section>
