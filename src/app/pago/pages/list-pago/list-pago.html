@@ -1,51 +1,101 @@
+<section class="mis-pagos">
 
-<div class="container">
+  <header class="encabezado">
+    <h1>Mis Pagos</h1>
+    <p>Consultá el historial y estado de los pagos realizados en la plataforma.</p>
+  </header>
 
-    @if (cargando) {
-        <p>Cargando pagos...</p>
-    } @else if (error) {
-        <p>No se pudieron cargar los pagos.</p>
-    } @else if (pagos.length > 0) {
+  @if (cargando) {
+    <div class="estado-mensaje">
+      <p>Cargando pagos...</p>
+    </div>
+  } @else if (error) {
+    <div class="estado-mensaje error">
+      <p>No se pudieron cargar los pagos.</p>
+      <button type="button" (click)="listarPagos()">Reintentar</button>
+    </div>
+  } @else if (pagos.length === 0) {
+    <div class="estado-vacio">
+      <h3>No hay pagos registrados</h3>
+      <p>Cuando realices un pago por un trabajo, aparecerá detallado en esta sección.</p>
+    </div>
+  } @else {
 
-        <ul>
-            @for (pago of pagos; track pago.uuid) {
-                <li>
-                    <p>UUID del pago: {{ pago.uuid }}</p>
+    <div class="lista-pagos">
 
-                    <p>UUID del trabajo: {{ pago.uuidTrabajo }}</p>
+      @for (pago of pagos; track pago.uuid) {
 
-                    <p>Estado del pago: {{ pago.estadoPago }}</p>
+        <article class="pago-card">
 
-                    <p>
-                        Fecha de pago:
-                        {{ pago.fechaPago | date:'dd/MM/yyyy HH:mm' }}
-                    </p>
+          <div class="card-superior">
+            <span class="estado" [attr.data-estado]="pago.estadoPago">
+              {{ formatearEstado(pago.estadoPago) }}
+            </span>
 
-                    <p>Método de pago: {{ pago.metodoDePago }}</p>
+            <span class="fecha">
+              {{ pago.fechaPago | date:'dd/MM/yyyy HH:mm' }}
+            </span>
+          </div>
 
-                    @if (pago.checkoutUrl) {
-                        <p>
-                            <a
-                                [href]="pago.checkoutUrl"
-                                target="_blank"
-                                rel="noopener noreferrer">
-                                Ir al checkout
-                            </a>
-                        </p>
-                    }
+          <div class="card-contenido">
 
-                    @if (pago.mercadoPagoOrderId) {
-                        <p>
-                            Orden de Mercado Pago:
-                            {{ pago.mercadoPagoOrderId }}
-                        </p>
-                    }
-                </li>
-            }
-        </ul>
+            <h2>Pago #{{ pago.uuid.slice(0, 8) }}</h2>
 
-    } @else {
-        <p>No se encontraron pagos.</p>
-    }
+            <div class="informacion-pago">
 
-</div>
+              <div>
+                <span class="etiqueta">Método de pago</span>
+                <p>{{ pago.metodoDePago }}</p>
+              </div>
+
+              <div>
+                <span class="etiqueta">Trabajo asociado</span>
+                <p>{{ pago.nombreProyecto }}</p>
+              </div>
+
+            </div>
+
+          </div>
+
+          <footer class="card-inferior">
+
+            <div class="acciones-pago">
+
+              <a [routerLink]="['/pagos', pago.uuid]" class="btn-estado btn-detalle">
+                Ver detalle
+              </a>
+
+              @if (esPendienteDeRevision(pago.estadoPago)) {
+                @if (pago.checkoutUrl) {
+                  <a
+                    [href]="pago.checkoutUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn-estado btn-pagar">
+                    Continuar en Mercado Pago
+                  </a>
+                }
+
+                <button
+                  type="button"
+                  class="btn-estado btn-cancelar"
+                  [disabled]="cancelandoUuid === pago.uuid"
+                  (click)="cancelarPago(pago)">
+                  {{ cancelandoUuid === pago.uuid ? 'Cancelando...' : '✕ Cancelar pago' }}
+                </button>
+
+              }
+
+            </div>
+
+          </footer>
+
+        </article>
+
+      }
+
+    </div>
+
+  }
+
+</section>
