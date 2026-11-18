@@ -11,15 +11,21 @@
 .lista-chat-container {
   display: flex;
   flex-direction: column;
+  flex: 1;            /* ocupa la altura de la columna y no más */
   width: 100%;
-  min-height: 0;
+  min-height: 0;      /* permite que se achique */
   background: #fff;
   border-radius: 24px;
   overflow: hidden;
 }
 
 .lista-chat-header {
+  flex-shrink: 0;     /* el buscador queda fijo arriba */
   padding: 24px 20px 16px;
+}
+
+.lista-chats {
+  padding: 0 12px 12px;
 }
 
 .titulo-lista {
@@ -114,7 +120,7 @@
 }
 
 .lista-chats::-webkit-scrollbar-thumb {
-  background: #e1d9f4;
+  background: #8674ac;
   border-radius: 10px;
 }
 
