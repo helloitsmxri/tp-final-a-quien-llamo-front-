@@ -7,6 +7,7 @@ import { EstadoTrabajo } from '../../enum/estado-trabajo';
 import { CommonModule } from '@angular/common';
 import { FormDatosCobro } from '../../../tecnico/pages/form-datos-cobro/form-datos-cobro';
 import { AuthService } from '../../../auth/services/auth-service';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 @Component({
   selector: 'app-list-trabajo',
@@ -18,8 +19,9 @@ import { AuthService } from '../../../auth/services/auth-service';
 })
 export class ListTrabajo implements OnInit {
   private usuarioService = inject(UsuarioService);
-
   private authService = inject(AuthService);
+  private alertaService = inject(AlertaService);
+
   esTecnico = false;
   trabajos: TrabajoModel[] = [];
   miUuid = '';
@@ -35,22 +37,23 @@ export class ListTrabajo implements OnInit {
   ) {}
 
   ngOnInit(): void {
-  this.esTecnico = this.authService.esTecnico();
+    this.esTecnico = this.authService.esTecnico();
 
-  this.usuarioService.getMyProfile().subscribe({
-    next: (perfil) => {
-      this.miUuid = perfil.uuid;
-    },
-    error: (err) => console.error('Error al obtener perfil:', err)
-  });
+    this.usuarioService.getMyProfile().subscribe({
+      next: (perfil) => {
+        this.miUuid = perfil.uuid;
+      },
+      error: (err) => console.error('Error al obtener perfil:', err)
+    });
 
-  this.listarTrabajos();
-}
+    this.listarTrabajos();
+  }
+
   esTecnicoDelTrabajo(trabajo: TrabajoModel): boolean {
     return !!this.miUuid && trabajo.uuidUsuarioTecnico === this.miUuid;
   }
 
-    esClienteDelTrabajo(trabajo: TrabajoModel): boolean {
+  esClienteDelTrabajo(trabajo: TrabajoModel): boolean {
     return !!this.miUuid
       && trabajo.uuidCliente === this.miUuid
       && !this.esTecnicoDelTrabajo(trabajo);
@@ -61,18 +64,18 @@ export class ListTrabajo implements OnInit {
   }
 
   fechaInicioAlcanzada(trabajo: TrabajoModel): boolean {
-  if (!trabajo.fechaEstimadaInicio) return false;
+    if (!trabajo.fechaEstimadaInicio) return false;
 
-  const hoy = new Date();
+    const hoy = new Date();
 
-  const fechaHoy = [
-    hoy.getFullYear(),
-    String(hoy.getMonth() + 1).padStart(2, '0'),
-    String(hoy.getDate()).padStart(2, '0')
-  ].join('-');
+    const fechaHoy = [
+      hoy.getFullYear(),
+      String(hoy.getMonth() + 1).padStart(2, '0'),
+      String(hoy.getDate()).padStart(2, '0')
+    ].join('-');
 
-  return fechaHoy >= String(trabajo.fechaEstimadaInicio).substring(0, 10);
-}
+    return fechaHoy >= String(trabajo.fechaEstimadaInicio).substring(0, 10);
+  }
 
   fechaFinAlcanzada(trabajo: TrabajoModel): boolean {
     if (!trabajo.fechaEstimadaFin) return false;
@@ -110,14 +113,24 @@ export class ListTrabajo implements OnInit {
       case 'trabajos/lista':
         this.tService.getAll().subscribe({
           next: (data) => { this.trabajos = data; this.cargando = false; },
-          error: (e) => { console.error(e); this.error = true; this.cargando = false; }
+          error: (e) => {
+            console.error(e);
+            this.error = true;
+            this.cargando = false;
+            this.alertaService.error('No se pudieron cargar los trabajos.');
+          }
         });
         break;
 
       case 'mis-trabajos':
         this.tService.getMyJobs().subscribe({
           next: (data) => { this.trabajos = data; this.cargando = false; },
-          error: (e) => { console.error(e); this.error = true; this.cargando = false; }
+          error: (e) => {
+            console.error(e);
+            this.error = true;
+            this.cargando = false;
+            this.alertaService.error('No se pudieron cargar tus trabajos.');
+          }
         });
         break;
 
@@ -125,7 +138,12 @@ export class ListTrabajo implements OnInit {
         if (estado) {
           this.tService.getJobsByEstado(estado as EstadoTrabajo).subscribe({
             next: (data) => { this.trabajos = data; this.cargando = false; },
-            error: (e) => { console.error(e); this.error = true; this.cargando = false; }
+            error: (e) => {
+              console.error(e);
+              this.error = true;
+              this.cargando = false;
+              this.alertaService.error('No se pudieron cargar los trabajos filtrados por estado.');
+            }
           });
         }
         break;
@@ -134,7 +152,12 @@ export class ListTrabajo implements OnInit {
         if (uuid) {
           this.tService.getJobsByCliente(uuid).subscribe({
             next: (data) => { this.trabajos = data; this.cargando = false; },
-            error: (e) => { console.error(e); this.error = true; this.cargando = false; }
+            error: (e) => {
+              console.error(e);
+              this.error = true;
+              this.cargando = false;
+              this.alertaService.error('No se pudieron cargar los trabajos del cliente.');
+            }
           });
         }
         break;
@@ -143,7 +166,12 @@ export class ListTrabajo implements OnInit {
         if (uuid) {
           this.tService.getJobsByTecnico(uuid).subscribe({
             next: (data) => { this.trabajos = data; this.cargando = false; },
-            error: (e) => { console.error(e); this.error = true; this.cargando = false; }
+            error: (e) => {
+              console.error(e);
+              this.error = true;
+              this.cargando = false;
+              this.alertaService.error('No se pudieron cargar los trabajos del técnico.');
+            }
           });
         }
         break;
@@ -151,100 +179,104 @@ export class ListTrabajo implements OnInit {
       default:
         this.cargando = false;
         this.error = true;
-        console.error('Ruta de trabajos no reconocida.');
+        this.alertaService.error('Ruta de trabajos no reconocida.');
         break;
     }
   }
 
-    cambiarEstado(trabajo: TrabajoModel, nuevoEstado: EstadoTrabajo): void {
+  cambiarEstado(trabajo: TrabajoModel, nuevoEstado: EstadoTrabajo): void {
+    // Evitar modificaciones simultáneas
+    if (this.actualizandoUuid) {
+      return;
+    }
 
-      // Evitar modificaciones simultáneas
-      if (this.actualizandoUuid) {
-          return;
+    const esTecnico = this.esTecnicoDelTrabajo(trabajo);
+    const esCliente = this.esClienteDelTrabajo(trabajo);
+
+    // Verificar que el usuario sea participante del trabajo
+    if (!esTecnico && !esCliente) {
+      return;
+    }
+
+    // El técnico puede iniciar cuando llega la fecha estimada
+    if (
+      nuevoEstado === EstadoTrabajo.En_proceso &&
+      (!esTecnico || !this.fechaInicioAlcanzada(trabajo))
+    ) {
+      return;
+    }
+
+    // El cliente solamente puede finalizar cuando llega la fecha estimada de fin
+    if (
+      nuevoEstado === EstadoTrabajo.Finalizado &&
+      esCliente &&
+      !this.fechaFinAlcanzada(trabajo)
+    ) {
+      return;
+    }
+
+    // El cliente y el técnico solamente pueden cancelar trabajos en proceso
+    if (
+      nuevoEstado === EstadoTrabajo.Cancelado &&
+      !this.estaEnProceso(trabajo) &&
+      !this.estaPendiente(trabajo)
+    ) {
+      return;
+    }
+
+    let mensaje = '';
+
+    if (nuevoEstado === EstadoTrabajo.Finalizado) {
+      mensaje = '¿Confirmás que este trabajo ya fue finalizado?';
+    } else if (nuevoEstado === EstadoTrabajo.Cancelado) {
+      mensaje = '¿Seguro que querés cancelar este trabajo? Esta acción no se puede deshacer.';
+    } else {
+      mensaje = '¿Iniciar este trabajo ahora?';
+    }
+
+    if (!confirm(mensaje)) {
+      return;
+    }
+
+    this.actualizandoUuid = trabajo.uuid;
+
+    const estadoParam = (
+      nuevoEstado === EstadoTrabajo.En_proceso
+        ? 'En_proceso'
+        : nuevoEstado
+    ) as EstadoTrabajo;
+
+    this.tService.changeEstado(trabajo.uuid, estadoParam).subscribe({
+      next: (trabajoActualizado) => {
+        const index = this.trabajos.findIndex(
+          (t) => t.uuid === trabajo.uuid
+        );
+
+        if (index !== -1) {
+          this.trabajos[index] = trabajoActualizado;
+        }
+
+        this.actualizandoUuid = null;
+
+        const mensajeExito =
+          nuevoEstado === EstadoTrabajo.Finalizado
+            ? '¡El trabajo fue marcado como finalizado!'
+            : nuevoEstado === EstadoTrabajo.Cancelado
+              ? 'El trabajo fue cancelado.'
+              : '¡El trabajo ha sido iniciado!';
+
+        this.alertaService.exito(mensajeExito);
+      },
+
+      error: (err) => {
+        console.error('Error al cambiar estado del trabajo:', err);
+        this.actualizandoUuid = null;
+
+        this.alertaService.error(
+          err?.error?.mensaje ||
+          'No se pudo actualizar el estado del trabajo.'
+        );
       }
-
-      const esTecnico = this.esTecnicoDelTrabajo(trabajo);
-      const esCliente = this.esClienteDelTrabajo(trabajo);
-
-      // Verificar que el usuario sea participante del trabajo
-      if (!esTecnico && !esCliente) {
-          return;
-      }
-
-      // El técnico puede iniciar cuando llega la fecha estimada
-      if (
-          nuevoEstado === EstadoTrabajo.En_proceso &&
-          (!esTecnico || !this.fechaInicioAlcanzada(trabajo))
-      ) {
-          return;
-      }
-
-      // El cliente solamente puede finalizar cuando llega la fecha estimada de fin
-      if (
-          nuevoEstado === EstadoTrabajo.Finalizado &&
-          esCliente &&
-          !this.fechaFinAlcanzada(trabajo)
-      ) {
-          return;
-      }
-
-      // El cliente y el técnico solamente pueden cancelar trabajos en proceso
-      if (
-          nuevoEstado === EstadoTrabajo.Cancelado &&
-          !this.estaEnProceso(trabajo) &&
-          !this.estaPendiente(trabajo)
-      ) {
-          return;
-      }
-
-      let mensaje = '';
-
-      if (nuevoEstado === EstadoTrabajo.Finalizado) {
-          mensaje = '¿Confirmás que este trabajo ya fue finalizado?';
-      } else if (nuevoEstado === EstadoTrabajo.Cancelado) {
-          mensaje = '¿Seguro que querés cancelar este trabajo? Esta acción no se puede deshacer.';
-      } else {
-          mensaje = '¿Iniciar este trabajo ahora?';
-      }
-
-      if (!confirm(mensaje)) {
-          return;
-      }
-
-      this.actualizandoUuid = trabajo.uuid;
-
-      const estadoParam = (
-          nuevoEstado === EstadoTrabajo.En_proceso
-              ? 'En_proceso'
-              : nuevoEstado
-      ) as EstadoTrabajo;
-
-      this.tService.changeEstado(trabajo.uuid, estadoParam).subscribe({
-
-          next: (trabajoActualizado) => {
-
-              const index = this.trabajos.findIndex(
-                  (t) => t.uuid === trabajo.uuid
-              );
-
-              if (index !== -1) {
-                  this.trabajos[index] = trabajoActualizado;
-              }
-
-              this.actualizandoUuid = null;
-          },
-
-          error: (err) => {
-
-              console.error('Error al cambiar estado del trabajo:', err);
-
-              this.actualizandoUuid = null;
-
-              alert(
-                  err?.error?.mensaje ||
-                  'No se pudo actualizar el estado del trabajo.'
-              );
-          }
-      });
+    });
   }
 }

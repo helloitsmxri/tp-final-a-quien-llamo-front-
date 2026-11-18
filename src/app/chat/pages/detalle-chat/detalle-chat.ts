@@ -276,29 +276,31 @@ cargarMensajes(uuidChat: string): void {
   enviarMensaje(): void {
   if (!this.chat) return;
 
-  if (!this.nuevoMensajeTexto.trim() && !this.archivoSeleccionado) {
-    return;
-  }
+  const texto = this.nuevoMensajeTexto.trim();   
+  const archivo = this.archivoSeleccionado;
+
+  if (!texto && !archivo) return;
 
   const uuidChat = this.chat.uuidChat;
 
-  this.mensajeService.store(
-    uuidChat,
-    this.nuevoMensajeTexto.trim(),
-    this.archivoSeleccionado || undefined
-  ).subscribe({
+  this.nuevoMensajeTexto = '';                
+  this.archivoSeleccionado = null;
+
+  this.mensajeService.store(uuidChat, texto, archivo || undefined).subscribe({
+    //                                ^^^^^ la variable local, NO this.nuevoMensajeTexto
     next: (creado) => {
       this.ngZone.run(() => {
         if (this.chat?.uuidChat !== uuidChat) return;
-
         this.agregarMensaje(creado);
-        this.nuevoMensajeTexto = '';
-        this.archivoSeleccionado = null;
       });
     },
     error: (err) => {
       console.error('Error al enviar mensaje:', err);
       this.ngZone.run(() => {
+        if (this.chat?.uuidChat === uuidChat && !this.nuevoMensajeTexto) {
+          this.nuevoMensajeTexto = texto;
+          this.archivoSeleccionado = archivo;
+        }
         alert('No se pudo enviar el mensaje.');
       });
     }

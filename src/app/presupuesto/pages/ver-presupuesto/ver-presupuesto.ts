@@ -4,6 +4,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 import { PresupuestoService } from '../../services/presupuesto';
 import { PresupuestoModel } from '../../models/presupuesto-model';
 import { EstadoPresupuesto } from '../../enum/estado-presupuesto';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 @Component({
   selector: 'app-ver-presupuesto',
@@ -16,6 +17,7 @@ import { EstadoPresupuesto } from '../../enum/estado-presupuesto';
 export class VerPresupuesto {
 
   private presupuestoService = inject(PresupuestoService);
+  private alertaService = inject(AlertaService);
 
   @Input({ required: true }) presupuesto!: PresupuestoModel;
   @Input() esTecnico = false;
@@ -44,12 +46,12 @@ export class VerPresupuesto {
           this.presupuesto.estado = EstadoPresupuesto.Aceptado;
           this.procesando = false;
           this.presupuestoActualizado.emit(this.presupuesto);
-          alert('¡Aceptaste el presupuesto correctamente!');
+          this.alertaService.exito('¡Aceptaste el presupuesto!');
         },
         error: (error) => {
           console.error('Error al aceptar el presupuesto:', error);
           this.procesando = false;
-          alert('No se pudo aceptar el presupuesto. Intentá nuevamente.');
+          this.alertaService.error('No se pudo aceptar el presupuesto. Intentá nuevamente.');
         }
       });
   }
@@ -67,12 +69,12 @@ export class VerPresupuesto {
           this.presupuesto.estado = EstadoPresupuesto.Rechazado;
           this.procesando = false;
           this.presupuestoActualizado.emit(this.presupuesto);
-          alert('El presupuesto fue rechazado.');
+          this.alertaService.advertencia('El presupuesto fue rechazado.');
         },
         error: (error) => {
           console.error('Error al rechazar el presupuesto:', error);
           this.procesando = false;
-          alert('No se pudo rechazar el presupuesto. Intentá nuevamente.');
+          this.alertaService.error('No se pudo rechazar el presupuesto. Intentá nuevamente.');
         }
       });
   }
@@ -90,12 +92,12 @@ export class VerPresupuesto {
           this.presupuesto.estado = EstadoPresupuesto.Cancelado;
           this.procesando = false;
           this.presupuestoActualizado.emit(this.presupuesto);
-          alert('El presupuesto fue cancelado.');
+          this.alertaService.exito('El presupuesto fue cancelado.');
         },
         error: (error) => {
           console.error('Error al cancelar el presupuesto:', error);
           this.procesando = false;
-          alert('No se pudo cancelar el presupuesto. Intentá nuevamente.');
+          this.alertaService.error('No se pudo cancelar el presupuesto. Intentá nuevamente.');
         }
       });
   }

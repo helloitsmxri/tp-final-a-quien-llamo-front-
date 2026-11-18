@@ -131,7 +131,7 @@
         <button
           type="button"
           class="btn-send"
-          (click)="enviarMensaje()"
+          (keydown.enter)="enviarMensaje()"
           [disabled]="!nuevoMensajeTexto.trim() && !archivoSeleccionado"
           aria-label="Enviar mensaje"
           title="Enviar mensaje"

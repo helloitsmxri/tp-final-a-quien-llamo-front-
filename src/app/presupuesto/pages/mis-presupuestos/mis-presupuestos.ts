@@ -3,6 +3,7 @@ import { PresupuestoService } from '../../services/presupuesto';
 import { PresupuestoModel } from '../../models/presupuesto-model';
 import { EstadoPresupuesto } from '../../enum/estado-presupuesto';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 @Component({
   selector: 'app-mis-presupuestos',
@@ -13,6 +14,7 @@ import { CurrencyPipe, DatePipe } from '@angular/common';
 })
 export class MisPresupuestos implements OnInit{
   private presupuestoService = inject(PresupuestoService);
+  private alertaService = inject(AlertaService);
 
   // Permite utilizar el enum desde el HTML
   estados = EstadoPresupuesto;
@@ -52,6 +54,7 @@ export class MisPresupuestos implements OnInit{
           console.error('Error al obtener los presupuestos', err);
           this.error = true;
           this.cargando = false;
+          this.alertaService.error('Hubo un error al cargar tus presupuestos. Intentá nuevamente más tarde.');
         }
 
       });
