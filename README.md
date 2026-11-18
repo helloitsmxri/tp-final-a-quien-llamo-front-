@@ -1,6 +1,6 @@
 # AQuienLlamo
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.39.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.22.6.
 
 ## Development server
 
