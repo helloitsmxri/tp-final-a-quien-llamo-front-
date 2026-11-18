@@ -12,6 +12,7 @@ import { PagoResponseModel } from '../../models/pago-response-model';
 import { PagoService } from '../../services/pago';
 import { MetodoDePago } from '../../enum/metodo-de-pago';
 import { ProveedorPago } from '../../enum/proveedor-pago';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 @Component({
   selector: 'app-form-pago',
@@ -24,6 +25,7 @@ import { ProveedorPago } from '../../enum/proveedor-pago';
 export class FormPago {
 
   private route = inject(ActivatedRoute);
+  private alertaService = inject(AlertaService);
   errorRegistro: string | null = null;
 
   // Paso actual del formulario.
@@ -157,83 +159,82 @@ export class FormPago {
   }
 
   // PASO 3: registrar el pago.
-  
-    registrar(): void {
+  registrar(): void {
 
-      if (this.formulario.invalid) {
-        this.formulario.markAllAsTouched();
-        return;
-      }
-
-      if (this.cargando) {
-        return;
-      }
-
-      // Limpiar errores anteriores.
-      this.errorRegistro = null;
-
-      const pago: PagoRequestModel = {
-        uuidTrabajo: this.uuidTrabajo.value,
-        proveedorDePago: this.proveedorDePago.value!,
-        metodoDePago: this.metodoDePago.value!,
-        buyerFullName: this.buyerFullName.value,
-        buyerEmail: this.buyerEmail.value,
-        buyerDNI: this.buyerDNI.value,
-        buyerPhone: this.buyerPhone.value
-      };
-
-      this.cargando = true;
-
-      this.pService.store(pago).subscribe({
-
-        next: (respuesta: PagoResponseModel) => {
-
-          console.log('Pago registrado correctamente', respuesta);
-
-          this.cargando = false;
-
-          if (respuesta.checkoutUrl) {
-            window.location.href = respuesta.checkoutUrl;
-          } else {
-            this.errorRegistro = 'No se recibió una URL para continuar con el pago.';
-          }
-
-        },
-
-        error: (e) => {
-            this.cargando = false;
-
-            if (e.status === 409) {
-              this.errorRegistro = 'Este trabajo ya tiene un pago registrado.';
-            } else {
-              this.errorRegistro =
-                e.error?.message ||
-                e.error?.mensaje ||
-                'Ocurrió un error al registrar el pago. Intentá nuevamente.';
-            }
-          }
-
-      });
+    if (this.formulario.invalid) {
+      this.formulario.markAllAsTouched();
+      return;
     }
 
-    seleccionarProveedor(proveedor: ProveedorPago): void {
-      this.formulario.get('proveedorDePago')?.setValue(proveedor);
+    if (this.cargando) {
+      return;
+    }
 
-      this.metodosDisponibles = this.metodosPorProveedor[proveedor];
+    // Limpiar errores anteriores.
+    this.errorRegistro = null;
 
-      // Reiniciamos el método si cambia el proveedor.
-      this.formulario.get('metodoDePago')?.reset();
+    const pago: PagoRequestModel = {
+      uuidTrabajo: this.uuidTrabajo.value,
+      proveedorDePago: this.proveedorDePago.value!,
+      metodoDePago: this.metodoDePago.value!,
+      buyerFullName: this.buyerFullName.value,
+      buyerEmail: this.buyerEmail.value,
+      buyerDNI: this.buyerDNI.value,
+      buyerPhone: this.buyerPhone.value
+    };
+
+    this.cargando = true;
+
+    this.pService.store(pago).subscribe({
+
+      next: (respuesta: PagoResponseModel) => {
+        this.cargando = false;
+
+        if (respuesta.checkoutUrl) {
+          this.alertaService.exito('Pago registrado. Redirigiendo a Mercado Pago...');
+          window.location.href = respuesta.checkoutUrl;
+        } else {
+          this.errorRegistro = 'No se recibió una URL para continuar con el pago.';
+          this.alertaService.error(this.errorRegistro);
+        }
+      },
+
+      error: (e) => {
+        this.cargando = false;
+
+        if (e.status === 409) {
+          this.errorRegistro = 'Este trabajo ya tiene un pago registrado.';
+        } else {
+          this.errorRegistro =
+            e.error?.message ||
+            e.error?.mensaje ||
+            'Ocurrió un error al registrar el pago. Intentá nuevamente.';
+        }
+
+        this.alertaService.error(this.errorRegistro!);
+      }
+
+    });
+  }
+
+  seleccionarProveedor(proveedor: ProveedorPago): void {
+    this.formulario.get('proveedorDePago')?.setValue(proveedor);
+
+    this.metodosDisponibles = this.metodosPorProveedor[proveedor];
+
+    // Reiniciamos el método si cambia el proveedor.
+    this.formulario.get('metodoDePago')?.reset();
   }
 
   seleccionarMetodo(metodo: MetodoDePago): void {
-      this.formulario.get('metodoDePago')?.setValue(metodo);
+    this.formulario.get('metodoDePago')?.setValue(metodo);
   }
 
   obtenerNombreProveedor(proveedor: ProveedorPago): string {
     const nombres: Record<ProveedorPago, string> = {
-        [ProveedorPago.MERCADO_PAGO]: 'Mercado Pago'
+      [ProveedorPago.MERCADO_PAGO]: 'Mercado Pago'
     };
 
     return nombres[proveedor];
-}
+  }
 }
