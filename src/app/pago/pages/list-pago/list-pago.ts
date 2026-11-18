@@ -1,4 +1,3 @@
-
 import {
   Component,
   Input,
@@ -17,6 +16,7 @@ import { PagoResponseModel } from '../../models/pago-response-model';
 import { MetodoDePago } from '../../enum/metodo-de-pago';
 import { EstadoPago } from '../../enum/estado-pago';
 import { UsuarioService } from '../../../user/services/user';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 type MetodoListadoPago =
   | 'mis-pagos'
@@ -38,6 +38,7 @@ export class ListPago implements OnInit {
 
   private usuarioService = inject(UsuarioService);
   private cdr = inject(ChangeDetectorRef);
+  private alertaService = inject(AlertaService);
 
   @Input() metodo: MetodoListadoPago = 'mis-pagos';
   @Input() filtro: string | null = null;
@@ -69,7 +70,7 @@ export class ListPago implements OnInit {
         },
         error: (e) => {
           console.error('Error al obtener perfil:', e);
-          this.marcarError();
+          this.marcarError('No se pudo obtener tu perfil para cargar tus pagos.');
         }
       });
       return;
@@ -83,7 +84,7 @@ export class ListPago implements OnInit {
           !parametro?.trim() ||
           !Object.values(MetodoDePago).includes(parametro as MetodoDePago)
         ) {
-          this.marcarError();
+          this.marcarError('El método de pago indicado no es válido.');
           return;
         }
         peticion = this.pService.getByMetodoPago(parametro as MetodoDePago);
@@ -94,7 +95,7 @@ export class ListPago implements OnInit {
           !parametro?.trim() ||
           !Object.values(EstadoPago).includes(parametro as EstadoPago)
         ) {
-          this.marcarError();
+          this.marcarError('El estado de pago indicado no es válido.');
           return;
         }
         peticion = this.pService.getByEstado(parametro as EstadoPago);
@@ -102,7 +103,7 @@ export class ListPago implements OnInit {
 
       case 'cliente':
         if (!parametro?.trim()) {
-          this.marcarError();
+          this.marcarError('No se recibió el identificador del cliente.');
           return;
         }
         peticion = this.pService.getByCliente(parametro);
@@ -110,7 +111,7 @@ export class ListPago implements OnInit {
 
       case 'tecnico':
         if (!parametro?.trim()) {
-          this.marcarError();
+          this.marcarError('No se recibió el identificador del técnico.');
           return;
         }
         peticion = this.pService.getByTecnico(parametro);
@@ -134,15 +135,21 @@ export class ListPago implements OnInit {
       },
       error: (e) => {
         console.error('Error al obtener los pagos:', e);
-        this.marcarError();
+        this.marcarError(
+          e?.error?.mensaje || 'No se pudieron cargar los pagos.'
+        );
       }
     });
   }
 
-  private marcarError(): void {
+  private marcarError(mensaje?: string): void {
     this.error = true;
     this.cargando = false;
     this.cdr.markForCheck();
+
+    if (mensaje) {
+      this.alertaService.error(mensaje);
+    }
   }
 
   formatearEstado(estado: EstadoPago | string): string {
@@ -176,11 +183,15 @@ export class ListPago implements OnInit {
 
         this.cancelandoUuid = null;
         this.cdr.markForCheck();
+        this.alertaService.exito('El intento de pago fue cancelado correctamente.');
       },
       error: (e) => {
         console.error('Error al cancelar pago:', e);
         this.cancelandoUuid = null;
         this.cdr.markForCheck();
+        this.alertaService.error(
+          e?.error?.mensaje || 'No se pudo cancelar el intento de pago.'
+        );
       }
     });
   }

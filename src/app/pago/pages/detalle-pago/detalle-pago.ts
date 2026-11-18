@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import { PagoService } from '../../services/pago';
 import { PagoResponseModel } from '../../models/pago-response-model';
 import { EstadoPago } from '../../enum/estado-pago';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 @Component({
   selector: 'app-detalle-pago',
@@ -27,6 +28,7 @@ export class DetallePago implements OnInit {
   private route = inject(ActivatedRoute);
   private pagoService = inject(PagoService);
   private cdr = inject(ChangeDetectorRef);
+  private alertaService = inject(AlertaService);
 
   @Input() metodo: 'uuid' | 'externalPaymentId' = 'uuid';
   @Input() identificador: string | null = null;
@@ -44,6 +46,7 @@ export class DetallePago implements OnInit {
     if (!id?.trim()) {
       this.error = true;
       this.cargando = false;
+      this.alertaService.error('No se proporcionó un identificador de pago válido.');
       return;
     }
 
@@ -70,6 +73,9 @@ export class DetallePago implements OnInit {
         this.error = true;
         this.cargando = false;
         this.cdr.markForCheck();
+        this.alertaService.error(
+          err?.error?.mensaje || 'No se pudo cargar el detalle del pago.'
+        );
       }
     });
   }
