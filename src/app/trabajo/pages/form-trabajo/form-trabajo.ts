@@ -109,6 +109,7 @@ private alertaService = inject(AlertaService);
 
     if (!this.uuidPresupuesto) {
       this.mensajeError = 'No se recibió el UUID del presupuesto.';
+      this.alertaService.error(this.mensajeError);
       return;
     }
 
@@ -185,6 +186,7 @@ private alertaService = inject(AlertaService);
               this.cdr.detectChanges();
 
               if (!this.puedeCrearTrabajo) {
+                this.alertaService.advertencia('Debes configurar tus datos de cobro antes de registrar un trabajo.');
                 this.router.navigate(['/tecnico/datos-cobro']);
               }
             });
@@ -197,6 +199,7 @@ private alertaService = inject(AlertaService);
               this.puedeCrearTrabajo = false;
 
               this.cdr.detectChanges();
+              this.alertaService.error('No se pudieron verificar tus datos de cobro.');
 
               this.router.navigate(['/tecnico/datos-cobro']);
             });
@@ -206,9 +209,7 @@ private alertaService = inject(AlertaService);
 
   canDeactivate(): boolean {
     if (this.formulario.dirty) {
-      return window.confirm(
-        '¿Estás seguro de que querés salir del formulario? Los cambios podrían perderse.'
-      );
+          this.alertaService.advertencia('Saliste del formulario con cambios sin guardar')
     }
     return true;
   }
