@@ -57,6 +57,36 @@ export class AlertaService{
         this.mostrar('info', mensaje, duracion);
     }
 
+    //Mostrar una alerta de confirmación con botones Confirmar/Cancelar.
+    confirmar(mensaje:string, alConfirmar: ()=> void, alCancelar?:()=>void):void{
+        const id = ++this.siguienteId;
+
+        const nuevaAlerta: AlertaModel = {
+            id,
+            tipo: 'advertencia',
+            mensaje,
+            duracion: 0,
+            esConfirmacion: true,
+            alConfirmar,
+            alCancelar
+    };
+
+    this.alertasSignal.update(listaAlertas => [...listaAlertas, nuevaAlerta]);
+}
+    // Confirmar una alerta específica.
+    aceptarConfirmacion(id: number): void {
+        const alerta = this.alertasSignal().find(a => a.id === id);
+        this.cerrar(id);
+        alerta?.alConfirmar?.();
+    }
+
+    // Cancelar una alerta específica.
+    cancelarConfirmacion(id: number): void {
+        const alerta = this.alertasSignal().find(a => a.id === id);
+        this.cerrar(id);
+        alerta?.alCancelar?.();
+    }
+
     // Cerrar una alerta específica.
     cerrar(id: number): void {
         this.alertasSignal.update(alertas =>

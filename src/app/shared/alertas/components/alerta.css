@@ -46,7 +46,7 @@
   border-left-color: #35a56a;
 }
 
-.alerta--error{
+.alerta--error {
   border-left-color: #d94b4b;
 }
 
@@ -54,7 +54,7 @@
   border-left-color: #e5a43b;
 }
 
-.alerta--info{
+.alerta--info {
   border-left-color: #7560c4;
 }
 
@@ -92,6 +92,55 @@
   font-weight: 500;
 
   overflow-wrap: anywhere;
+}
+
+/* ACCIONES DE CONFIRMACIÓN */
+
+.alerta__acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.alerta__btn {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 8px;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.alerta__btn:active {
+  transform: scale(0.98);
+}
+
+.alerta__btn--confirmar {
+  background-color: #7560c4;
+  color: #ffffff;
+}
+
+.alerta__btn--confirmar:hover {
+  background-color: #5d48ad;
+}
+
+.alerta__btn--cancelar {
+  background-color: #f1eff8;
+  color: #3b2a7a;
+}
+
+.alerta__btn--cancelar:hover {
+  background-color: #e4dff4;
+}
+
+.alerta__btn:focus-visible {
+  outline: 2px solid #7560c4;
+  outline-offset: 2px;
 }
 
 /* BOTÓN CERRAR */
@@ -159,7 +208,8 @@
     animation: none;
   }
 
-  .alerta__cerrar {
+  .alerta__cerrar,
+  .alerta__btn {
     transition: none;
   }
 }
