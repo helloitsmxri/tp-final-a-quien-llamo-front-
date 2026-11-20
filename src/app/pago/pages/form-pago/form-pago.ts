@@ -1,3 +1,4 @@
+
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import {
   FormControl,
@@ -25,8 +26,12 @@ import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 export class FormPago {
 
   private route = inject(ActivatedRoute);
+
   private alertaService = inject(AlertaService);
   errorRegistro: string | null = null;
+
+  // Indica si el pago fue creado correctamente.
+  pagoCreado = false;
 
   // Paso actual del formulario.
   paso = 1;
@@ -159,68 +164,102 @@ export class FormPago {
   }
 
   // PASO 3: registrar el pago.
-  registrar(): void {
 
-    if (this.formulario.invalid) {
-      this.formulario.markAllAsTouched();
-      return;
-    }
+    registrar(): void {
 
-    if (this.cargando) {
-      return;
-    }
-
-    // Limpiar errores anteriores.
-    this.errorRegistro = null;
-
-    const pago: PagoRequestModel = {
-      uuidTrabajo: this.uuidTrabajo.value,
-      proveedorDePago: this.proveedorDePago.value!,
-      metodoDePago: this.metodoDePago.value!,
-      buyerFullName: this.buyerFullName.value,
-      buyerEmail: this.buyerEmail.value,
-      buyerDNI: this.buyerDNI.value,
-      buyerPhone: this.buyerPhone.value
-    };
-
-    this.cargando = true;
-
-    this.pService.store(pago).subscribe({
-
-      next: (respuesta: PagoResponseModel) => {
-        this.cargando = false;
-
-        if (respuesta.checkoutUrl) {
-          this.alertaService.exito('Pago registrado. Redirigiendo a Mercado Pago...');
-          window.location.href = respuesta.checkoutUrl;
-        } else {
-          this.errorRegistro = 'No se recibió una URL para continuar con el pago.';
-          this.alertaService.error(this.errorRegistro);
-        }
-      },
-
-      error: (e) => {
-        this.cargando = false;
-
-        if (e.status === 409) {
-          this.errorRegistro = 'Este trabajo ya tiene un pago registrado.';
-        } else {
-          this.errorRegistro =
-            e.error?.message ||
-            e.error?.mensaje ||
-            'Ocurrió un error al registrar el pago. Intentá nuevamente.';
-        }
-
-        this.alertaService.error(this.errorRegistro!);
+      if (this.formulario.invalid) {
+        this.formulario.markAllAsTouched();
+        return;
       }
 
-    });
-  }
+      if (this.cargando || this.pagoCreado) {
+        return;
+      }
+
+      // Limpiar errores anteriores.
+      this.errorRegistro = null;
+
+      // Abrir una pestaña vacía mientras todavía existe
+      // una acción directa del usuario.
+      const ventanaPago = window.open('about:blank', '_blank');
+
+      if (!ventanaPago) {
+        this.errorRegistro =
+          'El navegador bloqueó la nueva pestaña. Permití las ventanas emergentes e intentá nuevamente.';
+
+        this.alertaService.error(this.errorRegistro);
+        return;
+      }
+
+      const pago: PagoRequestModel = {
+        uuidTrabajo: this.uuidTrabajo.value,
+        proveedorDePago: this.proveedorDePago.value!,
+        metodoDePago: this.metodoDePago.value!,
+        buyerFullName: this.buyerFullName.value,
+        buyerEmail: this.buyerEmail.value,
+        buyerDNI: this.buyerDNI.value,
+        buyerPhone: this.buyerPhone.value
+      };
+
+      this.cargando = true;
+
+      this.pService.store(pago).subscribe({
+
+        next: (respuesta: PagoResponseModel) => {
+
+          console.log('Pago registrado correctamente', respuesta);
+
+          this.cargando = false;
+
+          if (!respuesta.checkoutUrl) {
+            ventanaPago.close();
+
+            this.errorRegistro =
+              'No se recibió una URL para continuar con el pago.';
+
+            this.alertaService.error(this.errorRegistro);
+            return;
+          }
+
+          // Redirigir la nueva pestaña a Mercado Pago.
+          ventanaPago.location.href = respuesta.checkoutUrl;
+
+          // Mostrar confirmación en la pestaña original.
+          this.pagoCreado = true;
+
+          this.alertaService.exito(
+            'Pago registrado correctamente. Se abrió Mercado Pago en otra pestaña.'
+          );
+        },
+
+        error: (e) => {
+
+          ventanaPago.close();
+
+          this.cargando = false;
+
+          if (e.status === 409) {
+            this.errorRegistro =
+              'Este trabajo ya tiene un pago registrado.';
+          } else {
+            this.errorRegistro =
+              e.error?.message ||
+              e.error?.mensaje ||
+              'Ocurrió un error al registrar el pago. Intentá nuevamente.';
+          }
+
+          this.alertaService.error(this.errorRegistro!);
+        }
+
+      });
+    }
+
 
   seleccionarProveedor(proveedor: ProveedorPago): void {
+
     this.formulario.get('proveedorDePago')?.setValue(proveedor);
 
-    this.metodosDisponibles = this.metodosPorProveedor[proveedor];
+    this.metodosDisponibles = this.metodosPorProveedor[proveedor] ?? [];
 
     // Reiniciamos el método si cambia el proveedor.
     this.formulario.get('metodoDePago')?.reset();
@@ -231,6 +270,7 @@ export class FormPago {
   }
 
   obtenerNombreProveedor(proveedor: ProveedorPago): string {
+
     const nombres: Record<ProveedorPago, string> = {
       [ProveedorPago.MERCADO_PAGO]: 'Mercado Pago'
     };
