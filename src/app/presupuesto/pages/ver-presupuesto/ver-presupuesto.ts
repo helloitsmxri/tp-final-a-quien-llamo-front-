@@ -5,6 +5,7 @@ import { PresupuestoService } from '../../services/presupuesto';
 import { PresupuestoModel } from '../../models/presupuesto-model';
 import { EstadoPresupuesto } from '../../enum/estado-presupuesto';
 import { AlertaService } from '../../../shared/alertas/service/alerta-service';
+import { errorContext } from 'rxjs/internal/util/errorContext';
 
 @Component({
   selector: 'app-ver-presupuesto',
@@ -84,11 +85,37 @@ export class VerPresupuesto {
       return;
     }
 
+    this.alertaService.confirmar(
+      '¿Seguro que querés cancelar este presupuesto? Esta acción no se puede deshacer.',
+    ()=> {
+      this.procesando=true;
+
+      this.presupuestoService.cancelarPresupuesto(this.presupuesto.uuid)
+      .subscribe({
+        next: ()=>{
+          this.presupuesto.estado = EstadoPresupuesto.Cancelado;
+          this.procesando= false;
+          this.presupuestoActualizado.emit(this.presupuesto);
+          this.alertaService.exito('El presupuesto fue cancelado con éxito.');
+        },
+        error:(err) =>{
+          console.error('Error al cancelar el presupuesto:', err);
+          this.procesando = false;
+          this.alertaService.error('No se pudo cancelar el presupuesto. Intentá nuevamente.')
+        }
+      })
+
+    })
     this.procesando = true;
+
+    let mensaje ='';
 
     this.presupuestoService.cancelarPresupuesto(this.presupuesto.uuid)
       .subscribe({
         next: () => {
+          if(this.presupuesto.estado === EstadoPresupuesto.Cancelado){
+            mensaje = '¿Seguro que quiere cancelar este presupuesto? Esta acción no se puede deshacer.'
+          }
           this.presupuesto.estado = EstadoPresupuesto.Cancelado;
           this.procesando = false;
           this.presupuestoActualizado.emit(this.presupuesto);
