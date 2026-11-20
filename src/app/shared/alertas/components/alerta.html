@@ -30,16 +30,30 @@
 
       <div class="alerta__contenido">
         <p>{{ alerta.mensaje }}</p>
+
+        @if (alerta.esConfirmacion) {
+          <div class="alerta__acciones">
+            <button type="button" class="alerta__btn alerta__btn--confirmar" (click)="confirmar(alerta.id)">
+              Confirmar
+            </button>
+            <button type="button" class="alerta__btn alerta__btn--cancelar" (click)="cancelar(alerta.id)">
+              Cancelar
+            </button>
+          </div>
+        }
       </div>
 
-      <button
-        type="button"
-        class="alerta__cerrar"
-        aria-label="Cerrar notificación"
-        (click)="cerrar(alerta.id)"
-      >
-        ×
-      </button>
+      
+    @if (!alerta.esConfirmacion) {
+        <button
+          type="button"
+          class="alerta__cerrar"
+          aria-label="Cerrar notificación"
+          (click)="cerrar(alerta.id)"
+        >
+          ×
+        </button>
+      }
 
     </div>
 

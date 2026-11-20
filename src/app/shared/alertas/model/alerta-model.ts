@@ -5,4 +5,7 @@ export interface AlertaModel {
     tipo: tipoAlerta;
     mensaje : string;
     duracion : number;
+    esConfirmacion?: boolean;
+    alConfirmar?: () => void;
+    alCancelar?: ()=> void;
 }
