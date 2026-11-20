@@ -62,9 +62,12 @@ export class VerPresupuesto {
       return;
     }
 
-    this.procesando = true;
+    this.alertaService.confirmar(
+      '¿Seguro que querés rechazar este presupuesto? Esta acción no se puede deshacer.',
+      ()=>{
+        this.procesando=true;
 
-    this.presupuestoService.rechazarPresupuesto(this.presupuesto.uuid)
+         this.presupuestoService.rechazarPresupuesto(this.presupuesto.uuid)
       .subscribe({
         next: () => {
           this.presupuesto.estado = EstadoPresupuesto.Rechazado;
@@ -78,6 +81,10 @@ export class VerPresupuesto {
           this.alertaService.error('No se pudo rechazar el presupuesto. Intentá nuevamente.');
         }
       });
+
+      }
+    )
+
   }
 
   cancelarPresupuesto(): void {
@@ -106,27 +113,6 @@ export class VerPresupuesto {
       })
 
     })
-    this.procesando = true;
-
-    let mensaje ='';
-
-    this.presupuestoService.cancelarPresupuesto(this.presupuesto.uuid)
-      .subscribe({
-        next: () => {
-          if(this.presupuesto.estado === EstadoPresupuesto.Cancelado){
-            mensaje = '¿Seguro que quiere cancelar este presupuesto? Esta acción no se puede deshacer.'
-          }
-          this.presupuesto.estado = EstadoPresupuesto.Cancelado;
-          this.procesando = false;
-          this.presupuestoActualizado.emit(this.presupuesto);
-          this.alertaService.exito('El presupuesto fue cancelado.');
-        },
-        error: (error) => {
-          console.error('Error al cancelar el presupuesto:', error);
-          this.procesando = false;
-          this.alertaService.error('No se pudo cancelar el presupuesto. Intentá nuevamente.');
-        }
-      });
   }
 
   volverAlListado(): void {
