@@ -14,6 +14,13 @@ export class Alerta {
   // obtenemos las alertas
   alertas = this.alertaService.alertas;
 
+  confirmar(id: number): void {
+    this.alertaService.aceptarConfirmacion(id);
+  }
+
+  cancelar(id: number): void {
+    this.alertaService.cancelarConfirmacion(id);
+  }
   // cerrar la alerta
   cerrar (id:number):void{
     this.alertaService.cerrar(id);

@@ -233,50 +233,48 @@ export class ListTrabajo implements OnInit {
     } else {
       mensaje = '¿Iniciar este trabajo ahora?';
     }
+    
+   this.alertaService.confirmar(mensaje, () => {
+      this.actualizandoUuid = trabajo.uuid;
 
-    if (!confirm(mensaje)) {
-      return;
-    }
+      const estadoParam = (
+        nuevoEstado === EstadoTrabajo.En_proceso
+          ? 'En_proceso'
+          : nuevoEstado
+      ) as EstadoTrabajo;
 
-    this.actualizandoUuid = trabajo.uuid;
+      this.tService.changeEstado(trabajo.uuid, estadoParam).subscribe({
+        next: (trabajoActualizado) => {
+          const index = this.trabajos.findIndex(
+            (t) => t.uuid === trabajo.uuid
+          );
 
-    const estadoParam = (
-      nuevoEstado === EstadoTrabajo.En_proceso
-        ? 'En_proceso'
-        : nuevoEstado
-    ) as EstadoTrabajo;
+          if (index !== -1) {
+            this.trabajos[index] = trabajoActualizado;
+          }
 
-    this.tService.changeEstado(trabajo.uuid, estadoParam).subscribe({
-      next: (trabajoActualizado) => {
-        const index = this.trabajos.findIndex(
-          (t) => t.uuid === trabajo.uuid
-        );
+          this.actualizandoUuid = null;
 
-        if (index !== -1) {
-          this.trabajos[index] = trabajoActualizado;
+          const mensajeExito =
+            nuevoEstado === EstadoTrabajo.Finalizado
+              ? '¡El trabajo fue marcado como finalizado!'
+              : nuevoEstado === EstadoTrabajo.Cancelado
+                ? 'El trabajo fue cancelado.'
+                : '¡El trabajo ha sido iniciado!';
+
+          this.alertaService.exito(mensajeExito);
+        },
+
+        error: (err) => {
+          console.error('Error al cambiar estado del trabajo:', err);
+          this.actualizandoUuid = null;
+
+          this.alertaService.error(
+            err?.error?.mensaje ||
+            'No se pudo actualizar el estado del trabajo.'
+          );
         }
-
-        this.actualizandoUuid = null;
-
-        const mensajeExito =
-          nuevoEstado === EstadoTrabajo.Finalizado
-            ? '¡El trabajo fue marcado como finalizado!'
-            : nuevoEstado === EstadoTrabajo.Cancelado
-              ? 'El trabajo fue cancelado.'
-              : '¡El trabajo ha sido iniciado!';
-
-        this.alertaService.exito(mensajeExito);
-      },
-
-      error: (err) => {
-        console.error('Error al cambiar estado del trabajo:', err);
-        this.actualizandoUuid = null;
-
-        this.alertaService.error(
-          err?.error?.mensaje ||
-          'No se pudo actualizar el estado del trabajo.'
-        );
-      }
+      });
     });
   }
 }
