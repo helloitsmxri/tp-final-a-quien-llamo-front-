@@ -5,6 +5,11 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/ro
 import { filter } from 'rxjs';
 import { AuthService } from '../../auth/services/auth-service';
 
+// ============================================================
+// Este archivo sirve para las DOS opciones (usa la misma versión con cualquiera).
+// Todo lo que agregué o toqué está marcado con "NUEVO". Lo demás es tu código igual que antes.
+// ============================================================
+
 @Component({
   selector: 'app-header',
   imports: [RouterLink, RouterLinkActive, AsyncPipe],
@@ -15,6 +20,12 @@ import { AuthService } from '../../auth/services/auth-service';
 export class Header {
   authService = inject(AuthService);
   menuUsuarioAbierto = signal(false);
+
+  // NUEVO (opción 1): true cuando está abierto el submenú de "Mi panel" dentro de "Mi cuenta"
+  submenuPanelAbierto = signal(false);
+  // NUEVO (opción 2): true cuando está abierto el panel grande "Mi panel" del header
+  panelAbierto = signal(false);
+
 // ElementRef = me deja agarrar el elemento HTML de este componente (lo uso para saber si hicieron clic afuera)
   private el = inject(ElementRef);
   // Router = lo uso para enterarme cuando la persona cambia de página
@@ -52,7 +63,10 @@ export class Header {
     // takeUntilDestroyed hace q deje de escuchar cuando el componente se destruye (para no dejar cosas colgadas)
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd), takeUntilDestroyed())
-      .subscribe(() => this.cerrar());
+      .subscribe(() => {
+        this.cerrar();
+        this.cerrarPanel(); // NUEVO: también cierra "Mi panel" al cambiar de página (por ej. con el botón "atrás")
+      });
 
       // cada vez q cambia la página, vuelvo a chequear si estoy en categorías
       this.enCategorias.set(this.router.url.startsWith('/categorias'));
@@ -61,6 +75,7 @@ export class Header {
   // abren y cierran el panel cambiando el signal
   abrir()  { 
     this.abierto.set(true); 
+    this.panelAbierto.set(false); // NUEVO: si se abre Categorías, se cierra "Mi panel" para q no se encimen
   }
   cerrar() { 
     this.abierto.set(false); 
@@ -95,6 +110,7 @@ export class Header {
     if (!this.el.nativeElement.contains(e.target))
       { 
         this.cerrar(); 
+        this.cerrarPanel(); // NUEVO: clic afuera del header también cierra "Mi panel"
       }
       const menuUser = this.el.nativeElement.querySelector('.menu-usuario');
       if (menuUser && !menuUser.contains(e.target)){
@@ -106,6 +122,7 @@ export class Header {
   @HostListener('document:keydown.escape')
   escape() { 
     this.cerrar(); 
+    this.cerrarPanel(); // NUEVO
   }
 
     get enPlanes(): boolean {
@@ -113,16 +130,38 @@ export class Header {
   }
 
   alternarMenuUsuario() {
+  this.abierto.set(false);           // NUEVO: cierra Categorías si estaba abierto
+  this.panelAbierto.set(false);      // NUEVO: cierra "Mi panel" (opción 2) si estaba abierto
+  this.submenuPanelAbierto.set(false); // NUEVO: el submenú (opción 1) siempre arranca cerrado
   this.menuUsuarioAbierto.update((valor) => !valor);
 }
 
 cerrarMenuUsuario() {
   this.menuUsuarioAbierto.set(false);
+  this.submenuPanelAbierto.set(false); // NUEVO: si se cierra "Mi cuenta", el submenú también
+}
+
+// NUEVO (opción 1): abre/cierra el submenú de "Mi panel" dentro de "Mi cuenta"
+alternarSubmenuPanel() {
+  this.submenuPanelAbierto.update((valor) => !valor);
+}
+
+// NUEVO (opción 2): abre/cierra el panel grande "Mi panel"
+alternarPanel() {
+  this.abierto.set(false);           // cierra Categorías
+  this.cerrarMenuUsuario();          // cierra "Mi cuenta"
+  this.panelAbierto.update((valor) => !valor);
+}
+
+// NUEVO (opción 2)
+cerrarPanel() {
+  this.panelAbierto.set(false);
 }
 
 cerrarSesion() {
   this.authService.logout();
   this.cerrarMenuUsuario();
+  this.cerrarPanel(); // NUEVO
   this.router.navigate(['/home']);
 }
 

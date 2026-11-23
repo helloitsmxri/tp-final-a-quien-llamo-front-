@@ -1,6 +1,28 @@
 <!-- (mouseleave) está en TODO el header: cuando el mouse sale de la barra Y del panel, se cierra todo -->
 <header class="barra" (mouseleave)="salirDelHeader($event)">
 
+  <!-- catálogo de íconos (se usan con <svg class="ico"><use href="#i-nombre"/></svg>). Toman el color del texto -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="5" rx="1.5"/><rect x="13" y="10" width="8" height="11" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/></symbol>
+      <symbol id="i-trabajos" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 13h18"/></symbol>
+      <symbol id="i-presupuestos" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></symbol>
+      <symbol id="i-pagos" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/></symbol>
+      <symbol id="i-perfil" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.2 18.2a6 6 0 0 1 11.6 0"/></symbol>
+      <symbol id="i-certificaciones" viewBox="0 0 24 24"><circle cx="12" cy="9" r="5"/><path d="M9 13.5 7.5 21 12 18.5 16.5 21 15 13.5"/></symbol>
+      <symbol id="i-portfolios" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m21 16-5-5-8 9"/></symbol>
+      <symbol id="i-resenas" viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/></symbol>
+      <symbol id="i-mensajes" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.4A8 8 0 1 1 21 12z"/></symbol>
+      <symbol id="i-reportes" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
+      <symbol id="i-admin" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.5 3.2 8 8 9 4.8-1 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></symbol>
+      <symbol id="i-salir" viewBox="0 0 24 24"><path d="M14 8V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-3M9 12h12m0 0-3-3m3 3-3 3"/></symbol>
+      <symbol id="i-cerrar" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+      <symbol id="i-flecha-abajo" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+      <symbol id="i-flecha-izq" viewBox="0 0 24 24"><path d="m15 6-6 6 6 6"/></symbol>
+      <symbol id="i-usuario" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></symbol>
+    </defs>
+  </svg>
+
   <!-- aria-label es para q un lector de pantalla sepa q este es el menú principal -->
   <nav class="menu" aria-label="Principal">
 
@@ -34,60 +56,36 @@
     <!-- los dos botones van juntos en un div, así la barra tiene 3 zonas: logo | opciones | botones -->
     <div class="acciones">
       @if (authService.isLoggedIn$ | async) {
+
+      <button type="button" class="boton-usuario boton-panel" aria-controls="panel-usuario"
+        [attr.aria-expanded]="panelAbierto()" (click)="alternarPanel()">
+        <svg class="ico" aria-hidden="true"><use href="#i-panel"/></svg>
+        <span>Mi panel</span>
+        <svg class="ico ico--chico chevron" aria-hidden="true"><use href="#i-flecha-abajo"/></svg>
+      </button>
+
       <div class="menu-usuario">
-        <button type="button" class="boton-usuario" aria-label="Abrir menú de usuario" aria-controls="menu-usuario"
+        <button type="button" class="boton-usuario" aria-controls="menu-usuario"
           [attr.aria-expanded]="menuUsuarioAbierto()" (click)="alternarMenuUsuario()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="8" r="4"></circle>
-            <path d="M5 21v-2a7 7 0 0 1 14 0v2"></path>
-          </svg>
+          <svg class="ico" aria-hidden="true"><use href="#i-usuario"/></svg>
           <span>Mi cuenta</span>
+          <svg class="ico ico--chico chevron" aria-hidden="true"><use href="#i-flecha-abajo"/></svg>
         </button>
 
         @if (menuUsuarioAbierto()) {
         <nav class="desplegable-usuario" id="menu-usuario" aria-label="Menú de usuario">
-
           <a [routerLink]="authService.esTecnico() ? '/mi-perfil-tecnico' : '/mi-perfil'" (click)="cerrarMenuUsuario()">
+            <svg class="ico" aria-hidden="true"><use href="#i-perfil"/></svg>
             Mi perfil
           </a>
-
-          @if (authService.esTecnico()) {
-          <a routerLink="/mis-certificaciones" (click)="cerrarMenuUsuario()">
-            Mis certificaciones
-          </a>
-
-
-          <a routerLink="/mis-portfolios" (click)="cerrarMenuUsuario()">
-            Mis portfolios
-          </a>
-          }
-
-          @if(authService.esAdministrador()){
-            <a routerLink="/panel-admin" (click)="cerrarMenuUsuario()">
-            Mi panel
-          </a>
-          }
-
-          <a routerLink="/chats" (click)="cerrarMenuUsuario()">Mis mensajes</a>
-
-          <a routerLink="/mis-trabajos" (click)="cerrarMenuUsuario()">Mis trabajos</a>
-
-          <a routerLink="/mis-presupuestos" (click)="cerrarMenuUsuario()">Mis presupuestos</a>
-
-          <a routerLink="/mis-pagos" (click)="cerrarMenuUsuario()">Mis pagos</a>
-
-          <a routerLink="/mis-resenas" (click)="cerrarMenuUsuario()">Mis reseñas</a>
-
-          <a routerLink="/mis-denuncias" (click)="cerrarMenuUsuario()">Mis denuncias</a>
-
           <button type="button" class="boton-cerrar-sesion" (click)="cerrarSesion()">
+            <svg class="ico" aria-hidden="true"><use href="#i-salir"/></svg>
             Cerrar sesión
           </button>
-
         </nav>
         }
       </div>
+
       } @else {
       <a class="boton iniciar-sesion" routerLink="/iniciar-sesion" (pointerenter)="cerrar()">
         Iniciar sesión
@@ -128,6 +126,80 @@
       </li>
       }
     </ul>
+  </div>
+  }
+  
+  <!-- panel grande de "Mi panel": está dentro del header, igual que el de Categorías -->
+  @if (panelAbierto()) {
+  <div id="panel-usuario" class="panel-usuario">
+
+    <div class="panel-usuario__cabecera">
+      <h2 class="panel-usuario__titulo">¿Qué querés hacer?</h2>
+      <button type="button" class="cerrar-panel" (click)="cerrarPanel()">
+        <svg class="ico ico--chico" aria-hidden="true"><use href="#i-cerrar"/></svg>
+        Cerrar
+      </button>
+    </div>
+
+    <div class="panel-usuario__grilla">
+
+      <section class="grupo" aria-labelledby="p-hacer">
+        <h3 class="grupo-titulo" id="p-hacer">Lo que estoy haciendo</h3>
+        <a class="opcion-panel" routerLink="/mis-trabajos" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-trabajos"/></svg>
+          <span><strong>Mis trabajos</strong><small>Pedidos en curso, terminados y rechazados.</small></span>
+        </a>
+        <a class="opcion-panel" routerLink="/mis-presupuestos" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-presupuestos"/></svg>
+          <span><strong>Mis presupuestos</strong><small>Propuestas hechas por mí y por otros.</small></span>
+        </a>
+        <a class="opcion-panel" routerLink="/mis-pagos" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-pagos"/></svg>
+          <span><strong>Mis pagos</strong><small>Resumen de pagos realizados y por pagar.</small></span>
+        </a>
+      </section>
+
+      <section class="grupo" aria-labelledby="p-presentacion">
+        <h3 class="grupo-titulo" id="p-presentacion">Mi presentación</h3>
+        <a class="opcion-panel" [routerLink]="authService.esTecnico() ? '/mi-perfil-tecnico' : '/mi-perfil'" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-perfil"/></svg>
+          <span><strong>Mi perfil</strong><small>Mis datos personales.</small></span>
+        </a>
+        @if (authService.esTecnico()) {
+        <a class="opcion-panel" routerLink="/mis-certificaciones" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-certificaciones"/></svg>
+          <span><strong>Mis certificaciones</strong><small>Títulos y matrículas.</small></span>
+        </a>
+        <a class="opcion-panel" routerLink="/mis-portfolios" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-portfolios"/></svg>
+          <span><strong>Mis portfolios</strong><small>Enlaces y proyectos que he enviado a los moderadores de la página.</small></span>
+        </a>
+        }
+        <a class="opcion-panel" routerLink="/mis-resenas" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-resenas"/></svg>
+          <span><strong>Mis reseñas</strong><small>Opiniones sobre mí y sobre otros.</small></span>
+        </a>
+      </section>
+
+      <section class="grupo" aria-labelledby="p-comunicacion">
+        <h3 class="grupo-titulo" id="p-comunicacion">Comunicación y seguridad</h3>
+        <a class="opcion-panel" routerLink="/chats" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-mensajes"/></svg>
+          <span><strong>Mis mensajes</strong><small>Conversaciones que he tenido.</small></span>
+        </a>
+        <a class="opcion-panel" routerLink="/mis-denuncias" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-reportes"/></svg>
+          <span><strong>Mis denuncias</strong><small>Problemas que informé y problemas en los que me he visto envuelto.</small></span>
+        </a>
+        @if (authService.esAdministrador()) {
+        <a class="opcion-panel" routerLink="/panel-admin" (click)="cerrarPanel()">
+          <svg class="ico ico--grande" aria-hidden="true"><use href="#i-admin"/></svg>
+          <span><strong>Panel de administración</strong><small>Gestión de la plataforma</small></span>
+        </a>
+        }
+      </section>
+
+    </div>
   </div>
   }
 </header>
