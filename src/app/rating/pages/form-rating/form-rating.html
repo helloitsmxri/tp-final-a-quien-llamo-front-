@@ -76,7 +76,7 @@
           <p class="info-carga">Cargando características disponibles...</p>
         } @else if (caracteristicasDisponibles.length > 0) {
           <div class="chips-contenedor">
-            @for (car of caracteristicasDisponibles; track car.uuid) {
+            @for (car of caracteristicasFiltradas; track car.uuid) {
   <button
     type="button"
     class="chip-seleccionable"
