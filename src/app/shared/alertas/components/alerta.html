@@ -1,18 +1,19 @@
+<!-- Notificaciones comunes (arriba a la derecha) -->
 <div class="contenedor-alertas" aria-live="polite" aria-atomic="false">
 
   @for (alerta of alertas(); track alerta.id) {
+    @if (!alerta.esConfirmacion) {
+      <div
+        class="alerta"
+        [class.alerta--exito]="alerta.tipo === 'exito'"
+        [class.alerta--error]="alerta.tipo === 'error'"
+        [class.alerta--advertencia]="alerta.tipo === 'advertencia'"
+        [class.alerta--info]="alerta.tipo === 'info'"
+        role="status"
+      >
 
-    <div
-      class="alerta"
-      [class.alerta--exito]="alerta.tipo === 'exito'"
-      [class.alerta--error]="alerta.tipo === 'error'"
-      [class.alerta--advertencia]="alerta.tipo === 'advertencia'"
-      [class.alerta--info]="alerta.tipo === 'info'"
-      role="status"
-    >
-
-      <div class="alerta__icono">
-        @switch (alerta.tipo) {
+        <div class="alerta__icono">
+          @switch (alerta.tipo) {
             @case ('exito') {
               <img src="íconos/iconos-alerta/check-mark-circle-line-icon.png" alt="Exito" class="icono" />
             }
@@ -23,28 +24,15 @@
               <img src="íconos/iconos-alerta/exclamation-triangle-icon.png" alt="Warning" class="icono icono--triangulo" />
             }
             @case ('info') {
-              <img src="íconos/iconos-alerta/more-info-icon.png alt=" alt="Info" class="icono" />
+              <img src="íconos/iconos-alerta/more-info-icon.png" alt="Info" class="icono" />
+            }
           }
-        }
-      </div>
+        </div>
 
-      <div class="alerta__contenido">
-        <p>{{ alerta.mensaje }}</p>
+        <div class="alerta__contenido">
+          <p>{{ alerta.mensaje }}</p>
+        </div>
 
-        @if (alerta.esConfirmacion) {
-          <div class="alerta__acciones">
-            <button type="button" class="alerta__btn alerta__btn--confirmar" (click)="confirmar(alerta.id)">
-              Confirmar
-            </button>
-            <button type="button" class="alerta__btn alerta__btn--cancelar" (click)="cancelar(alerta.id)">
-              Cancelar
-            </button>
-          </div>
-        }
-      </div>
-
-      
-    @if (!alerta.esConfirmacion) {
         <button
           type="button"
           class="alerta__cerrar"
@@ -53,10 +41,48 @@
         >
           ×
         </button>
-      }
 
-    </div>
-
+      </div>
+    }
   }
 
 </div>
+
+<!-- Recuadro centrado en el medio para confirmaciones -->
+@for (alerta of alertas(); track alerta.id) {
+  @if (alerta.esConfirmacion) {
+    <div class="alerta-overlay" role="dialog" aria-modal="true">
+      <div class="alerta-modal">
+
+        <div class="alerta-modal__icono">
+          <img
+            src="íconos/iconos-alerta/exclamation-triangle-icon.png"
+            alt="Advertencia"
+            class="icono-modal"
+          />
+        </div>
+
+        <p class="alerta-modal__mensaje">{{ alerta.mensaje }}</p>
+
+        <div class="alerta-modal__acciones">
+          <button
+            type="button"
+            class="alerta__btn alerta__btn--cancelar"
+            (click)="cancelar(alerta.id)"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="alerta__btn alerta__btn--confirmar"
+            (click)="confirmar(alerta.id)"
+          >
+            Confirmar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+}
