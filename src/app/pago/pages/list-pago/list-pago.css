@@ -1,4 +1,3 @@
-
 :host {
   display: block;
   font-family: "Creato Display", Arial, sans-serif;
@@ -14,6 +13,7 @@
   --color-texto: #29243a;
   --color-texto-secundario: #777187;
   --color-acento: #7952c7;
+  --color-borde: #d6d1e2;
   --degrade-texto: linear-gradient(90deg, #7952c7, #a16de0);
   --degrade-boton: linear-gradient(90deg, #7952c7, #9664d6);
 
@@ -25,7 +25,7 @@
 /* ENCABEZADO */
 
 .encabezado {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .encabezado h1 {
@@ -45,6 +45,45 @@
   color: var(--color-texto-secundario);
   font-size: 1rem;
   line-height: 1.5;
+}
+
+/* FILTROS POR ESTADO */
+
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 2rem;
+}
+
+.filtros button {
+  padding: 0.5rem 1.1rem;
+  border: 1px solid var(--color-borde);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--color-texto-secundario);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.filtros button:hover {
+  border-color: var(--color-acento);
+  background: #f7f4ff;
+}
+
+.filtros button.activo {
+  border-color: var(--color-acento);
+  background: var(--degrade-boton);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.filtros button:focus-visible {
+  outline: 3px solid var(--color-acento);
+  outline-offset: 4px;
 }
 
 /* LISTADO */
@@ -315,6 +354,10 @@
     font-size: 2rem;
   }
 
+  .filtros {
+    gap: 0.5rem;
+  }
+
   .pago-card {
     padding: 20px;
   }
@@ -361,5 +404,20 @@
 
   .btn-estado {
     width: 100%;
+  }
+}
+
+/* MOVIMIENTO REDUCIDO */
+
+@media (prefers-reduced-motion: reduce) {
+  .pago-card,
+  .filtros button,
+  .btn-estado,
+  .estado-mensaje button {
+    transition: none;
+  }
+
+  .pago-card:hover {
+    transform: none;
   }
 }

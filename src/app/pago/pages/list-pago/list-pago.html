@@ -1,4 +1,3 @@
-
 <section class="mis-pagos">
 
   <header class="encabezado">
@@ -6,6 +5,45 @@
     <p>Consultá el historial y estado de los pagos realizados en la plataforma.</p>
   </header>
 
+  <!-- FILTROS POR ESTADO -->
+  <div class="filtros">
+    <button
+      type="button"
+      [class.activo]="estadoSeleccionado === 'TODOS'"
+      (click)="filtrarPorEstado('TODOS')">
+      Todos
+    </button>
+
+    <button
+      type="button"
+      [class.activo]="estadoSeleccionado === estados.Confirmado"
+      (click)="filtrarPorEstado(estados.Confirmado)">
+      Confirmados
+    </button>
+
+    <button
+      type="button"
+      [class.activo]="estadoSeleccionado === estados.Pendiente_de_revision"
+      (click)="filtrarPorEstado(estados.Pendiente_de_revision)">
+      Pendientes
+    </button>
+
+    <button
+      type="button"
+      [class.activo]="estadoSeleccionado === estados.Rechazado"
+      (click)="filtrarPorEstado(estados.Rechazado)">
+      Rechazados
+    </button>
+
+    <button
+      type="button"
+      [class.activo]="estadoSeleccionado === estados.Cancelado"
+      (click)="filtrarPorEstado(estados.Cancelado)">
+      Cancelados
+    </button>
+  </div>
+
+  <!-- ESTADOS DE CARGA -->
   @if (cargando) {
     <div class="estado-mensaje">
       <p>Cargando pagos...</p>
@@ -15,16 +53,17 @@
       <p>No se pudieron cargar los pagos.</p>
       <button type="button" (click)="listarPagos()">Reintentar</button>
     </div>
-  } @else if (pagos.length === 0) {
+  } @else if (pagosFiltrados.length === 0) {
     <div class="estado-vacio">
       <h3>No hay pagos registrados</h3>
-      <p>Cuando realices un pago por un trabajo, aparecerá detallado en esta sección.</p>
+      <p>{{ mensajeSinPagos }}</p>
     </div>
   } @else {
 
+    <!-- LISTADO DE PAGOS -->
     <div class="lista-pagos">
 
-      @for (pago of pagos; track pago.uuid) {
+      @for (pago of pagosFiltrados; track pago.uuid) {
 
         <article class="pago-card">
 

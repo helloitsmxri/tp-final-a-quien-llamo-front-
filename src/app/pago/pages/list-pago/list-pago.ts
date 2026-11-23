@@ -43,7 +43,14 @@ export class ListPago implements OnInit {
   @Input() metodo: MetodoListadoPago = 'mis-pagos';
   @Input() filtro: string | null = null;
 
+ // Permite utilizar el enum desde el HTML
+  estados = EstadoPago;
+
+  // Lista de pagos recibidos del backend
   pagos: PagoResponseModel[] = [];
+
+  // Filtro de estado
+  estadoSeleccionado: 'TODOS' | EstadoPago = 'TODOS';
 
   cargando = false;
   error = false;
@@ -62,6 +69,8 @@ export class ListPago implements OnInit {
   listarPagos(parametro: string | null = null): void {
     this.cargando = true;
     this.error = false;
+    this.pagos = [];
+    this.estadoSeleccionado = 'TODOS';
 
     if (this.metodo === 'mis-pagos' && !parametro) {
       this.usuarioService.getMyProfile().subscribe({
@@ -124,6 +133,21 @@ export class ListPago implements OnInit {
     }
 
     this.ejecutarConsulta(peticion);
+  }
+
+  // FILTRAR POR ESTADO
+  filtrarPorEstado(estado: 'TODOS' | EstadoPago): void {
+    this.estadoSeleccionado = estado;
+  }
+
+  get pagosFiltrados(): PagoResponseModel[] {
+    if (this.estadoSeleccionado === 'TODOS') {
+      return this.pagos;
+    }
+
+    return this.pagos.filter(
+      pago => pago.estadoPago === this.estadoSeleccionado
+    );
   }
 
   private ejecutarConsulta(peticion: Observable<PagoResponseModel[]>): void {
