@@ -13,6 +13,8 @@ import { TrabajoService } from '../../../trabajo/services/trabajo';
 import { TrabajoModel } from '../../../trabajo/models/trabajo-model';
 import { CaracteristicaService } from '../../../caracteristica/services/caracteristica';
 import { RatingModel } from '../../models/rating-model';
+import { CaracteristicaModel } from '../../../caracteristica/models/caracteristica-model';
+import { TipoCaracteristica } from '../../../caracteristica/enum/tipo-caracteristica';
 
 interface TrabajoCalificable {
   uuidTrabajo: string;
@@ -62,7 +64,8 @@ export class FormRating implements OnInit {
   });
 
   trabajosDisponibles: TrabajoCalificable[] = [];
-  caracteristicasDisponibles: any[] = [];
+  caracteristicasDisponibles: CaracteristicaModel[] = [];
+  caracteristicasFiltradas: CaracteristicaModel[] = [];
   trabajoFijoLabel = '';
   calificandoACliente = false;
   cargandoTrabajos = false;
@@ -106,8 +109,12 @@ export class FormRating implements OnInit {
 
     // Cargar características disponibles desde el backend
     this.caracteristicaService.getAll().subscribe({
-      next: (lista) => {
+      next: (lista: CaracteristicaModel[]) => {
         this.caracteristicasDisponibles = lista;
+
+        // Filtrar según la puntuación inicial
+        this.filtrarCaracteristicas();
+
         this.cargandoCaracteristicas = false;
       },
       error: (err) => {
@@ -172,10 +179,47 @@ export class FormRating implements OnInit {
       }
     });
   }
+    private filtrarCaracteristicas(): void {
+    const puntaje = this.valoracion.value ?? 5;
+
+    if (puntaje < 3) {
+      // 1 y 2 estrellas: características negativas
+      this.caracteristicasFiltradas =
+        this.caracteristicasDisponibles.filter(
+          (car) => car.tipo === TipoCaracteristica.NEGATIVA
+        );
+
+    } else if (puntaje > 3) {
+      // 4 y 5 estrellas: características positivas
+      this.caracteristicasFiltradas =
+        this.caracteristicasDisponibles.filter(
+          (car) => car.tipo === TipoCaracteristica.POSITIVA
+        );
+
+    } else {
+      // 3 estrellas: características negativas y positivas
+      this.caracteristicasFiltradas =
+        this.caracteristicasDisponibles;
+    }
+
+    // Conservar solamente las características seleccionadas
+    // que siguen siendo válidas para la puntuación actual.
+    const seleccionadas = this.uuidCaracteristicas.value ?? [];
+
+    const seleccionadasValidas = seleccionadas.filter((uuid) =>
+      this.caracteristicasFiltradas.some(
+        (car) => car.uuid === uuid
+      )
+    );
+
+    this.uuidCaracteristicas.setValue(seleccionadasValidas);
+  }
 
   seleccionarEstrellas(puntaje: number): void {
     this.valoracion.setValue(puntaje);
     this.valoracion.markAsTouched();
+
+    this.filtrarCaracteristicas();
   }
 
   toggleCaracteristica(uuid: string): void {
