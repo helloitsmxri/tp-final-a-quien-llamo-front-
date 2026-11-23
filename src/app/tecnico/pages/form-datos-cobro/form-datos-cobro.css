@@ -181,3 +181,32 @@ form button:disabled {
     font-size: 2rem;
   }
 }
+
+.volver {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 18px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #5b3fd6;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid #a58cff;
+  border-radius: 50px;
+  background: transparent;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.volver:hover {
+  color: #fff;
+  background: linear-gradient(90deg, #5b3fd6, #a58cff);
+  transform: translateY(-1px);
+}
+
+.mensaje-validacion {
+  color: #b00020 !important;
+  font-size: 0.8rem;
+  margin-top: 5px;
+}
