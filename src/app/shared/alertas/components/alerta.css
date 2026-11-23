@@ -71,7 +71,6 @@
   height: 28px;
 }
 
-/* El triángulo es sólido y pesa más, así que va un poco más chico */
 .icono--triangulo {
   width: 25px;
   height: 25px;
@@ -92,55 +91,6 @@
   font-weight: 500;
 
   overflow-wrap: anywhere;
-}
-
-/* ACCIONES DE CONFIRMACIÓN */
-
-.alerta__acciones {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.alerta__btn {
-  padding: 7px 14px;
-  border: none;
-  border-radius: 8px;
-
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-
-  transition: background-color 0.2s, transform 0.1s;
-}
-
-.alerta__btn:active {
-  transform: scale(0.98);
-}
-
-.alerta__btn--confirmar {
-  background-color: #7560c4;
-  color: #ffffff;
-}
-
-.alerta__btn--confirmar:hover {
-  background-color: #5d48ad;
-}
-
-.alerta__btn--cancelar {
-  background-color: #f1eff8;
-  color: #3b2a7a;
-}
-
-.alerta__btn--cancelar:hover {
-  background-color: #e4dff4;
-}
-
-.alerta__btn:focus-visible {
-  outline: 2px solid #7560c4;
-  outline-offset: 2px;
 }
 
 /* BOTÓN CERRAR */
@@ -179,7 +129,119 @@
   outline-offset: 2px;
 }
 
-/* ANIMACIÓN */
+/* RECUADRO CENTRADO DE CONFIRMACIÓN */
+
+.alerta-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+
+  background-color: rgba(29, 21, 56, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.alerta-modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+
+  width: min(420px, 100%);
+  padding: 28px 24px;
+
+  background-color: #ffffff;
+  border: 1px solid #e6e0f7;
+  border-top: 5px solid #e5a43b;
+  border-radius: 18px;
+
+  box-shadow: 0 18px 44px rgba(43, 33, 80, 0.28);
+
+  font-family: "Creato Display", Arial, sans-serif;
+  color: #2b2150;
+
+  animation: aparecerModal 0.2s ease forwards;
+}
+
+.alerta-modal__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background-color: #fdf6e9;
+}
+
+.icono-modal {
+  width: 28px;
+  height: 28px;
+}
+
+.alerta-modal__mensaje {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: #2b2150;
+}
+
+.alerta-modal__acciones {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.alerta__btn {
+  flex: 1;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 10px;
+
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.alerta__btn:active {
+  transform: scale(0.98);
+}
+
+.alerta__btn--confirmar {
+  background-color: #7560c4;
+  color: #ffffff;
+}
+
+.alerta__btn--confirmar:hover {
+  background-color: #5d48ad;
+}
+
+.alerta__btn--cancelar {
+  background-color: #f1eff8;
+  color: #3b2a7a;
+}
+
+.alerta__btn--cancelar:hover {
+  background-color: #e4dff4;
+}
+
+.alerta__btn:focus-visible {
+  outline: 2px solid #7560c4;
+  outline-offset: 2px;
+}
+
+/* ANIMACIONES */
 
 @keyframes aparecer {
   from {
@@ -190,6 +252,18 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+@keyframes aparecerModal {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -204,7 +278,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .alerta {
+  .alerta,
+  .alerta-modal {
     animation: none;
   }
 
