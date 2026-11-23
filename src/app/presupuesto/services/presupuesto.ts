@@ -34,11 +34,11 @@ export class PresupuestoService {
     // OBTENER MIS PRESUPUESTOS
     obtenerMisPresupuestos(tipo: 'CREADOS' | 'RECIBIDOS') {
 
-        if (tipo === 'CREADOS') {
+    if (tipo === 'CREADOS') {
         return this.http.get<PresupuestoModel[]>(`${this.url}/mis-presupuestos-tecnico`);
-        }
-        
-        return this.http.get<PresupuestoModel[]>(`${this.url}/mis-presupuestos`);
+    }
+
+    return this.http.get<PresupuestoModel[]>(`${this.url}/mis-presupuestos`);
     }
 
     // ACEPTAR PRESUPUESTO
