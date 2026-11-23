@@ -4,6 +4,7 @@ import { PresupuestoModel } from '../../models/presupuesto-model';
 import { EstadoPresupuesto } from '../../enum/estado-presupuesto';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { AlertaService } from '../../../shared/alertas/service/alerta-service';
+import { AuthService } from '../../../auth/services/auth-service';
 
 @Component({
   selector: 'app-mis-presupuestos',
@@ -15,6 +16,8 @@ import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 export class MisPresupuestos implements OnInit{
   private presupuestoService = inject(PresupuestoService);
   private alertaService = inject(AlertaService);
+  private authService = inject(AuthService);
+  esTecnico = false;
 
   // Permite utilizar el enum desde el HTML
   estados = EstadoPresupuesto;
@@ -23,7 +26,7 @@ export class MisPresupuestos implements OnInit{
   presupuestos: PresupuestoModel[] = [];
 
   // Pestaña seleccionada
-  tipoSeleccionado: 'CREADOS' | 'RECIBIDOS' = 'CREADOS';
+  tipoSeleccionado: 'CREADOS' | 'RECIBIDOS' = 'RECIBIDOS';
 
   // Filtro de estado
   estadoSeleccionado: 'TODOS' | EstadoPresupuesto = 'TODOS';
@@ -32,6 +35,8 @@ export class MisPresupuestos implements OnInit{
   error = false;
 
   ngOnInit(): void {
+    this.esTecnico=this.authService.esTecnico()
+    this.tipoSeleccionado=this.esTecnico ? 'CREADOS' : 'RECIBIDOS'
     this.cargarPresupuestos();
   }
 
@@ -90,10 +95,12 @@ export class MisPresupuestos implements OnInit{
   // MENSAJE CUANDO NO HAY PRESUPUESTOS
   get mensajeSinPresupuestos(): string {
 
-    if (this.tipoSeleccionado === 'CREADOS') {
+    if (this.esTecnico) {
       return '¡No tenés presupuestos a tu nombre!';
     }
 
     return '¡Todavía no tenés presupuestos recibidos!';
   }
+
+  
 }
