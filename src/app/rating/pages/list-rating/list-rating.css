@@ -13,8 +13,6 @@
   --color-texto: #29243a;
   --color-texto-secundario: #777187;
   --color-acento: #7952c7;
-  --degrade-texto: linear-gradient(90deg, #7952c7, #a16de0);
-  --degrade-boton: linear-gradient(90deg, #7952c7, #9664d6);
 
   max-width: 1100px;
   margin: 0 auto;
