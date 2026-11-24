@@ -15,6 +15,7 @@ import { CaracteristicaService } from '../../../caracteristica/services/caracter
 import { RatingModel } from '../../models/rating-model';
 import { CaracteristicaModel } from '../../../caracteristica/models/caracteristica-model';
 import { TipoCaracteristica } from '../../../caracteristica/enum/tipo-caracteristica';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 interface TrabajoCalificable {
   uuidTrabajo: string;
@@ -37,6 +38,7 @@ export class FormRating implements OnInit {
   private caracteristicaService = inject(CaracteristicaService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private alertaService = inject(AlertaService);
 
   @Input() uuidTrabajoPreset: string = '';
   @Input() nombreTrabajoPreset: string = '';
@@ -261,7 +263,7 @@ export class FormRating implements OnInit {
     this.rService.createRating(rating).subscribe({
       next: () => {
         this.enviando = false;
-        alert('¡Reseña publicada con éxito!');
+        this.alertaService.exito('¡Reseña publicada con éxito!');
         if (this.ratingCreado.observed) {
           this.ratingCreado.emit();
         } else {
@@ -272,8 +274,8 @@ export class FormRating implements OnInit {
         this.enviando = false;
         console.error('Error al registrar la calificación:', e);
         const msg = e?.error?.mensaje || 'No se pudo publicar la reseña. Verificá los datos.';
-        alert(msg);
-      }
+        this.alertaService.error(msg)
+        }
     });
   }
 
