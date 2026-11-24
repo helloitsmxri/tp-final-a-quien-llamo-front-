@@ -15,6 +15,7 @@ import { TecnicoTrabajoRequestModel } from '../../models/Tecnico-trabajo-request
 export class VerDatosCobro implements OnInit {
 
   private tecnicoService = inject(TecnicoService);
+  private cdr = inject(ChangeDetectorRef);
 
   alias: string = '';
   cvu: string = '';
@@ -25,39 +26,59 @@ export class VerDatosCobro implements OnInit {
   mensaje: string = '';
   error: string = '';
 
-  private cdr = inject(ChangeDetectorRef);
+  errorAlias: string = '';
+  errorCvu: string = '';
 
- 
   ngOnInit(): void {
-  console.log('Se inició VerDatosCobro');
-  this.cargarDatos();
-}
+    console.log('Se inició VerDatosCobro');
+    this.cargarDatos();
+  }
 
-cargarDatos(): void {
-  console.log('Se está llamando a obtenerDatosCobro');
+  cargarDatos(): void {
+    this.cargando = true;
+    this.error = '';
 
-  this.cargando = true;
-  this.error = '';
+    this.tecnicoService.obtenerDatosCobro().subscribe({
+      next: (datos) => {
+        this.alias = datos.alias ?? '';
+        this.cvu = datos.cvu ?? '';
+        this.cargando = false;
 
-  this.tecnicoService.obtenerDatosCobro().subscribe({
-    next: (datos) => {
-  console.log('Datos recibidos:', datos);
+        this.validarAlias();
+        this.validarCvu();
 
-  this.alias = datos.alias ?? '';
-  this.cvu = datos.cvu ?? '';
-  this.cargando = false;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al obtener los datos de cobro:', err);
+        this.error = 'No se pudieron cargar tus datos de cobro.';
+        this.cargando = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
-  console.log('Estado de cargando:', this.cargando);
-  console.log('Alias asignado:', this.alias);
-  this.cdr.detectChanges();
-},
-    error: (err) => {
-      console.error('Error al obtener los datos de cobro:', err);
-      this.error = 'No se pudieron cargar tus datos de cobro.';
-      this.cargando = false;
+  validarAlias(): void {
+    const valor = this.alias.trim();
+
+    this.errorAlias = '';
+
+    if (valor.length > 100) {
+      this.errorAlias = 'El alias no puede superar los 100 caracteres.';
+    } else if (valor && !/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(valor)) {
+      this.errorAlias = 'El alias debe contener al menos una letra.';
     }
-  });
-}
+  }
+
+  validarCvu(): void {
+    const valor = this.cvu.trim();
+
+    this.errorCvu = '';
+
+    if (valor && !/^\d{22}$/.test(valor)) {
+      this.errorCvu = 'El CVU debe tener exactamente 22 números.';
+    }
+  }
 
   guardarCambios(): void {
     this.mensaje = '';
@@ -71,10 +92,23 @@ cargarDatos(): void {
       return;
     }
 
-    if (cvuLimpio && !/^\d{22}$/.test(cvuLimpio)) {
-      this.error = 'El CVU debe tener exactamente 22 números.';
+    if (aliasLimpio.length > 100) {
+      this.errorAlias = 'El alias no puede superar los 100 caracteres.';
       return;
     }
+
+    if (aliasLimpio && !/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(aliasLimpio)) {
+      this.errorAlias = 'El alias debe contener al menos una letra.';
+      return;
+    }
+
+    if (cvuLimpio && !/^\d{22}$/.test(cvuLimpio)) {
+      this.errorCvu = 'El CVU debe tener exactamente 22 números.';
+      return;
+    }
+
+    this.errorAlias = '';
+    this.errorCvu = '';
 
     const datos: TecnicoTrabajoRequestModel = {
       alias: aliasLimpio || null,
@@ -95,18 +129,21 @@ cargarDatos(): void {
         console.error('Error al actualizar los datos:', err);
         this.error = 'No se pudieron actualizar los datos. Intentá nuevamente.';
         this.guardando = false;
+        this.cdr.detectChanges();
       }
     });
   }
 
   borrarAlias(): void {
     this.alias = '';
+    this.errorAlias = '';
     this.mensaje = '';
     this.error = '';
   }
 
   borrarCvu(): void {
     this.cvu = '';
+    this.errorCvu = '';
     this.mensaje = '';
     this.error = '';
   }

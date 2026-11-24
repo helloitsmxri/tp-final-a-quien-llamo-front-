@@ -210,3 +210,10 @@ form button[type="submit"]:disabled {
     padding: 10px 12px;
   }
 }
+
+.mensaje-validacion {
+  display: block;
+  margin-top: 5px;
+  color: #b00020;
+  font-size: 0.8rem;
+}

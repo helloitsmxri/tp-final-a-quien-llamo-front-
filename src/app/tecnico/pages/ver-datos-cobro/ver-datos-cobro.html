@@ -1,4 +1,3 @@
-
 <section class="ver-datos-cobro">
 
   <header class="encabezado">
@@ -11,82 +10,71 @@
   </header>
 
   @if (cargando) {
-    <div class="estado-mensaje">
-      Cargando tus datos de cobro...
-    </div>
+  <div class="estado-mensaje">
+    Cargando tus datos de cobro...
+  </div>
   }
   @else if (error && !alias && !cvu) {
-    <div class="mensaje-error">{{ error }}</div>
-    <button type="button" (click)="cargarDatos()">
-      Reintentar
-    </button>
+  <div class="mensaje-error">{{ error }}</div>
+  <button type="button" (click)="cargarDatos()">
+    Reintentar
+  </button>
   }
   @else {
 
-    <form (ngSubmit)="guardarCambios()">
+  <form (ngSubmit)="guardarCambios()">
 
-      <div class="campo">
-        <label for="alias">Alias</label>
+    <div class="campo">
+      <label for="alias">Alias</label>
 
-        <div class="campo-con-accion">
-          <input
-            id="alias"
-            type="text"
-            name="alias"
-            [(ngModel)]="alias"
-            maxlength="100"
-            placeholder="No tenés un alias cargado"
-          />
+      <div class="campo-con-accion">
+        <input id="alias" type="text" name="alias" [(ngModel)]="alias" (ngModelChange)="validarAlias()" maxlength="100"
+          placeholder="No tenés un alias cargado" />
 
-          @if (alias) {
-            <button
-              type="button"
-              class="btn-borrar"
-              (click)="borrarAlias()">
-              Borrar
-            </button>
-          }
-        </div>
+        @if (alias) {
+        <button type="button" class="btn-borrar" (click)="borrarAlias()">
+          Borrar
+        </button>
+        }
       </div>
 
-      <div class="campo">
-        <label for="cvu">CVU</label>
+      @if (errorAlias) {
+      <small class="mensaje-validacion">{{ errorAlias }}</small>
+      }
+    </div>
 
-        <div class="campo-con-accion">
-          <input
-            id="cvu"
-            type="text"
-            name="cvu"
-            [(ngModel)]="cvu"
-            maxlength="22"
-            inputmode="numeric"
-            placeholder="No tenés un CVU cargado"
-          />
+    <div class="campo">
+      <label for="cvu">CVU</label>
 
-          @if (cvu) {
-            <button
-              type="button"
-              class="btn-borrar"
-              (click)="borrarCvu()">
-              Borrar
-            </button>
-          }
-        </div>
+      <div class="campo-con-accion">
+        <input id="cvu" type="text" name="cvu" [(ngModel)]="cvu" (ngModelChange)="validarCvu()" maxlength="22"
+          inputmode="numeric" placeholder="No tenés un CVU cargado" />
+
+        @if (cvu) {
+        <button type="button" class="btn-borrar" (click)="borrarCvu()">
+          Borrar
+        </button>
+        }
       </div>
 
-      @if (mensaje) {
-        <div class="mensaje-exito">{{ mensaje }}</div>
+      @if (errorCvu) {
+      <small class="mensaje-validacion">{{ errorCvu }}</small>
       }
+    </div>
 
-      @if (error) {
-        <div class="mensaje-error">{{ error }}</div>
-      }
+    @if (mensaje) {
+    <div class="mensaje-exito">{{ mensaje }}</div>
+    }
 
-      <button type="submit" [disabled]="guardando">
-        {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
-      </button>
+    @if (error) {
+    <div class="mensaje-error">{{ error }}</div>
+    }
 
-    </form>
+    <button type="submit" [disabled]="guardando">
+      {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+    </button>
+
+  </form>
   }
 
   <a routerLink="/mis-trabajos" class="volver">

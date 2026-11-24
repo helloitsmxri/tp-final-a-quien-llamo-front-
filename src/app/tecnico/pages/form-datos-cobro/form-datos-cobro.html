@@ -1,4 +1,3 @@
-
 <section class="form-datos-cobro">
 
   <header class="encabezado">
@@ -14,15 +13,18 @@
 
     <div class="campo">
       <label for="alias">Alias</label>
-      <input
-        id="alias"
-        type="text"
-        name="alias"
-        [(ngModel)]="alias"
-        maxlength="100"
-        placeholder="Ej: paulina.pagos.mp"
-      />
-      <small>Ingresá el alias de tu cuenta bancaria o billetera virtual.</small>
+      <input id="alias" type="text" name="alias" [(ngModel)]="alias" (ngModelChange)="validarAlias()" maxlength="100"
+        placeholder="Ej: paulina.pagos.mp" />
+
+      <small>
+        Ingresá el alias de tu cuenta bancaria o billetera virtual.
+      </small>
+
+      @if (errorAlias) {
+      <small class="mensaje-validacion">
+        {{ errorAlias }}
+      </small>
+      }
     </div>
 
     <div class="separador">
@@ -31,34 +33,36 @@
 
     <div class="campo">
       <label for="cvu">CVU</label>
-      <input
-        id="cvu"
-        type="text"
-        name="cvu"
-        [(ngModel)]="cvu"
-        maxlength="22"
-        inputmode="numeric"
-        placeholder="Ingresá los 22 números del CVU"
-      />
+      <input id="cvu" type="text" name="cvu" [(ngModel)]="cvu" (ngModelChange)="validarCvu()" maxlength="22"
+        inputmode="numeric" placeholder="Ingresá los 22 números del CVU" />
+
       <small>El CVU debe contener exactamente 22 números.</small>
+
+      @if (errorCvu) {
+      <small class="mensaje-validacion">
+        {{ errorCvu }}
+      </small>
+      }
     </div>
 
     @if (mensaje) {
-      <div class="mensaje-exito">
-        {{ mensaje }}
-      </div>
+    <div class="mensaje-exito">
+      {{ mensaje }}
+    </div>
     }
 
     @if (error) {
-      <div class="mensaje-error">
-        {{ error }}
-      </div>
+    <div class="mensaje-error">
+      {{ error }}
+    </div>
     }
 
     <button type="submit" [disabled]="cargando">
       {{ cargando ? 'Guardando...' : 'Guardar datos de cobro' }}
     </button>
-
   </form>
+  <a routerLink="/mis-trabajos" class="volver">
+    Volver a mis trabajos
+  </a>
 
 </section>

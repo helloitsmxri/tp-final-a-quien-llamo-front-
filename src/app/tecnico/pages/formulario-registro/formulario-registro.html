@@ -90,7 +90,7 @@
       <small class="error">{{ msg }}</small> 
     }
 
-    <label for="tituloProyecto">Proyectos realizados</label>
+    <label for="tituloProyecto">Proyectos realizados (opcional)</label>
     <input id="tituloProyecto" type="text" [formControl]="tituloProyecto"
            placeholder="Título. Ej: Casa Aurelia"
            (keydown.enter)="$event.preventDefault(); agregarProyecto()">
