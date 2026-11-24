@@ -135,11 +135,12 @@ export class ListPago implements OnInit {
     this.ejecutarConsulta(peticion);
   }
 
-  // FILTRAR POR ESTADO
+// FILTRAR POR ESTADO
   filtrarPorEstado(estado: 'TODOS' | EstadoPago): void {
     this.estadoSeleccionado = estado;
   }
 
+  // OBTENER PAGOS FILTRADOS
   get pagosFiltrados(): PagoResponseModel[] {
     if (this.estadoSeleccionado === 'TODOS') {
       return this.pagos;
@@ -148,6 +149,15 @@ export class ListPago implements OnInit {
     return this.pagos.filter(
       pago => pago.estadoPago === this.estadoSeleccionado
     );
+  }
+
+  // MENSAJE CUANDO NO HAY PAGOS
+  get mensajeSinPagos(): string {
+    if (this.estadoSeleccionado === 'TODOS') {
+      return 'Cuando realices un pago por un trabajo, aparecerá detallado en esta sección.';
+    }
+
+    return 'No tenés pagos registrados con este estado.';
   }
 
   private ejecutarConsulta(peticion: Observable<PagoResponseModel[]>): void {
