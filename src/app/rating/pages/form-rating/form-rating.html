@@ -1,23 +1,18 @@
 <div class="rating-form-page">
   <div class="rating-form-card">
-    <div class="form-header">
-      <div>
-        <span class="sobretitulo">NUEVA VALORACIÓN</span>
-        <h2>{{ calificandoACliente ? 'Calificar al cliente' : 'Calificar al técnico' }}</h2>
-        <p>
-          {{ calificandoACliente
-            ? 'Seleccioná un trabajo finalizado y contá cómo fue tu experiencia trabajando con este cliente.'
-            : 'Seleccioná un trabajo finalizado y calificá el desempeño del profesional.' }}
-        </p>
-      </div>
-      <button type="button" class="btn-volver-pill" (click)="cancelar()">✕ Cancelar</button>
-    </div>
+
+    <h2>{{ calificandoACliente ? 'Calificar al cliente' : 'Calificar al técnico' }}</h2>
+    <p>
+      {{ calificandoACliente
+        ? 'Seleccioná un trabajo finalizado y contá cómo fue tu experiencia trabajando con este cliente.'
+        : 'Seleccioná un trabajo finalizado y calificá el desempeño del profesional.' }}
+    </p>
 
     <form class="formulario" [formGroup]="formulario" (ngSubmit)="registrar()">
 
       <!-- Selector de trabajo finalizado -->
       <fieldset class="form-group">
-        <label for="trabajo">Trabajo realizado *</label>
+        <label for="trabajo">Trabajo realizado:</label>
 
         @if (trabajoFijoLabel) {
           <div class="persona-fija-badge">
@@ -39,14 +34,16 @@
         }
 
         @if (uuidTrabajo.invalid && uuidTrabajo.touched) {
-          <span class="error">Tenés que seleccionar un trabajo finalizado.</span>
+          <div class="error">
+            <span>Tenés que seleccionar un trabajo finalizado.</span>
+          </div>
         }
       </fieldset>
 
       <!-- Estrellas -->
       <fieldset class="form-group">
         <label>
-          {{ calificandoACliente ? 'Puntuación para el cliente *' : 'Puntuación para el técnico *' }}
+          {{ calificandoACliente ? 'Puntuación para el cliente:' : 'Puntuación para el técnico:' }}
         </label>
         <div class="estrellas-selector">
           @for (estrella of estrellasOpciones; track estrella) {
@@ -68,8 +65,8 @@
       <fieldset class="form-group">
         <label>
           {{ calificandoACliente
-            ? 'Aspectos destacados del cliente * (elegí al menos uno)'
-            : 'Aspectos destacados del técnico * (elegí al menos uno)' }}
+            ? 'Aspectos destacados del cliente (elegí al menos uno):'
+            : 'Aspectos destacados del técnico (elegí al menos uno):' }}
         </label>
 
         @if (cargandoCaracteristicas) {
@@ -77,29 +74,33 @@
         } @else if (caracteristicasDisponibles.length > 0) {
           <div class="chips-contenedor">
             @for (car of caracteristicasFiltradas; track car.uuid) {
-  <button
-    type="button"
-    class="chip-seleccionable"
-    [class.seleccionado]="estaSeleccionada(car.uuid)"
-    (click)="toggleCaracteristica(car.uuid)"
-  >
-    {{ estaSeleccionada(car.uuid) ? '✓ ' : '+ ' }}{{ car.valorAdjetivo }}
-  </button>
-}
+              <button
+                type="button"
+                class="chip-seleccionable"
+                [class.seleccionado]="estaSeleccionada(car.uuid)"
+                (click)="toggleCaracteristica(car.uuid)"
+              >
+                {{ estaSeleccionada(car.uuid) ? '✓ ' : '+ ' }}{{ car.valorAdjetivo }}
+              </button>
+            }
           </div>
         } @else {
-          <p class="error">No se encontraron características cargadas en la base de datos.</p>
+          <div class="error">
+            <span>No se encontraron características cargadas en la base de datos.</span>
+          </div>
         }
 
         @if (uuidCaracteristicas.invalid && uuidCaracteristicas.touched) {
-          <span class="error">Seleccioná al menos una característica.</span>
+          <div class="error">
+            <span>Seleccioná al menos una característica.</span>
+          </div>
         }
       </fieldset>
 
       <!-- Descripción -->
       <fieldset class="form-group">
         <label for="descripcion">
-          Comentario ({{ descripcion.value?.length || 0 }}/2000)
+          Comentario ({{ descripcion.value?.length || 0 }}/2000):
         </label>
         <textarea
           id="descripcion"
@@ -110,14 +111,20 @@
           rows="4"
         ></textarea>
         @if (descripcion.invalid && descripcion.touched) {
-          <span class="error">La descripción no debe superar los 2000 caracteres.</span>
+          <div class="error">
+            <span>La descripción no debe superar los 2000 caracteres.</span>
+          </div>
         }
       </fieldset>
 
-      <!-- Botón Enviar -->
-      <div class="form-actions">
-        <button type="submit" class="btn-submit-rating" [disabled]="formulario.invalid || enviando">
-          {{ enviando ? 'Publicando reseña...' : '★ Publicar reseña' }}
+      <!-- Acciones Cancelar / Publicar -->
+      <div class="acciones">
+        <button type="button" class="btn-secundario" (click)="cancelar()" [disabled]="enviando">
+          Cancelar
+        </button>
+
+        <button type="submit" class="btn-primario" [disabled]="formulario.invalid || enviando">
+          {{ enviando ? 'Publicando...' : 'Publicar reseña' }}
         </button>
       </div>
 
