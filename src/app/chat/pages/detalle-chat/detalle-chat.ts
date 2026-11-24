@@ -6,6 +6,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  inject,
   Input,
   NgZone,
   OnChanges,
@@ -39,6 +40,7 @@ import { EstadoPresupuesto } from '../../../presupuesto/enum/estado-presupuesto'
 
 import { TrabajoService } from '../../../trabajo/services/trabajo';
 import { EstadoTrabajo } from '../../../trabajo/enum/estado-trabajo';
+import { AlertaService } from '../../../shared/alertas/service/alerta-service';
 
 const BACKEND = 'http://localhost:8080';
 
@@ -65,6 +67,8 @@ export class DetalleChat
 
   @ViewChild('areaMensajes')
   private areaMensajesContainer!: ElementRef;
+
+  private alertaService = inject(AlertaService);
 
   mensajes: MensajeModel[] = [];
   errorPresupuestos = '';
@@ -451,10 +455,7 @@ cargarMensajes(uuidChat: string): void {
   onTrabajoCreado(): void {
 
     this.cerrarPanelesPresupuesto();
-
-    alert(
-      '¡Trabajo registrado correctamente! Ya podés gestionarlo en "Mis Trabajos".'
-    );
+    this.alertaService.exito('¡Trabajo registrado correctamente! Ya podés gestionarlo en "Mis Trabajos".');
   }
 
   onPresupuestoCreado(nuevo: PresupuestoModel): void {

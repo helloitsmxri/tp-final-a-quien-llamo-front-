@@ -138,8 +138,6 @@ private alertaService = inject(AlertaService);
     }).subscribe({
       next: ({ respuesta }) => {
         this.cargando = false;
-        this.mensajeExito = '¡Trabajo registrado correctamente!';
-        this.alertaService.exito(this.mensajeExito);
 
         this.formulario.reset({
           descripcionTrabajo: '',
