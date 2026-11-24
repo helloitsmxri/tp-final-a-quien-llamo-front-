@@ -183,6 +183,13 @@ export class PerfilTecnico implements OnInit {
       });
   }
 
+  obtenerFotoRemitente(r: RatingResponse): string | null {
+    if (!r.foto || !r.tipoFoto) {
+      return null;
+    }
+    return `data:${r.tipoFoto};base64,${r.foto}`;
+  }
+
   verPerfilUsuario(uuid: string): void {
     if (!uuid) {
       return;

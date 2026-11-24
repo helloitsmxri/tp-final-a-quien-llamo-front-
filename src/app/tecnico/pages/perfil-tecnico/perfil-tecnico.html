@@ -104,8 +104,14 @@
           <article class="card review-card clicable" role="link" tabindex="0"
                    (click)="verPerfilUsuario(r.uuidRemitente)"
                    (keydown.enter)="verPerfilUsuario(r.uuidRemitente)">
-            <div class="review-avatar avatar-vacio">{{ inicialesDe(r.nombreRemitente) }}</div>
-
+            @if (obtenerFotoRemitente(r); as fotoRemitente) {
+              <img
+                [src]="fotoRemitente"
+                [alt]="'Foto de perfil de ' + r.nombreRemitente"
+                class="review-avatar" />
+            } @else {
+              <div class="review-avatar avatar-vacio">{{ inicialesDe(r.nombreRemitente) }}</div>
+            }
             <div class="review-content">
               <div class="review-header">
                 <h4>{{ r.nombreRemitente }}</h4>

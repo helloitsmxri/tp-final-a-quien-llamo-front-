@@ -201,4 +201,12 @@ contactar(): void {
 
     this.router.navigate(['/usuario', uuid]);
   }
+
+  //Método Helper para poder ver las fotos de los usuarios que hacen reseñas
+  obtenerFotoRemitente(r: RatingResponse): string | null {
+    if (!r.foto || !r.tipoFoto) {
+      return null;
+    }
+    return `data:${r.tipoFoto};base64,${r.foto}`;
+  }
 }
